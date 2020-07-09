@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import subprocess
 from subprocess import Popen, PIPE
+from pathlib import Path
 
 mode_pipeline = sys.argv[1]
 
@@ -50,6 +51,7 @@ def Check_etape(fichier_teste,commande) :
 
 ################################################### main ###################################################
 
+directory_KRIPTON = Path(__file__).parent
 
 Creation_dossier(dir_output)
 
@@ -252,16 +254,16 @@ except :
 	os.system("sort -rk 1,12 {} > alignment_{}_Uniref90_sorted.tsv".format(path_file_alignment,assembly_mode))
 
 	# recuperation des meilleurs transcrits avec un coverage supérieur a 80%
-	os.system("python3.5 /databis/milisav/bin/Annota_fonc/format_mmseqs.py alignment_{}_Uniref90_sorted.tsv 0 80 > alignment_{}_Ortho_Uniref90_sorted_filtred.tsv".format(assembly_mode,assembly_mode))
+	os.system("python3.5 {}/format_mmseqs.py alignment_{}_Uniref90_sorted.tsv 0 80 > alignment_{}_Ortho_Uniref90_sorted_filtred.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
 
 	# on recupere uniquement le trinity et le ko associe
-	os.system("python3.5 /databis/milisav/bin/Annota_fonc/MMseqs2ToKO.py alignment_{}_Ortho_Uniref90_sorted_filtred.tsv > alignment_{}_ko.tsv".format(assembly_mode,assembly_mode))
+	os.system("python3.5 {}/MMseqs2ToKO.py alignment_{}_Ortho_Uniref90_sorted_filtred.tsv > alignment_{}_ko.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
 
 	# on associe le transcrit et son ko a une orhtologie
-	os.system("python3.5 /databis/milisav/bin/Annota_fonc/ko_To_Ortho.py alignment_{}_ko.tsv > alignment_{}_ko_ortho.tsv".format(assembly_mode,assembly_mode))
+	os.system("python3.5 {}/ko_To_Ortho.py alignment_{}_ko.tsv > alignment_{}_ko_ortho.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
 
 	# on associe un transcrit et son ko a une map et une voie metabolique
-	os.system("python3.5 /databis/milisav/bin/Annota_fonc/ko_To_map.py alignment_{}_ko.tsv > alignment_{}_ko_map.tsv".format(assembly_mode,assembly_mode))
+	os.system("python3.5 {}/ko_To_map.py alignment_{}_ko.tsv > alignment_{}_ko_map.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
 	
 	# on compte le nombre de ko unique
 	os.system("cut -f2 alignment_{}_ko_map.tsv | uniq -c > ko_list_count.txt".format(assembly_mode))
@@ -270,7 +272,7 @@ except :
 	os.system('''awk '{ print $2 "\t" $1 }' ko_list_count.txt > ko_matrix.tsv''')
 	
 	# on va creer un header au fichier precedent pour etre utiliser par MetaPathExplorer
-	os.system("python3.5 /databis/milisav/bin/Annota_fonc/ajout_header.py ko_matrix.tsv > ko_matrix_header.tsv")
+	os.system("python3.5 {}/ajout_header.py ko_matrix.tsv > ko_matrix_header.tsv".format(directory_KRIPTON))
 	
 print("etape mmseqs2 anotation terminee")
 
@@ -279,20 +281,21 @@ print("etape mmseqs2 anotation terminee")
 
 ##### MetaPathExplorer #####
 
+path_results_out = os.path.abspath(results_out)
 
-fichier_cible = "$HOME/MetaPathExplorer3/bin/MetaPathExplorer"
-commande = "git clone https://github.com/meb-team/MetaPathExplorer.git $HOME/MetaPathExplorer3"
+
+
+fichier_cible = "{}/MetaPathExplorer/bin/MetaPathExplorer".format(directory_KRIPTON)
+commande = "git clone https://github.com/meb-team/MetaPathExplorer.git {}/MetaPathExplorer".format(directory_KRIPTON)
 
 Check_etape(fichier_cible,commande)
 
-#lecture_file_ini = open("$HOME/MetaPathExplorer3/conf/MetaPathExplorer.ini","r")
 
+os.system("cp {}/MetaPathExplorer/conf/MetaPathExplorer.ini {}/MetaPathExplorer/conf/MetaPathExplorer.init".format(directory_KRIPTON,directory_KRIPTON))
 
-os.system("cp /databis/milisav/MetaPathExplorer3/conf/MetaPathExplorer.ini /databis/milisav/MetaPathExplorer3/conf/MetaPathExplorer.init")
+lecture_file_ini = open("{}/MetaPathExplorer/conf/MetaPathExplorer.ini".format(directory_KRIPTON),"r")
 
-lecture_file_ini = open("/databis/milisav/MetaPathExplorer3/conf/MetaPathExplorer.ini","r")
-
-ecriture_file_ini = open("/databis/milisav/MetaPathExplorer3/conf/MetaPathExplorer.init","w")
+ecriture_file_ini = open("{}/MetaPathExplorer/conf/MetaPathExplorer.init".format(directory_KRIPTON),"w")
 
 i = 0
 
@@ -311,9 +314,9 @@ ecriture_file_ini.close()
 lecture_file_ini.close()
 
 
-#os.system("perl $HOME/MetaPathExplorer3/bin/MetaPathExplorer --ini $HOME/MetaPathExplorer3/conf/MetaPathExplorer.init --input matrix $HOME/data/AK_bis/mmseqs2_out/results_out/ ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1")
+os.system("perl {}/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,directory_KRIPTON,path_results_out))
 
 ### quelle version utiliser ?
 
-os.system("perl /data/share/MetaPathExplorer/MetaPathExplorer/bin/MetaPathExplorer --ini $HOME/MetaPathExplorer3/conf/MetaPathExplorer.init --input matrix $HOME/data/AK_bis/mmseqs2_out/results_out/ ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1")
+#os.system("perl /data/share/MetaPathExplorer/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer3/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,path_results_out))
 
