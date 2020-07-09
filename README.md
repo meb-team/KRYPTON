@@ -6,7 +6,7 @@
 
 ### euKaRYote ProtisT fOnctionnal aNnotation of transcriptome
 
-![Workflow Krypton](https://ibb.co/nDPZS5H)
+![Workflow Krypton](/Diapo workflow Krypton.jpg )
 
 KRYPTON est un pipeline permettant l'assemblage et l'annotation fonctionnelle de transcriptomes.
 
