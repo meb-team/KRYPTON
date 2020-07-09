@@ -6,11 +6,13 @@
 
 ### euKaRYote ProtisT fOnctionnal aNnotation of transcriptome
 
-![Workflow Krypton](https://github.com/meb-team/KRYPTON/blob/master/Diapo%20workflow%20Krypton.jpg)
+
 
 KRYPTON est un pipeline permettant l'assemblage et l'annotation fonctionnelle de transcriptomes.
 
 KRYPTON combine Trinity, mmseqs2 clust et mmseqs2 search et MetaPathExplorer
+
+![Workflow Krypton](https://github.com/meb-team/KRYPTON/blob/master/Diapo%20workflow%20Krypton.jpg)
 
 ## DEPENDANCES :
 
@@ -21,20 +23,24 @@ KRYPTON combine Trinity, mmseqs2 clust et mmseqs2 search et MetaPathExplorer
 # INSTALLATION :
 
 ```sh
-git clone https://github.com/meb-team/CRYPTON.git
-cd KRYPTION
+git clone https://github.com/meb-team/KRYPTON.git
+cd KRYPTON
 ```
 
+Il y'a deux mode d'utilisation de KRYPTON, soit avec des reads soit avec un assemblage déjà réalisé 
+
 ### Exemple d'utilisation :
+
+
 
  - exemple mode "reads" :
 
 ```sh
-python3.5 ./bin/CRYPTON.py /chemin/reads/forward.fastq.gz /chemin/reads/reverse.fastq.gz /chemin/output
+python3.5 ./bin/KRYPTON.py reads /chemin/reads/forward.fastq.gz /chemin/reads/reverse.fastq.gz /chemin/output
 ```
 - exemple mode "assembly" : 
 ```sh
-python3.5 ./bin/CRYPTON.py /chemin/assemblage chemin/output
+python3.5 ./bin/KRYPTON.py assembly /chemin/assemblage chemin/output
 ```
 
 
