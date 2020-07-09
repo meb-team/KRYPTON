@@ -27,7 +27,7 @@ git clone https://github.com/meb-team/KRYPTON.git
 cd KRYPTON
 ```
 
-Il y'a deux mode d'utilisation de KRYPTON, soit avec des reads soit avec un assemblage déjà réalisé 
+Il y'a deux modes d'utilisation de KRYPTON, soit avec des reads soit avec un assemblage déjà réalisé 
 
 ### Exemple d'utilisation :
 

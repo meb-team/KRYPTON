@@ -4,10 +4,20 @@ from pathlib import Path
 import subprocess
 from subprocess import Popen, PIPE
 
-read_forward = sys.argv[1]
-read_backward = sys.argv[2]
-dir_output = sys.argv[3]
-assembly_mode = "trinity"
+mode_pipeline = sys.argv[1]
+
+if mode_pipeline == "reads" :
+ 
+	read_forward = sys.argv[2]
+	read_backward = sys.argv[3]
+	dir_output = sys.argv[4]
+	assembly_mode = "trinity"
+	
+if mode_pipeline == "assembly" :
+	assembly_input = sys.argv[2]
+	dir_output = sys.argv[3]
+	assembly_mode = "trinity"
+	path_assembly_input = os.path.abspath(assembly_input)
 
 
 
@@ -44,105 +54,110 @@ def Check_etape(fichier_teste,commande) :
 Creation_dossier(dir_output)
 
 
-########################## Partie assemblage ##########################
+if mode_pipeline == "reads" :
 
-##### fastqc #####
+	########################## Partie assemblage ##########################
 
-
-
-# définit un dossier de sortie pour fastqc
-output_fastqc_raw = "fastqc_raw"
-
-# creer le dossier de sortie et s'y deplace dedans
-Creation_dossier(output_fastqc_raw)
-
-
-fichier_cible = "*1_1*.zip"
-commande = "fastqc {} {} --outdir ./ --threads 20 > raw_fastqc.log 2>&1".format(read_forward,read_backward)
-
-Check_etape(fichier_cible,commande)
-
-print("etape fastq_raw terminee")
+	##### fastqc #####
 
 
 
-##### trimmomatic #####
+	# définit un dossier de sortie pour fastqc
+	output_fastqc_raw = "fastqc_raw"
 
-# permet de revenir au dossier de resultats
-os.chdir(dir_output)
-
-# definit le dossier de sortie pour trimmomatic
-output_trimmomatic = "trimmomatic_out"
-
-# creer le dossier de sortie et s'y deplace dedans
-Creation_dossier(output_trimmomatic)
-
-fichier_cible = "forward*.paired.fastq"
-commande = "java -jar /usr/local/Trimmomatic-0.33/trimmomatic-0.33.jar PE -threads 20 {} {} forward.trimmomatic.paired.fastq forward.trimmomatic.unpaired.fastq reverse.trimmomatic.paired.fastq reverse.trimmomatic.unpaired.fastq MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5 > trimmomatic.log 2>&1".format(read_forward,read_backward)
-
-Check_etape(fichier_cible,commande)
-
-print("etape trimmomatic terminee")
-
-trim_forward = "forward.trimmomatic.paired.fastq"
-trim_backward = "reverse.trimmomatic.paired.fastq"
+	# creer le dossier de sortie et s'y deplace dedans
+	Creation_dossier(output_fastqc_raw)
 
 
-path_trim_forward = os.path.abspath(trim_forward)
-path_trim_backward = os.path.abspath(trim_backward)
+	fichier_cible = "*1_1*.zip"
+	commande = "fastqc {} {} --outdir ./ --threads 20 > raw_fastqc.log 2>&1".format(read_forward,read_backward)
+
+	Check_etape(fichier_cible,commande)
+
+	print("etape fastq_raw terminee")
 
 
 
-##### trim_fastqc #####
+	##### trimmomatic #####
+
+	# permet de revenir au dossier de resultats
+	os.chdir(dir_output)
+
+	# definit le dossier de sortie pour trimmomatic
+	output_trimmomatic = "trimmomatic_out"
+
+	# creer le dossier de sortie et s'y deplace dedans
+	Creation_dossier(output_trimmomatic)
+
+	fichier_cible = "forward*.paired.fastq"
+	commande = "java -jar /usr/local/Trimmomatic-0.33/trimmomatic-0.33.jar PE -threads 20 {} {} forward.trimmomatic.paired.fastq forward.trimmomatic.unpaired.fastq reverse.trimmomatic.paired.fastq reverse.trimmomatic.unpaired.fastq MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5 > trimmomatic.log 2>&1".format(read_forward,read_backward)
+
+	Check_etape(fichier_cible,commande)
+
+	print("etape trimmomatic terminee")
+
+	trim_forward = "forward.trimmomatic.paired.fastq"
+	trim_backward = "reverse.trimmomatic.paired.fastq"
 
 
-# permet de revenir au dossier de resultats
-os.chdir(dir_output)
-
-# définit un dossier de sortie pour trim_fastqc
-output_fastqc_trimmed = "fastqc_trimmed"
-
-# creer le dossier de sortie et s'y deplace dedans
-Creation_dossier(output_fastqc_trimmed)
-
-fichier_cible = "forward*.zip"
-commande = "fastqc {} {} --outdir ./ --threads 20 > trim_fastqc.log 2>&1".format(path_trim_forward,path_trim_backward)
-
-Check_etape(fichier_cible,commande)
-
-
-print("etape trim_fastqc terminee")
+	path_trim_forward = os.path.abspath(trim_forward)
+	path_trim_backward = os.path.abspath(trim_backward)
 
 
 
-if assembly_mode == "trinity" :
-
-	##### Trinity #####
+	##### trim_fastqc #####
 
 
 	# permet de revenir au dossier de resultats
 	os.chdir(dir_output)
 
-	# définit un dossier de sortie pour Trinity
-	output_trinity = "trinity_out"
+	# définit un dossier de sortie pour trim_fastqc
+	output_fastqc_trimmed = "fastqc_trimmed"
 
 	# creer le dossier de sortie et s'y deplace dedans
-	Creation_dossier(output_trinity)
+	Creation_dossier(output_fastqc_trimmed)
 
-	fichier_cible = "Trinity.fasta"
-	commande = "Trinity --seqType fq --left {} --right {} --output ../trinity_out --CPU 20 --max_memory 100G > trinity.log 2>&1".format(path_trim_forward,path_trim_backward)
-	
+	fichier_cible = "forward*.zip"
+	commande = "fastqc {} {} --outdir ./ --threads 20 > trim_fastqc.log 2>&1".format(path_trim_forward,path_trim_backward)
+
 	Check_etape(fichier_cible,commande)
-	
-	
-	print("etape assemblage terminee")
-	
-	
-	file_trinity = "Trinity.fasta"
-	
-	# donne le chemin absolue du fichier file_trinity
-	path_trinity = os.path.abspath(file_trinity)
 
+
+	print("etape trim_fastqc terminee")
+
+
+
+	if assembly_mode == "trinity" :
+
+		##### Trinity #####
+
+
+		# permet de revenir au dossier de resultats
+		os.chdir(dir_output)
+
+		# définit un dossier de sortie pour Trinity
+		output_trinity = "trinity_out"
+
+		# creer le dossier de sortie et s'y deplace dedans
+		Creation_dossier(output_trinity)
+
+		fichier_cible = "Trinity.fasta"
+		commande = "Trinity --seqType fq --left {} --right {} --output ../trinity_out --CPU 20 --max_memory 100G > trinity.log 2>&1".format(path_trim_forward,path_trim_backward)
+	
+		Check_etape(fichier_cible,commande)
+	
+	
+		print("etape assemblage terminee")
+	
+	
+		file_trinity = "Trinity.fasta"
+	
+		# donne le chemin absolue du fichier file_trinity
+		path_trinity = os.path.abspath(file_trinity)
+
+
+if mode_pipeline == "assembly" :
+	path_trinity = path_assembly_input
 
 
 
@@ -160,7 +175,6 @@ commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1".format(pa
 
 Check_etape(fichier_cible,commande)
 
-#os.system("mmseqs easy-linclust {} clusterRes tmp").format(path_trinity)
 
 path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
 
@@ -173,7 +187,6 @@ print("etape clusterisation terminee")
 ##### MMseqs2 #####
 
 if assembly_mode == "trinity" :
-	#path_assemblage = path_trinity
 	path_assemblage = path_clust
 	
 
@@ -288,7 +301,6 @@ for li in lecture_file_ini :
 	i += 1
 		
 	if i == 27 :
-		#ecriture_file_ini.write("outdir=./MetaPAthExplorer\n")
 		if li.startswith("outdir=examples/MetaPathExplorer") :
 				ecriture_file_ini.write('outdir=./MetaPAthExplorer')
 	else :
