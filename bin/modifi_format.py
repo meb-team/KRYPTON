@@ -7,13 +7,6 @@ file_name = sys.argv[1]
 
 dico_seq = defaultdict(str)
 
-from pathlib import Path
- 
-directory = Path(__file__).parent
-
-print(directory)
-
-
 file_open = open(file_name,"r")
 
 for li in file_open :

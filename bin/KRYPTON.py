@@ -161,7 +161,7 @@ if mode_pipeline == "reads" :
 if mode_pipeline == "assembly" :
 	os.system("python3.5 {}/modifi_format.py {} > assembly.fasta".format(directory_KRIPTON,path_assembly_input))
 	path_assembly_modif = os.path.abspath("assembly.fasta")
-	path_trinity = path_assembly_input_modif
+	path_trinity = path_assembly_modif
 
 ########################## Clusterisation ##########################
 
