@@ -159,7 +159,7 @@ if mode_pipeline == "reads" :
 
 
 if mode_pipeline == "assembly" :
-	os.system("python3.5 {}/modifi_format.py {} > assembly.fasta".format(directory_KRIPTON,path_assembly_input))
+	os.system("python3.5 {}/modifi_format.py {} > assembly.fasta".format(directory_KRIPTON,assembly_input))
 	path_assembly_modif = os.path.abspath("assembly.fasta")
 	path_trinity = path_assembly_modif
 
@@ -293,7 +293,10 @@ Check_etape(fichier_cible,commande)
 
 os.system("cp {}/MetaPathExplorer/conf/MetaPathExplorer.ini {}/MetaPathExplorer/conf/MetaPathExplorer.init".format(directory_KRIPTON,directory_KRIPTON))
 
-lecture_file_ini = open("{}/MetaPathExplorer/conf/MetaPathExplorer.ini".format(directory_KRIPTON),"r")
+
+#lecture_file_ini = open("{}/MetaPathExplorer/conf/MetaPathExplorer.ini".format(directory_KRIPTON),"r")
+test_file = "{}/MetaPathExplorer/conf/MetaPathExplorer.ini".format(directory_KRIPTON)
+lecture_file_ini = open(test_file,"r")
 
 ecriture_file_ini = open("{}/MetaPathExplorer/conf/MetaPathExplorer.init".format(directory_KRIPTON),"w")
 
