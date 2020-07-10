@@ -14,7 +14,7 @@ if mode_pipeline == "reads" :
 	dir_output = sys.argv[4]
 	assembly_mode = "trinity"
 	
-if mode_pipeline == "assembly" :
+if mode_pipeline == "assembly" or mode_pipeline == "cds" :
 	assembly_input = sys.argv[2]
 	dir_output = sys.argv[3]
 	assembly_mode = "trinity"
@@ -54,6 +54,7 @@ def Check_etape(fichier_teste,commande) :
 directory_KRIPTON = Path(__file__).parent
 
 Creation_dossier(dir_output)
+
 
 
 if mode_pipeline == "reads" :
@@ -163,34 +164,42 @@ if mode_pipeline == "assembly" :
 	path_assembly_modif = os.path.abspath("assembly.fasta")
 	path_trinity = path_assembly_modif
 
-########################## Clusterisation ##########################
+	########################## Clusterisation ##########################
 
-# permet de revenir au dossier de resultats
-os.chdir(dir_output)
+	# permet de revenir au dossier de resultats
+	os.chdir(dir_output)
 
-output_clust = "mmseqs2_out_clust"
+	output_clust = "mmseqs2_out_clust"
 
-Creation_dossier(output_clust)
+	Creation_dossier(output_clust)
 
-fichier_cible = "clusterRes_cluster.tsv"
-commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1".format(path_trinity)
+	fichier_cible = "clusterRes_cluster.tsv"
+	commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1".format(path_trinity)
 
-Check_etape(fichier_cible,commande)
+	Check_etape(fichier_cible,commande)
 
 
-path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
+	path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
 
-print("etape clusterisation terminee")
+	print("etape clusterisation terminee")
+	
 	
 ########################## Partie Annotation Fonnctionnelle ##########################
 
+if mode_pipeline == "cds" :
+	os.system("python3.5 {}/modifi_format.py {} > assembly.fasta".format(directory_KRIPTON,assembly_input))
+	path_assembly_modif = os.path.abspath("assembly.fasta")
+	path_trinity = path_assembly_modif
 
 
 ##### MMseqs2 #####
-
-if assembly_mode == "trinity" :
-	path_assemblage = path_clust
+if mode_pipeline == "reads" or mode_pipeline == "assembly" :
+	if assembly_mode == "trinity" :
+		path_assemblage = path_clust
 	
+if mode_pipeline == "cds" :
+	if assembly_mode == "trinity" :
+		path_assemblage = path_assembly_modif
 
 # permet de revenir au dossier de resultats
 os.chdir(dir_output)
@@ -256,9 +265,15 @@ except :
 	# recuperation des meilleurs transcrits avec un coverage supérieur a 80%
 	os.system("python3.5 {}/format_mmseqs.py alignment_{}_Uniref90_sorted.tsv 0 80 > alignment_{}_Ortho_Uniref90_sorted_filtred.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
 
-	# on recupere uniquement le trinity et le ko associe
-	os.system("python3.5 {}/MMseqs2ToKO.py alignment_{}_Ortho_Uniref90_sorted_filtred.tsv > alignment_{}_ko.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
-
+	if mode_pipeline == "reads" :
+	
+		# on recupere uniquement le trinity et le ko associe
+		os.system("python3.5 {}/MMseqs2ToKO.py alignment_{}_Ortho_Uniref90_sorted_filtred.tsv > alignment_{}_ko.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
+	
+	if mode_pipeline == "assembly" or mode_pipeline == "cds" :
+		# on recupere uniquement le trinity et le ko associe
+		os.system("python3.5 {}/MMseqs2ToKO_assembly.py alignment_{}_Ortho_Uniref90_sorted_filtred.tsv > alignment_{}_ko.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
+	
 	# on associe le transcrit et son ko a une orhtologie
 	os.system("python3.5 {}/ko_To_Ortho.py alignment_{}_ko.tsv > alignment_{}_ko_ortho.tsv".format(directory_KRIPTON,assembly_mode,assembly_mode))
 
@@ -317,9 +332,12 @@ ecriture_file_ini.close()
 lecture_file_ini.close()
 
 
-os.system("perl {}/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,directory_KRIPTON,path_results_out))
+
+os.system("perl {}/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix ./ ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,directory_KRIPTON))
 
 ### quelle version utiliser ?
 
 #os.system("perl /data/share/MetaPathExplorer/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer3/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,path_results_out))
+
+
 
