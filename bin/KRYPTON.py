@@ -193,10 +193,15 @@ if mode_pipeline == "cds" :
 
 
 ##### MMseqs2 #####
-if mode_pipeline == "reads" or mode_pipeline == "assembly" :
+if mode_pipeline == "assembly" :
 	if assembly_mode == "trinity" :
 		path_assemblage = path_clust
-	
+
+if mode_pipeline == "reads" :
+	if assembly_mode == "trinity" :
+		path_assemblage = path_trinity
+
+
 if mode_pipeline == "cds" :
 	if assembly_mode == "trinity" :
 		path_assemblage = path_assembly_modif
