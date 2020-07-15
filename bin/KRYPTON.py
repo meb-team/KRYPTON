@@ -159,52 +159,88 @@ if mode_pipeline == "reads" :
 		path_trinity = os.path.abspath(file_trinity)
 
 
-if mode_pipeline == "assembly" :
+if mode_pipeline == "assembly" or mode_pipeline == "cds" :
 	os.system("python3.5 {}/modifi_format.py {} > assembly.fasta".format(directory_KRIPTON,assembly_input))
 	path_assembly_modif = os.path.abspath("assembly.fasta")
 	path_trinity = path_assembly_modif
 
-	########################## Clusterisation ##########################
-
-	# permet de revenir au dossier de resultats
-	os.chdir(dir_output)
-
-	output_clust = "mmseqs2_out_clust"
-
-	Creation_dossier(output_clust)
-
-	fichier_cible = "clusterRes_cluster.tsv"
-	commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1".format(path_trinity)
-
-	Check_etape(fichier_cible,commande)
 
 
-	path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
+########################## Clusterisation ##########################
 
-	print("etape clusterisation terminee")
+# permet de revenir au dossier de resultats
+os.chdir(dir_output)
+
+output_clust = "mmseqs2_out_clust"
+
+Creation_dossier(output_clust)
+
+fichier_cible = "clusterRes_cluster.tsv"
+commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1".format(path_trinity)
+
+Check_etape(fichier_cible,commande)
+
+
+path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
+
+print("etape clusterisation terminee")
 	
+	
+	
+##########################	Transdecoder	##########################
+
+# permet de revenir au dossier de resultats
+os.chdir(dir_output)
+
+output_transdecoder = "Transdecoder"
+
+Creation_dossier(output_transdecoder)
+
+os.system("TransDecoder.LongOrfs -m 30 -S -t {}".format(path_clust))
+
+os.system("TransDecoder.Predict -t {}".format(path_clust))
+
+os.system("python3.5 {}/modifi_format.py clusterRes_rep_seq.fasta.transdecoder.pep > clusterpep.fasta".format(directory_KRIPTON))
+
+
+print("etape Transdecoder terminee")
+
+
+##########################	2 eme clusterisation sur les proteines ##########################
+
+os.system("mkdir clusterisation_prot_out")
+
+os.system("cd clusterisation_prot_out")
+
+os.system("mmseqs easy-linclust ../clusterpep.fasta clusterpepRes tmp > cluster.log 2>&1")
+
+path_clust_2 = os.path.abspath("clusterpepRes_rep_seq.fasta")
+
+print("etape 2 eme clusterisation terminee")
+
 	
 ########################## Partie Annotation Fonnctionnelle ##########################
 
+"""
 if mode_pipeline == "cds" :
 	os.system("python3.5 {}/modifi_format.py {} > assembly.fasta".format(directory_KRIPTON,assembly_input))
 	path_assembly_modif = os.path.abspath("assembly.fasta")
 	path_trinity = path_assembly_modif
-
+"""
 
 ##### MMseqs2 #####
 if mode_pipeline == "assembly" :
 	if assembly_mode == "trinity" :
-		path_assemblage = path_clust
+		path_assemblage = path_clust_2
 
 if mode_pipeline == "reads" :
 	if assembly_mode == "trinity" :
-		path_assemblage = path_trinity
+		path_assemblage = path_clust_2
 
 
 if mode_pipeline == "cds" :
 	if assembly_mode == "trinity" :
-		path_assemblage = path_assembly_modif
+		path_assemblage = path_clust_2
 
 # permet de revenir au dossier de resultats
 os.chdir(dir_output)
@@ -342,7 +378,7 @@ os.system("perl {}/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplor
 
 ### quelle version utiliser ?
 
-#os.system("perl /data/share/MetaPathExplorer/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer3/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,path_results_out))
+#os.system("perl /data/share/MetaPathExplorer/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,path_results_out))
 
 
 
