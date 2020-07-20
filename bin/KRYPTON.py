@@ -1,5 +1,6 @@
 import os, re
 import sys
+import time
 from pathlib import Path
 import subprocess
 from subprocess import Popen, PIPE
@@ -51,6 +52,12 @@ def Check_etape(fichier_teste,commande) :
 
 ################################################### main ###################################################
 
+
+
+print("Bienvenue sur le pipeline Krypton, la totalité des étapes risque de prendre du temps soyez patient." )
+
+debut_time_Global = time.time()
+
 directory_KRIPTON = Path(__file__).parent
 
 Creation_dossier(dir_output)
@@ -63,7 +70,9 @@ if mode_pipeline == "reads" :
 
 	##### fastqc #####
 
-
+	print("Debut de l etape de fastqc sur les reads, cette etape peut prendre du temps, patience.")	
+	
+	debut_timefastqc_raw = time.time()
 
 	# définit un dossier de sortie pour fastqc
 	output_fastqc_raw = "fastqc_raw"
@@ -77,11 +86,23 @@ if mode_pipeline == "reads" :
 
 	Check_etape(fichier_cible,commande)
 
-	print("etape fastq_raw terminee")
 
+	fin_timefastqc_raw = time.time()
+	
+	temps_fastqc_raw = fin_timefastqc_raw - debut_timefastqc_raw
+	
+	if temps_fastqc_raw > 60 :
+		temps_fastqc_raw_min = temps_fastqc_raw / 60
+		print("etape fastq_raw terminee, cette étape a pris "+ str(temps_fastqc_raw_min) +" min.")
+	else :
+		print("etape fastq_raw terminee, cette étape a pris "+ str(temps_fastqc_raw) +" sec.")
 
 
 	##### trimmomatic #####
+	
+	print("Debut de l etape de nettoyage avec trimmomatic des reads, cette etape peut prendre du temps, patience.")	
+	
+	debut_timeTrim = time.time()
 
 	# permet de revenir au dossier de resultats
 	os.chdir(dir_output)
@@ -97,7 +118,17 @@ if mode_pipeline == "reads" :
 
 	Check_etape(fichier_cible,commande)
 
-	print("etape trimmomatic terminee")
+
+	fin_timeTrim = time.time()
+	
+	temps_Trim = fin_timeTrim - debut_timeTrim
+
+	if temps_Trim > 60 :
+		temps_Trim_min = temps_Trim / 60
+		print("etape Trimmomatic terminee, cette étape a pris "+ str(temps_Trim_min) +" min.")
+	else :
+		print("etape Trimmomatic terminee, cette étape a pris "+ str(temps_Trim) +" sec.")
+
 
 	trim_forward = "forward.trimmomatic.paired.fastq"
 	trim_backward = "reverse.trimmomatic.paired.fastq"
@@ -109,6 +140,11 @@ if mode_pipeline == "reads" :
 
 
 	##### trim_fastqc #####
+
+
+	print("Debut de l etape de fastqc sur les reads nettoye par Trimmomatic, cette etape peut prendre du temps, patience.")	
+	
+	debut_timefastqc_Trim = time.time()
 
 
 	# permet de revenir au dossier de resultats
@@ -125,15 +161,28 @@ if mode_pipeline == "reads" :
 
 	Check_etape(fichier_cible,commande)
 
-
-	print("etape trim_fastqc terminee")
-
-
+	
+	fin_timefastqc_Trim = time.time()
+	
+	temps_fastqc_Trim = fin_timefastqc_Trim - debut_timefastqc_Trim
+	
+	if temps_fastqc_Trim > 60 :
+		temps_fastqc_Trim_min = temps_fastqc_Trim / 60
+		print("etape trim_fastqc terminee, cette étape a pris "+ str(temps_fastqc_Trim_min) +" min.")
+	else :
+		print("etape trim_fastqc terminee, cette étape a pris "+ str(temps_fastqc_Trim) +" sec.")
+	
+	
 
 	if assembly_mode == "trinity" :
 
 		##### Trinity #####
-
+	
+		print("Debut de l etape d'assemblage sur les reads nettoye par Trimmomatic, cette etape est longue, patience !!!")	
+	
+		debut_timeTrinity = time.time()
+				
+		
 
 		# permet de revenir au dossier de resultats
 		os.chdir(dir_output)
@@ -148,10 +197,15 @@ if mode_pipeline == "reads" :
 		commande = "Trinity --seqType fq --left {} --right {} --output ../trinity_out --CPU 20 --max_memory 100G > trinity.log 2>&1".format(path_trim_forward,path_trim_backward)
 	
 		Check_etape(fichier_cible,commande)
+		
+		
+		fin_timeTrinity = time.time()
 	
+		temps_Trinity = fin_timeTrinity - debut_timeTrinity
 	
-		print("etape assemblage terminee")
-	
+		temps_Trinity_min = temps_Trinity / 60
+		print("etape assemblage Trinity terminee, cette étape a pris "+ str(temps_Trinity_min) +" min.")
+		
 	
 		file_trinity = "Trinity.fasta"
 	
@@ -165,25 +219,26 @@ if mode_pipeline == "assembly" or mode_pipeline == "cds" :
 	path_trinity = path_assembly_modif
 
 
+if mode_pipeline == "assembly" or mode_pipeline == "reads" :
 
-########################## Clusterisation ##########################
+	########################## Clusterisation ##########################
 
-# permet de revenir au dossier de resultats
-os.chdir(dir_output)
+	# permet de revenir au dossier de resultats
+	os.chdir(dir_output)
 
-output_clust = "mmseqs2_out_clust"
+	output_clust = "mmseqs2_Trans_clust"
 
-Creation_dossier(output_clust)
+	Creation_dossier(output_clust)
 
-fichier_cible = "clusterRes_cluster.tsv"
-commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1".format(path_trinity)
+	fichier_cible = "clusterRes_cluster.tsv"
+	commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1".format(path_trinity)
 
-Check_etape(fichier_cible,commande)
+	Check_etape(fichier_cible,commande)
 
 
-path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
+	path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
 
-print("etape clusterisation terminee")
+	print("etape clusterisation terminee")
 	
 	
 	
@@ -192,41 +247,68 @@ print("etape clusterisation terminee")
 # permet de revenir au dossier de resultats
 os.chdir(dir_output)
 
+print("Debut de l etape de traduction des transcrits apres une clusterisation en prteines, cette etape peut prendre du temps, patience.")	
+	
+debut_timeTansdecoder = time.time()
+
+
+
 output_transdecoder = "Transdecoder"
 
 Creation_dossier(output_transdecoder)
 
-os.system("TransDecoder.LongOrfs -m 30 -S -t {}".format(path_clust))
+if mode_pipeline == "assembly" or mode_pipeline == "reads" :
 
-os.system("TransDecoder.Predict -t {}".format(path_clust))
+	os.system("TransDecoder.LongOrfs -m 30 -t {}".format(path_clust))
 
-os.system("python3.5 {}/modifi_format.py clusterRes_rep_seq.fasta.transdecoder.pep > clusterpep.fasta".format(directory_KRIPTON))
+	os.system("TransDecoder.Predict -t {}".format(path_clust))
+
+	os.system("python3.5 {}/modifi_format.py clusterRes_rep_seq.fasta.transdecoder.pep > clusterpep.fasta 2>&1".format(directory_KRIPTON))
+
+if mode_pipeline == "cds" :
+
+	os.system("TransDecoder.LongOrfs -m 30 -t {} 2>&1".format(path_trinity))
+
+	os.system("TransDecoder.Predict -t {} 2>&1".format(path_trinity))
+
+	os.system("python3.5 {}/modifi_format.py clusterRes_rep_seq.fasta.transdecoder.pep > clusterpep.fasta 2>&1".format(directory_KRIPTON))
 
 
-print("etape Transdecoder terminee")
+
+fin_timeTansdecoder = time.time()
+	
+temps_Tansdecoder = fin_timeTansdecoder - debut_timeTansdecoder
+	
+temps_Tansdecoder_min = temps_Tansdecoder / 60
+
+print("etape Transdecoder terminee, cette étape a pris "+ str(temps_Tansdecoder_min) +" min.")
+
+
 
 
 ##########################	2 eme clusterisation sur les proteines ##########################
 
-os.system("mkdir clusterisation_prot_out")
 
-os.system("cd clusterisation_prot_out")
+# permet de revenir au dossier de resultats
+os.chdir(dir_output)
 
-os.system("mmseqs easy-linclust ../clusterpep.fasta clusterpepRes tmp > cluster.log 2>&1")
+output_Pep_clust = "mmseqs2_Pep_clust"
+
+Creation_dossier(output_Pep_clust)
+
+
+os.system("mmseqs easy-linclust ../Transdecoder/clusterpep.fasta clusterpepRes tmp > cluster.log 2>&1")
 
 path_clust_2 = os.path.abspath("clusterpepRes_rep_seq.fasta")
 
 print("etape 2 eme clusterisation terminee")
 
+
+
+
 	
 ########################## Partie Annotation Fonnctionnelle ##########################
 
-"""
-if mode_pipeline == "cds" :
-	os.system("python3.5 {}/modifi_format.py {} > assembly.fasta".format(directory_KRIPTON,assembly_input))
-	path_assembly_modif = os.path.abspath("assembly.fasta")
-	path_trinity = path_assembly_modif
-"""
 
 ##### MMseqs2 #####
 if mode_pipeline == "assembly" :
@@ -252,6 +334,11 @@ output_mmseqs = "mmseqs2_out"
 Creation_dossier(output_mmseqs)
 
 
+print("Debut de l etape d'alignement des proteines sur Uniref90, cette etape peut prendre du temps, patience.")	
+	
+debut_timeSearch = time.time()
+
+
 
 try :
 		process = Popen(['ls *.tsv'], stdout=PIPE, stderr=PIPE, shell=True)
@@ -263,12 +350,12 @@ try :
 except :
 		
 	# lance la commande pour indexer trinity pour l'utilisation de MMseqs2
-	os.system("mmseqs createdb {} {}DB --dbtype 2 -v 1 > mmseqs2_{}DB.log 2>&1".format(path_assemblage,assembly_mode,assembly_mode))
+	os.system("mmseqs createdb {} {}DB --dbtype 1 -v 1 > mmseqs2_{}DB.log 2>&1".format(path_assemblage,assembly_mode,assembly_mode))
 
 	# lance la commande pour indexer Uniref90 pour l'utilisation de MMseqs2
 	os.system("mmseqs createdb /databis/milisav/raw/FMAP/FMAP_data/orthology_uniref90_2_2157_4751.20190806012959.fasta ortho_Uniref90DB --dbtype 1 -v 1 > mmseqs2_Uniref90DB.log 2>&1")
 
-	# lance la commande pour lancer MMseqs2 sur Uniref90 et Trinity / oases
+	# lance la commande pour lancer MMseqs2 sur Uniref90 et Trinity
 	os.system("mmseqs search {}DB ortho_Uniref90DB alignment_{}_Orhto_Uniref90DB tmp -s 7.5 --max-seqs 1 -e 10e-5 --threads 20 -v 1 > alignement_{}_Orhto_Uniref90DB.log 2>&1".format(assembly_mode,assembly_mode,assembly_mode))
 
 	# passage du format DB a format tsv pour les résultats
@@ -278,9 +365,16 @@ except :
 
 	path_file_alignment = os.path.abspath(file_alignment)
 
-		
+	
+	
+fin_timeSearch = time.time()
+	
+temps_Search = fin_timeSearch - debut_timeSearch
+	
+temps_Search_min = temps_Search / 60
 
-print("etape mmseqs2 alignement terminee")
+print("etape MMseqs2 terminee, cette étape a pris "+ str(temps_Search_min) +" min.")	
+
 
 
 
@@ -376,9 +470,20 @@ lecture_file_ini.close()
 
 os.system("perl {}/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix ./ ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,directory_KRIPTON))
 
+#os.system("perl {}/../binaries/MetaPathExplorer/bin/MetaPathExplorer --ini {}/../binaries/MetaPathExplorer/conf/MetaPathExplorer.ini --input matrix ./ ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,directory_KRIPTON))
+
 ### quelle version utiliser ?
 
 #os.system("perl /data/share/MetaPathExplorer/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,path_results_out))
 
 
 
+
+
+fin_time_Global = time.time()
+	
+temps_Global = fin_time_Global - debut_time_Global
+	
+temps_Global_min = temps_Global / 60
+temps_Global_H = temps_Global_min / 60
+print("Krypton est terminee, il a ete realise en "+ str(temps_Global_H) +" heures.")
