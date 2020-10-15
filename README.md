@@ -27,7 +27,7 @@ git clone https://github.com/meb-team/KRYPTON.git
 cd KRYPTON
 ```
 
-Il y'a deux modes d'utilisation de KRYPTON, soit avec des reads soit avec un assemblage déjà réalisé 
+Il y'a trois modes d'utilisation de KRYPTON; soit avec des reads (mode="reads"), soit avec un assemblage déjà réalisé (mode="assembly"), soit avec un fichier contenant les cds (mode="cds").
 
 ### Exemple d'utilisation :
 
@@ -42,6 +42,9 @@ python3.5 ./bin/KRYPTON.py reads /chemin/reads/forward.fastq.gz /chemin/reads/re
 ```sh
 python3.5 ./bin/KRYPTON.py assembly /chemin/assemblage chemin/output
 ```
-
+- exemple mode "cds" : 
+```sh
+python3.5 ./bin/KRYPTON.py assembly /chemin/fichier_cds chemin/output
+```
 
 
