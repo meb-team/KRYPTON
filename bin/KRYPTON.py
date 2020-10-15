@@ -271,7 +271,7 @@ if mode_pipeline == "cds" :
 
 	os.system("TransDecoder.Predict -t {} 2>&1".format(path_trinity))
 
-	os.system("python3.5 {}/modifi_format.py clusterRes_rep_seq.fasta.transdecoder.pep > clusterpep.fasta 2>&1".format(directory_KRIPTON))
+	os.system("python3.5 {}/modifi_format.py assembly.fasta.transdecoder.pep > clusterpep.fasta 2>&1".format(directory_KRIPTON))
 
 
 
@@ -307,8 +307,10 @@ print("etape 2 eme clusterisation terminee")
 
 
 	
+
 ########################## Partie Annotation Fonnctionnelle ##########################
 
+#path_clust_2 = "/databis/milisav/data/MMETSP1161/NCGR/mmseqs2_Pep_clust/clusterpepRes_rep_seq.fasta"
 
 ##### MMseqs2 #####
 if mode_pipeline == "assembly" :
