@@ -74,13 +74,13 @@ Les résultats de l'annotation fonctionnelle se trouvent dans le dossier:
 /chemin/absolu/dossier_output/mmseqs2_out/results_out/
 ```
 
-Le lien entre les Ko et les map se trouve :
+Le lien entre les Ko et les map se trouvent :
 
 ```sh
 /chemin/absolu/dossier_output/mmseqs2_out/results_out/alignement_trinity_ko_map.tsv
 ```
 
-Le lien entre les Ko et l'Orthologie de la séquence se trouve :
+Le lien entre les Ko et l'Orthologie de la séquence se trouvent :
 
 ```sh
 /chemin/absolu/dossier_output/mmseqs2_out/results_out/alignement_trinity_ko_ortho.tsv
