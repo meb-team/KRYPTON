@@ -91,3 +91,17 @@ Le résultats de l'alignement de l'assemblage Trinity avec Uniref90 :
 ```sh
 /chemin/absolue/dossier_output/mmseqs2_out/results_out/alignement_trinity_Uniref90_sorted.tsv
 ```
+
+Pour visualisé les résultats via MetaPathExplorer : 
+
+```sh
+/chemin/absolue/dossier_output/mmseqs2_out/results_out/MetaPathExplorer/
+```
+
+### Jeu de donné test 
+
+Un jeu de donné test est fourni dans le dossier : File_test.
+Ce jeu de donné provient du projet MMETSP ré-assemblé par L. Johnson et al. 2018 (https://academic.oup.com/gigascience/article/8/4/giy158/5241890) 
+téléchargé sur : https://zenodo.org/record/1212585
+
+
