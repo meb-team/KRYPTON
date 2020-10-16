@@ -101,7 +101,7 @@ Pour visualisé les résultats via MetaPathExplorer :
 ### Jeu de donné test 
 
 Un jeu de donné test est fourni dans le dossier : File_test.
-Ce jeu de donné provient du projet MMETSP ré-assemblé par L. Johnson et al. 2018 (https://academic.oup.com/gigascience/article/8/4/giy158/5241890) 
+Ce jeu de donné provient du projet MMETSP ré-assemblé par L. Johnson _et al._, 2018 (https://academic.oup.com/gigascience/article/8/4/giy158/5241890) 
 téléchargé sur : https://zenodo.org/record/1212585
 
 
