@@ -82,7 +82,7 @@ if mode_pipeline == "reads" :
 
 
 	fichier_cible = "*1_1*.zip"
-	commande = "fastqc {} {} --outdir ./ --threads 20 > raw_fastqc.log 2>&1".format(read_forward,read_backward)
+	commande = "fastqc {} {} --outdir ./ --threads 15 > raw_fastqc.log 2>&1".format(read_forward,read_backward)
 
 	Check_etape(fichier_cible,commande)
 
@@ -114,7 +114,7 @@ if mode_pipeline == "reads" :
 	Creation_dossier(output_trimmomatic)
 
 	fichier_cible = "forward*.paired.fastq"
-	commande = "java -jar /usr/local/Trimmomatic-0.33/trimmomatic-0.33.jar PE -threads 20 {} {} forward.trimmomatic.paired.fastq forward.trimmomatic.unpaired.fastq reverse.trimmomatic.paired.fastq reverse.trimmomatic.unpaired.fastq MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5 > trimmomatic.log 2>&1".format(read_forward,read_backward)
+	commande = "java -jar /usr/local/Trimmomatic-0.33/trimmomatic-0.33.jar PE -threads 15 {} {} forward.trimmomatic.paired.fastq forward.trimmomatic.unpaired.fastq reverse.trimmomatic.paired.fastq reverse.trimmomatic.unpaired.fastq MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5 > trimmomatic.log 2>&1".format(read_forward,read_backward)
 
 	Check_etape(fichier_cible,commande)
 
@@ -157,7 +157,7 @@ if mode_pipeline == "reads" :
 	Creation_dossier(output_fastqc_trimmed)
 
 	fichier_cible = "forward*.zip"
-	commande = "fastqc {} {} --outdir ./ --threads 20 > trim_fastqc.log 2>&1".format(path_trim_forward,path_trim_backward)
+	commande = "fastqc {} {} --outdir ./ --threads 15 > trim_fastqc.log 2>&1".format(path_trim_forward,path_trim_backward)
 
 	Check_etape(fichier_cible,commande)
 
@@ -194,7 +194,7 @@ if mode_pipeline == "reads" :
 		Creation_dossier(output_trinity)
 
 		fichier_cible = "Trinity.fasta"
-		commande = "Trinity --seqType fq --left {} --right {} --output ../trinity_out --CPU 20 --max_memory 100G > trinity.log 2>&1".format(path_trim_forward,path_trim_backward)
+		commande = "Trinity --seqType fq --left {} --right {} --output ../trinity_out --CPU 15 --max_memory 80G > trinity.log 2>&1".format(path_trim_forward,path_trim_backward)
 	
 		Check_etape(fichier_cible,commande)
 		
@@ -358,7 +358,7 @@ except :
 	os.system("mmseqs createdb /databis/milisav/raw/FMAP/FMAP_data/orthology_uniref90_2_2157_4751.20190806012959.fasta ortho_Uniref90DB --dbtype 1 -v 1 > mmseqs2_Uniref90DB.log 2>&1")
 
 	# lance la commande pour lancer MMseqs2 sur Uniref90 et Trinity
-	os.system("mmseqs search {}DB ortho_Uniref90DB alignment_{}_Orhto_Uniref90DB tmp -s 7.5 --max-seqs 1 -e 10e-5 --threads 20 -v 1 > alignement_{}_Orhto_Uniref90DB.log 2>&1".format(assembly_mode,assembly_mode,assembly_mode))
+	os.system("mmseqs search {}DB ortho_Uniref90DB alignment_{}_Orhto_Uniref90DB tmp -s 7.5 --max-seqs 1 -e 10e-5 --threads 15 -v 1 > alignement_{}_Orhto_Uniref90DB.log 2>&1".format(assembly_mode,assembly_mode,assembly_mode))
 
 	# passage du format DB a format tsv pour les résultats
 	os.system("mmseqs convertalis {}DB ortho_Uniref90DB alignment_{}_Orhto_Uniref90DB alignment_{}_Ortho_Uniref90.tsv --format-mode 2 -v 3".format(assembly_mode,assembly_mode,assembly_mode,assembly_mode))
@@ -471,15 +471,6 @@ lecture_file_ini.close()
 
 
 os.system("perl {}/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix ./ ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,directory_KRIPTON))
-
-#os.system("perl {}/../binaries/MetaPathExplorer/bin/MetaPathExplorer --ini {}/../binaries/MetaPathExplorer/conf/MetaPathExplorer.ini --input matrix ./ ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,directory_KRIPTON))
-
-### quelle version utiliser ?
-
-#os.system("perl /data/share/MetaPathExplorer/MetaPathExplorer/bin/MetaPathExplorer --ini {}/MetaPathExplorer/conf/MetaPathExplorer.init --input matrix {} ko_matrix_header.tsv --force > MetaPAthExplorer.log 2>&1".format(directory_KRIPTON,path_results_out))
-
-
-
 
 
 fin_time_Global = time.time()
