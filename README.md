@@ -111,3 +111,9 @@ Ce jeu de donné provient du projet MMETSP ré-assemblé par L. Johnson _et al._
 téléchargé sur : https://zenodo.org/record/1212585
 
 
+### Commentaires : 
+
+
+Il peut avoir un problème avec MetaPathExplorer si la base de donnée utilisé par MetaPathExplorer n'est pas à jour, à surveiller.
+
+
