@@ -100,7 +100,7 @@ Pour visualisé les résultats via MetaPathExplorer :
 /chemin/absolu/dossier_output/mmseqs2_out/results_out/MetaPAthExplorer/
 ```
 
-### Jeu de donné test 
+### Jeu de données test 
 
 Un jeu de donné test est fourni dans le dossier : File_test.
 Ce jeu de donné provient du projet MMETSP ré-assemblé par L. Johnson _et al._, 2018 (https://academic.oup.com/gigascience/article/8/4/giy158/5241890) 
