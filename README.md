@@ -17,6 +17,8 @@ KRYPTON combine Trinity, mmseqs2 clust, mmseqs2 search et MetaPathExplorer
 ## DEPENDANCES :
 
   - python 3.5
+  - fastQC v0.11.4
+  - Trimmomatic v0.33
   - Trinity v2.9.1
   - MMseqs2_v2018
 
