@@ -95,7 +95,7 @@ Le résultats de l'alignement de l'assemblage Trinity avec Uniref90 :
 Pour visualisé les résultats via MetaPathExplorer : 
 
 ```sh
-/chemin/absolu/dossier_output/mmseqs2_out/results_out/MetaPathExplorer/
+/chemin/absolu/dossier_output/mmseqs2_out/results_out/MetaPAthExplorer/
 ```
 
 ### Jeu de donné test 
