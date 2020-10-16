@@ -36,7 +36,7 @@ Il y'a trois modes d'utilisation de KRYPTON; soit avec des reads (mode="reads"),
  - exemple mode "reads" :
 
 ```sh
-python3.5 ./bin/KRYPTON.py reads /chemin/absolu/reads/forward.fastq.gz /chemin/absolu/reads/reverse.fastq.gz /chemin/output
+python3.5 ./bin/KRYPTON.py reads /chemin/absolu/reads/forward.fastq.gz /chemin/absolu/reads/reverse.fastq.gz /chemin/absolu/output
 ```
 - exemple mode "assembly" : 
 ```sh
