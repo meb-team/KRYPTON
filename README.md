@@ -67,9 +67,27 @@ Les séquences de la clusterisation protéique se trouvent :
 /chemin/absolue/dossier_output/mmseqs2_Pep_clust/clusterRes_rep_seq.fasta
 ```
 
-Les résultats de l'annoation fonctionnelle se trouvent : 
+Les résultats de l'annoation fonctionnelle se trouvent dans le dossier: 
 
 
 ```sh
 /chemin/absolue/dossier_output/mmseqs2_out/results_out/
+```
+
+Le lien entre les Ko et les map se trouve :
+
+```sh
+/chemin/absolue/dossier_output/mmseqs2_out/results_out/alignement_trinity_ko_map.tsv
+```
+
+Le lien entre les Ko et l'Orthologie de la séquence se trouve :
+
+```sh
+/chemin/absolue/dossier_output/mmseqs2_out/results_out/alignement_trinity_ko_ortho.tsv
+```
+
+Le résultats de l'alignement de l'assemblage Trinity avec Uniref90 : 
+
+```sh
+/chemin/absolue/dossier_output/mmseqs2_out/results_out/alignement_trinity_Uniref90_sorted.tsv
 ```
