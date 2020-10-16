@@ -77,19 +77,19 @@ Les résultats de l'annotation fonctionnelle se trouvent dans le dossier:
 Le lien entre les Ko et les map se trouvent :
 
 ```sh
-/chemin/absolu/dossier_output/mmseqs2_out/results_out/alignement_trinity_ko_map.tsv
+/chemin/absolu/dossier_output/mmseqs2_out/results_out/alignment_trinity_ko_map.tsv
 ```
 
 Le lien entre les Ko et l'Orthologie de la séquence se trouvent :
 
 ```sh
-/chemin/absolu/dossier_output/mmseqs2_out/results_out/alignement_trinity_ko_ortho.tsv
+/chemin/absolu/dossier_output/mmseqs2_out/results_out/alignment_trinity_ko_ortho.tsv
 ```
 
 Le résultats de l'alignement de l'assemblage Trinity avec Uniref90 : 
 
 ```sh
-/chemin/absolu/dossier_output/mmseqs2_out/results_out/alignement_trinity_Uniref90_sorted.tsv
+/chemin/absolu/dossier_output/mmseqs2_out/results_out/alignment_trinity_Uniref90_sorted.tsv
 ```
 
 Pour visualisé les résultats via MetaPathExplorer : 
