@@ -49,15 +49,27 @@ python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/fichier_cds chemin/absolu/out
 
 ### Résultats
 
-Les séquences de la première clusterisation nucléotidique se trouvent : 
+Les séquences de la clusterisation nucléotidique se trouvent : 
 
 ```sh
-/chemin/absolue/dossier_output/mmseqs2_Pep_clust/clusterpepRes_rep_seq.fasta
+/chemin/absolue/dossier_output/mmseqs2_Trans_clust/clusterpepRes_rep_seq.fasta
 ```
 
-Les séquences de la traduction en protéines se trouvent : 
+Les séquences protéiques se trouvent : 
 
 ```sh
 /chemin/absolue/dossier_output/Transdecoder/clusterpep.fasta
 ```
 
+Les séquences de la clusterisation protéique se trouvent : 
+
+```sh
+/chemin/absolue/dossier_output/mmseqs2_Pep_clust/clusterRes_rep_seq.fasta
+```
+
+Les résultats de l'annoation fonctionnelle se trouvent : 
+
+
+```sh
+/chemin/absolue/dossier_output/mmseqs2_out/results_out/
+```
