@@ -33,7 +33,11 @@ Il y'a trois modes d'utilisation de KRYPTON; soit avec des reads (mode="reads"),
 
 ### Exemple d'utilisation :
 
-#### Important : Tous les chemins utilisés (reads, assemblages, dossier output) doivent être des chemins absolus
+#### Important : 
+
+- Tous les chemins utilisés (reads, assemblages, dossier output) doivent être des chemins absolus
+
+- Le mode "reads" doit utiliser UNIQUEMENT des reads paired (reads forward et reads backward) 
 
  - exemple mode "reads" :
 
