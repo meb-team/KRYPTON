@@ -52,7 +52,7 @@ python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/fichier_cds chemin/absolu/out
 Les séquences de la clusterisation nucléotidique se trouvent : 
 
 ```sh
-/chemin/absolue/dossier_output/mmseqs2_Trans_clust/clusterRes_rep_seq.fasta
+/chemin/absolu/dossier_output/mmseqs2_Trans_clust/clusterRes_rep_seq.fasta
 ```
 
 Les séquences protéiques se trouvent : 
