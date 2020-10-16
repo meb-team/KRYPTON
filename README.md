@@ -47,4 +47,17 @@ python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/assemblage chemin/absolu/outp
 python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/fichier_cds chemin/absolu/output
 ```
 
+### Résultats
+
+Les séquences de la première clusterisation nucléotidique se trouvent : 
+
+```sh
+/chemin/absolue/dossier_output/mmseqs2_Pep_clust/clusterpepRes_rep_seq.fasta
+```
+
+Les séquences de la traduction en protéines se trouvent : 
+
+```sh
+/chemin/absolue/dossier_output/Transdecoder/clusterpep.fasta
+```
 
