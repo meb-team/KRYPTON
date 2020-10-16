@@ -67,7 +67,7 @@ Les séquences de la clusterisation protéique se trouvent :
 /chemin/absolu/dossier_output/mmseqs2_Pep_clust/clusterpepRes_rep_seq.fasta
 ```
 
-Les résultats de l'annotation fonctionnelle se trouvent dans le dossier: 
+Les résultats de l'annotation fonctionnelle se trouvent dans le dossier : 
 
 
 ```sh
