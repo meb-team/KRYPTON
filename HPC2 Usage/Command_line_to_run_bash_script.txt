@@ -1,0 +1,23 @@
+#Auteur : Anthony AUCLAIR
+#Date : 16_07_2021
+
+#on utilise sbatch pour lancer le job sur hpc2
+#--job-name precise le nom que l on donne au job ce qui nous permet notamment de l identifier dans la file d attente des jobs (commande squeue)
+#--time precise le temps que l on reserve sur le cluster pour faire tourner le job
+#--partition precise la partition utilisee pour le job (bien regarder les specificites de chaque partition)
+#--mem-per-cpu precise la memoire que l on reserve pour chaque cpu utilise pour le job
+#--cpus-per-task precise le nombre de cpu reserve par tache
+#--array precise l indice dans le array des taches a lancer (0,1 lance les taches a l indice 0 et 1 dans le array et 2-7 lance les taches indicees de 2 a 7)
+#apres on precise le nom du script qui sera lance (ici Bash_for_KRYPTON_to_HPC2.sh)
+
+#les variables suivantes sont specifiques du script et n appartiennent pas aux variables de slurm
+#--bucket precise le bucket du s3 qui sera monte avec goofys
+#--bucketout precise le bucket a monter qui servira a stocker les donnees de sortie
+#--profile precise le fichier de credentials qui sera utilise ~/.aws/credentials (ne pas mettre en dur les credentials dans un code)
+
+#Ligne de commande pour lancer assemblalge clusterisation et traduction sur les fichiers noribo
+sbatch --job-name=test_assemblage_clusterisation_traduction --time=72:00:00 --partition=smp --mem-per-cpu=4755M --cpus-per-task=20 --array=0,1 Bash_for_KRYPTON_to_HPC2.sh --bucket projet-cil --bucketout results-cil --profile anauclair3
+
+
+#Ligne de commande pour lancer assemblage sur les fichiers ribo
+sbatch --job-name=test_assemblage --time=72:00:00 --partition=smp --mem-per-cpu=4755M --cpus-per-task=20 --array=41,66,86,94 Bash_for_KRYPTON_to_HPC2.sh --bucket projet-cil --bucketout results-cil --profile anauclair3
