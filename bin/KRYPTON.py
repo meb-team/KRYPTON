@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8
+
 import os
 # import re
 import sys
@@ -76,16 +79,17 @@ if len(sys.argv) == 7 :
 """
 
 
-def Creation_dossier(nom_dossier):
-    # creer le dossier si il n'existe pas
-    if not os.path.exists(nom_dossier):
-        os.makedirs(nom_dossier)
-    # on se place dans le dossier
-    os.chdir(nom_dossier)
+def create_dir(d):
+    """ Create a directory if not available and move into it"""
+
+    if not os.path.exists(d):
+        os.makedirs(d)
+    os.chdir(d)
 
 
-def Check_etape(fichier_teste, commande):
-    # va verifier si une etape a deja ete realise ou non
+def check_step(fichier_teste, command):
+    """ Check if a step is complete or not"""
+
     try:
         process = Popen(['ls {}'.format(fichier_teste)], stdout=PIPE,
                         stderr=PIPE, shell=True)
@@ -95,11 +99,12 @@ def Check_etape(fichier_teste, commande):
         with open(stdout):
             pass
     except:
-        os.system(commande)
+        os.system(command)
 
 
 def print_time_used(time_start, time_end, step_name):
     """This function prints the time taken by the system to run a step"""
+
     time_min = int((time_end - time_start) // 60)  # get the minutes
     time_sec = math.trunc((time_end - time_start) % 60)  # get the seconds
     print("%s: %smin %ssec" % (step_name, time_min, time_sec))
@@ -111,7 +116,9 @@ print("Bienvenue sur le pipeline KRYPTON, la totalité des étapes \
         risque de prendre du temps soyez patient.")
 debut_time_Global = time.time()
 directory_KRYPTON = Path(__file__).parent
-Creation_dossier(dir_output)
+create_dir(dir_output)
+
+sys.exit(1)
 
 if mode_pipeline == "reads":
     # ########## Partie assemblage ##########
@@ -126,11 +133,11 @@ if mode_pipeline == "reads":
     # définit un dossier de sortie pour fastqc
     output_fastqc_raw = "fastqc_raw"
     # creer le dossier de sortie et s'y deplace dedans
-    Creation_dossier(output_fastqc_raw)
+    create_dir(output_fastqc_raw)
     fichier_cible = "*1_1*.zip"
-    commande = "fastqc {} {} --outdir ./ --threads 15 \
+    command = "fastqc {} {} --outdir ./ --threads 15 \
                 >raw_fastqc.log 2>&1".format(read_forward, read_backward)
-    Check_etape(fichier_cible, commande)
+    check_step(fichier_cible, command)
     fin_timefastqc_raw = time.time()
 
     print_time_used(debut_timefastqc_raw, fin_timefastqc_raw, "FastQC_Raw")
@@ -144,9 +151,9 @@ if mode_pipeline == "reads":
     # definit le dossier de sortie pour trimmomatic
     output_trimmomatic = "trimmomatic_out"
     # creer le dossier de sortie et s'y deplace dedans
-    Creation_dossier(output_trimmomatic)
+    create_dir(output_trimmomatic)
     fichier_cible = "forward*.paired.fastq"
-    commande = "java -jar /opt/apps/trimmomatic-0.33/trimmomatic-0.33.jar\
+    command = "java -jar /opt/apps/trimmomatic-0.33/trimmomatic-0.33.jar\
             PE {} {} forward.trimmomatic.paired.fastq\
             forward.trimmomatic.unpaired.fastq\
             reverse.trimmomatic.paired.fastq\
@@ -154,7 +161,7 @@ if mode_pipeline == "reads":
             LEADING:5 TRAILING:5 > trimmomatic.log 2>&1"\
             .format(read_forward, read_backward)
 
-    Check_etape(fichier_cible, commande)
+    check_step(fichier_cible, command)
     fin_timeTrim = time.time()
 
     print_time_used(debut_timeTrim, fin_timeTrim, "Trimmomatic")
@@ -175,12 +182,12 @@ if mode_pipeline == "reads":
     output_fastqc_trimmed = "fastqc_trimmed"
 
     # creer le dossier de sortie et s'y deplace dedans
-    Creation_dossier(output_fastqc_trimmed)
+    create_dir(output_fastqc_trimmed)
     fichier_cible = "forward*.zip"
-    commande = "fastqc {} {} --outdir ./ --threads 15 > trim_fastqc.log 2>&1".\
+    command = "fastqc {} {} --outdir ./ --threads 15 > trim_fastqc.log 2>&1".\
         format(path_trim_forward, path_trim_backward)
 
-    Check_etape(fichier_cible, commande)
+    check_step(fichier_cible, command)
     fin_timefastqc_Trim = time.time()
 
     print_time_used(debut_timefastqc_Trim, fin_timefastqc_Trim, "FastQC_Trim")
@@ -196,14 +203,14 @@ if mode_pipeline == "reads":
         output_trinity = "trinity_out"
 
         # creer le dossier de sortie et s'y deplace dedans
-        Creation_dossier(output_trinity)
+        create_dir(output_trinity)
 
         fichier_cible = "Trinity.fasta"
-        commande = "Trinity --seqType fq --left {} --right {} --output\
+        command = "Trinity --seqType fq --left {} --right {} --output\
             ../trinity_out --CPU 20 --max_memory 95G > trinity.log 2>&1"\
             .format(path_trim_forward, path_trim_backward)
 
-        Check_etape(fichier_cible, commande)
+        check_step(fichier_cible, command)
         fin_timeTrinity = time.time()
         print_time_used(debut_timeTrinity, fin_timeTrinity, "Trinity_assembly")
 
@@ -217,25 +224,25 @@ if mode_pipeline == "assembly" or mode_pipeline == "reads":
     # permet de revenir au dossier de resultats
     os.chdir(dir_output)
     output_clust = "mmseqs2_Trans_clust"
-    Creation_dossier(output_clust)
+    create_dir(output_clust)
     fichier_cible = "clusterRes_cluster.tsv"
-    commande = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1"\
+    command = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1"\
         .format(path_trinity)
-    Check_etape(fichier_cible, commande)
+    check_step(fichier_cible, command)
 
     path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
     print("etape clusterisation terminee")
 
 # ########## Transdecoder ##########
-
 # permet de revenir au dossier de resultats
+
 os.chdir(dir_output)
 print("Debut de l etape de traduction des transcrits apres une clusterisation\
         en proteines, cette etape peut prendre du temps, patience.")
 debut_timeTansdecoder = time.time()
 
 output_transdecoder = "Transdecoder"
-Creation_dossier(output_transdecoder)
+create_dir(output_transdecoder)
 if mode_pipeline == "assembly" or mode_pipeline == "reads":
     os.system("TransDecoder.LongOrfs -m 30 -t {}".format(path_clust))
     os.system("TransDecoder.Predict -t {}".format(path_clust))
