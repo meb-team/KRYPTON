@@ -1,6 +1,7 @@
 import os, re
 import sys
 import time
+import math
 from pathlib import Path
 import subprocess
 from subprocess import Popen, PIPE
@@ -84,6 +85,12 @@ def Check_etape(fichier_teste,commande) :
         except :
                 os.system(commande)
 
+def print_time_used(time_start, time_end, step_name):
+    """This function prints the time taken by the system to run a step"""
+    time_min = int((time_end - time_start) // 60) #get the minutes
+    time_sec = math.trunc((time_end - time_start) % 60) #get the number of seconds
+    print("%s: %smin %ssec" %s(step_name, time_min, time_sec))
+
 ################################################### main ###################################################
 
 print("Bienvenue sur le pipeline Krypton, la totalité des étapes risque de prendre du temps soyez patient." )
@@ -108,13 +115,8 @@ if mode_pipeline == "reads" :
         commande = "fastqc {} {} --outdir ./ --threads 15 > raw_fastqc.log 2>&1".format(read_forward,read_backward)
         Check_etape(fichier_cible,commande)
         fin_timefastqc_raw = time.time()
-        temps_fastqc_raw = fin_timefastqc_raw - debut_timefastqc_raw
 
-        if temps_fastqc_raw > 60 :
-                temps_fastqc_raw_min = temps_fastqc_raw / 60
-                print("etape fastq_raw terminee, cette étape a pris "+ str(temps_fastqc_raw_min) +" min.")
-        else :
-                print("etape fastq_raw terminee, cette étape a pris "+ str(temps_fastqc_raw) +" sec.")
+        print_time_used(debut_timefastqc_raw, fin_timefastqc_raw, "FastQC_Raw")
 
         ##### trimmomatic #####
         print("Debut de l etape de nettoyage avec trimmomatic des reads, cette etape peut prendre du temps, patience.")
@@ -130,12 +132,8 @@ if mode_pipeline == "reads" :
 
         Check_etape(fichier_cible,commande)
         fin_timeTrim = time.time()
-        temps_Trim = fin_timeTrim - debut_timeTrim
-        if temps_Trim > 60 :
-                temps_Trim_min = temps_Trim / 60
-                print("etape Trimmomatic terminee, cette étape a pris "+ str(temps_Trim_min) +" min.")
-        else :
-                print("etape Trimmomatic terminee, cette étape a pris "+ str(temps_Trim) +" sec.")
+
+        print_time_used(debut_timeTrim, fin_timeTrim, "Trimmomatic")
 
         trim_forward = "forward.trimmomatic.paired.fastq"
         trim_backward = "reverse.trimmomatic.paired.fastq"
@@ -158,13 +156,8 @@ if mode_pipeline == "reads" :
 
         Check_etape(fichier_cible,commande)
         fin_timefastqc_Trim = time.time()
-        temps_fastqc_Trim = fin_timefastqc_Trim - debut_timefastqc_Trim
 
-        if temps_fastqc_Trim > 60 :
-                temps_fastqc_Trim_min = temps_fastqc_Trim / 60
-                print("etape trim_fastqc terminee, cette étape a pris "+ str(temps_fastqc_Trim_min) +" min.")
-        else :
-                print("etape trim_fastqc terminee, cette étape a pris "+ str(temps_fastqc_Trim) +" sec.")
+        print_time_used(debut_timefastqc_Trim, fin_timefastqc_Trim, "FastQC_Trim")
 
         if assembly_mode == "trinity" :
                 ##### Trinity #####
@@ -182,9 +175,8 @@ if mode_pipeline == "reads" :
                 commande = "Trinity --seqType fq --left {} --right {} --output ../trinity_out --CPU 20 --max_memory 95G > trinity.log 2>&1".format(path_trim_forward,path_trim_backward)
                 Check_etape(fichier_cible,commande)
                 fin_timeTrinity = time.time()
-                temps_Trinity = fin_timeTrinity - debut_timeTrinity
-                temps_Trinity_min = temps_Trinity / 60
-                print("etape assemblage Trinity terminee, cette étape a pris "+ str(temps_Trinity_min) +" min.")
+                print_time_used(debut_timeTrinity, fin_timeTrinity, "Trinity_assembly")
+
                 file_trinity = "Trinity.fasta"
 
                 # donne le chemin absolue du fichier file_trinity
@@ -223,6 +215,9 @@ if mode_pipeline == "cds" :
         os.system("python {}/modifi_format.py assembly.fasta.transdecoder.pep > clusterpep.fasta 2>&1".format(directory_KRYPTON))
 
 fin_timeTansdecoder = time.time()
-temps_Tansdecoder = fin_timeTansdecoder - debut_timeTansdecoder
-temps_Tansdecoder_min = temps_Tansdecoder / 60
-print("etape Transdecoder terminee, cette étape a pris "+ str(temps_Tansdecoder_min) +" min.")
+print_time_used(debut_timeTansdecoder, fin_timeTansdecoder, "Transdecoder")
+
+########################## End ##########################
+
+end_time_Global = time.time()
+print_time_used(debut_time_Global, end_time_Global, "KRYPTON complete")
