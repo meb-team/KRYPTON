@@ -10,8 +10,11 @@ from pathlib import Path
 # import subprocess
 from subprocess import Popen, PIPE
 # from pathlib import Path
+import argparse
 
-
+import krypton.parse_arguments as k_arg
+__description__ = 'Run the pipeline KRYPTON, for transcriptome'\
+                ' assembly and annotation'
 """
 Damien
 Tasks to do:
@@ -21,22 +24,10 @@ Tasks to do:
         It is much more efficient
 __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 
-import argparse
-
-parser = argparse.ArgumentParser(description='Run the pipeline KRYPTON, \
-            for Transcriptome assembly and annotation')  # setup the parser
-parser.add_argument('--bucketin', help='Name of the bucket used to read \
-            data from', required=True)
-parser.add_argument('--bucketout', help='Name of the bucket used to store\
-            data in', required=True)
-parser.add_argument(['--mode', '-m'], help='Mode for the pipeline, between \
-            "reads", "assembly" and "cds".'
-    default = "reads", choices = ['reads', 'assembly', 'cds'])
-kryp = parser.parse_args()
-
 - outdir
 - input data --> depend on the mode
 
+- print a log message at the start of the pipeline, with the mode, etc.
 """
 
 """
@@ -47,6 +38,47 @@ kryp = parser.parse_args()
 #os.system("conda activate snakes")
 #os.system("source activate snakes")
 """
+
+parser = argparse.ArgumentParser(description=__description__)  # setup parser
+groupA = parser.add_argument_group('Mandatory arguments')
+groupB = parser.add_argument_group('Mode - READS')
+groupC = parser.add_argument_group('Mode - ASSEMBLY')
+groupD = parser.add_argument_group('Mode - CDS')
+groupE = parser.add_argument_group('KRYPTON run on HPC')
+groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from which'
+                    ' the pipeline is run', default="reads", required=True,
+                    choices=['reads', 'assembly', 'cds'], type=str)
+groupA.add_argument('--out', help='Prefix for the output directory',
+                    dest='outdir', metavar="OUT_DIR")
+groupB.add_argument('--single-end', help='In case of **Single-End reads**,'
+                    ' use this option and provide `--r1` only.',
+                    action='store_true', dest='paired', default=False)
+groupB.add_argument('--r1', help='The first read of the pair, in FASTQ'
+                    ' (foo_R1.fq[.gz]) format.', metavar="")
+groupB.add_argument('--r2', help='The second read of the pair, in FASTQ'
+                    ' (foo_R2.fq[.gz]) format.', metavar="")
+groupC.add_argument('--transcripts', help='A file containing transcrits'
+                    ' already assembled, in FASTA format (bar.fa[.gz])',
+                    metavar="")
+groupD.add_argument('--cds', help='A file containing the cds extracted from'
+                    'a set of transcripts, in FASTA format (baz.fa[.gz])',
+                    metavar="")
+groupE.add_argument('--bucketin', help='Name of the bucket used to read'
+                    ' data from. This option is required to run KRYPTON on'
+                    ' the HPC2 cluster', metavar="BUCKET_IN")
+groupE.add_argument('--bucketout', help='Name of the bucket used to store'
+                    ' data in. This option is required to run KRYPTON on'
+                    ' the HPC2 cluster', metavar="BUCKET_OUT")
+groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
+                    ' is meant to be run on a HPC cluster',
+                    action='store_true', default=False, dest='hpc2')
+
+
+args = parser.parse_args()
+
+print(args)
+sys.exit(1)
+""" #previous way to read parameters
 mode_pipeline = sys.argv[1]
 if mode_pipeline == "reads":
     read_forward = sys.argv[2]
@@ -59,6 +91,8 @@ if mode_pipeline == "assembly" or mode_pipeline == "cds":
     dir_output = sys.argv[3]
     assembly_mode = "trinity"
     path_assembly_input = os.path.abspath(assembly_input)
+"""
+
 
 """
 from initialize.py import nom_base_donnees_reference
@@ -192,32 +226,32 @@ if mode_pipeline == "reads":
 
     print_time_used(debut_timefastqc_Trim, fin_timefastqc_Trim, "FastQC_Trim")
 
-    if assembly_mode == "trinity":
-        # ########## Trinity ##########
-        print("Debut de l etape d'assemblage sur les reads nettoyes \
-            par Trimmomatic, cette etape est longue, patience !!!")
-        debut_timeTrinity = time.time()
-        # permet de revenir au dossier de resultats
-        os.chdir(dir_output)
-        # définit un dossier de sortie pour Trinity
-        output_trinity = "trinity_out"
+    # if assembly_mode == "trinity": # For the moment, only Trinity is available
+    # ########## Trinity ##########
+    print("Debut de l etape d'assemblage sur les reads nettoyes \
+        par Trimmomatic, cette etape est longue, patience !!!")
+    debut_timeTrinity = time.time()
+    # permet de revenir au dossier de resultats
+    os.chdir(dir_output)
+    # définit un dossier de sortie pour Trinity
+    output_trinity = "trinity_out"
 
-        # creer le dossier de sortie et s'y deplace dedans
-        create_dir(output_trinity)
+    # creer le dossier de sortie et s'y deplace dedans
+    create_dir(output_trinity)
 
-        fichier_cible = "Trinity.fasta"
-        command = "Trinity --seqType fq --left {} --right {} --output\
-            ../trinity_out --CPU 20 --max_memory 95G > trinity.log 2>&1"\
-            .format(path_trim_forward, path_trim_backward)
+    fichier_cible = "Trinity.fasta"
+    command = "Trinity --seqType fq --left {} --right {} --output\
+        ../trinity_out --CPU 20 --max_memory 95G > trinity.log 2>&1"\
+        .format(path_trim_forward, path_trim_backward)
 
-        check_step(fichier_cible, command)
-        fin_timeTrinity = time.time()
-        print_time_used(debut_timeTrinity, fin_timeTrinity, "Trinity_assembly")
+    check_step(fichier_cible, command)
+    fin_timeTrinity = time.time()
+    print_time_used(debut_timeTrinity, fin_timeTrinity, "Trinity_assembly")
 
-        file_trinity = "Trinity.fasta"
+    file_trinity = "Trinity.fasta"
 
-        # donne le chemin absolue du fichier file_trinity
-        path_trinity = os.path.abspath(file_trinity)
+    # donne le chemin absolue du fichier file_trinity
+    path_trinity = os.path.abspath(file_trinity)
 
 if mode_pipeline == "assembly" or mode_pipeline == "reads":
     # ########## Clusterisation ##########
