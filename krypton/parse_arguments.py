@@ -2,7 +2,7 @@
 
 import argparse
 
-def parse_argumets(args):
+def parse_arguments(args):
     A = lambda x: args.__dict__[x] if x in args.__dict__ else None
     mode = A('mode')
     output = A('out')
@@ -14,3 +14,6 @@ def parse_argumets(args):
     bucket_in = A('bucketin')
     bucket_out = A('bucketout')
     hpc2 = A('hpc2')
+
+    if mode == 'reads':
+        raise ConfigError
