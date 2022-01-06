@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8
 
-import os
+# import os
 # import re
 import sys
 # import time
 # import math
 # from pathlib import Path
 # import subprocess
-from subprocess import Popen, PIPE
+# from subprocess import Popen, PIPE
 # from pathlib import Path
 import argparse
 
@@ -55,10 +55,10 @@ if __name__ == '__main__':
                         ' the pipeline is run', default="reads", required=True,
                         choices=['reads', 'assembly', 'cds'], type=str)
     groupA.add_argument('--out', help='Prefix for the output directory',
-                        dest='outdir', metavar="OUT_DIR")
+                        dest='outdir', metavar="OUT_DIR", required=True)
     groupB.add_argument('--single-end', help='In case of **Single-End reads**,'
                         ' use this option and provide `--r1` only.',
-                        action='store_true', dest='paired', default=False)
+                        action='store_false', dest='paired', default=True)
     groupB.add_argument('--r1', help='The first read of the pair, in FASTQ'
                         ' (foo_R1.fq[.gz]) format.', metavar="")
     groupB.add_argument('--r2', help='The second read of the pair, in FASTQ'
@@ -78,15 +78,13 @@ if __name__ == '__main__':
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
                         ' is meant to be run on a HPC cluster',
                         action='store_true', default=False, dest='hpc2')
-
-    args = parser.get_args(parser)
+    args = parser.parse_args()
 
     try:
-        test = krypton.parse_arguments.parse_arguments(args)
+        test = k_arg.parse_arguments(args)
 
-        print(args)
-    except:
-        print("#####error#####")
+    except Exception as e:
+        print(e)
         sys.exit(1)
 
 #
