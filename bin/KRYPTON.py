@@ -94,6 +94,7 @@ if __name__ == '__main__':
             --bucketin / -- bucketout / --run-on-hpc2
         """
         test = k.Krypton(args)
+        test.run_krypton()
         # Here run the process, based on the arguments
 
     except Exception as e:
