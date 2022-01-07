@@ -12,7 +12,7 @@ import sys
 # from pathlib import Path
 import argparse
 
-import krypton.parse_arguments as k_arg
+import krypton.run_pipeline as k
 
 __description__ = 'Run the pipeline KRYPTON, for transcriptome'\
                 ' assembly and annotation'
@@ -52,8 +52,8 @@ if __name__ == '__main__':
     groupD = parser.add_argument_group('Mode - CDS')
     groupE = parser.add_argument_group('KRYPTON run on HPC')
     groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from which'
-                        ' the pipeline is run', default="reads", required=True,
-                        choices=['reads', 'assembly', 'cds'], type=str)
+                        ' the pipeline is run', default="reads", type=str,
+                        choices=['reads', 'assembly', 'cds'])
     groupA.add_argument('--out', help='Prefix for the output directory',
                         dest='outdir', metavar="OUT_DIR", required=True)
     groupB.add_argument('--single-end', help='In case of **Single-End reads**,'
@@ -78,10 +78,20 @@ if __name__ == '__main__':
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
                         ' is meant to be run on a HPC cluster',
                         action='store_true', default=False, dest='hpc2')
-    args = parser.parse_args()
 
+    if len(sys.argv) == 1:  # In the case where nothing is provided
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
+    args = parser.parse_args()
     try:
-        test = k_arg.parse_arguments(args)
+        """
+        For the moment, let's try to make KRYPTON run on a regular computer.
+        I will see later to implement the stuff related to
+            --bucketin / -- bucketout / --run-on-hpc2
+        """
+        test = k.parse_arguments(args)
+        # Here run the process, based on the arguments
 
     except Exception as e:
         print(e)
@@ -144,15 +154,6 @@ if __name__ == '__main__':
 #             pass
 #     except:
 #         os.system(command)
-#
-#
-# def print_time_used(time_start, time_end, step_name):
-#     """This function prints the time taken by the system to run a step"""
-#
-#     time_min = int((time_end - time_start) // 60)  # get the minutes
-#     time_sec = math.trunc((time_end - time_start) % 60)  # get the seconds
-#     print("%s: %smin %ssec" % (step_name, time_min, time_sec))
-#
 #
 # # ########## main ##########
 #
