@@ -1,3 +1,4 @@
 krypton.egg-info/
 krypton/__pycache__*
 krypton/damien*
+krypton/foo

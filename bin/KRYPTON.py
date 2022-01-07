@@ -8,7 +8,6 @@ import sys
 # import math
 # from pathlib import Path
 # import subprocess
-# from subprocess import Popen, PIPE
 # from pathlib import Path
 import argparse
 
@@ -23,7 +22,7 @@ for the package:
     - https://python-packaging-tutorial.readthedocs.io/en/latest/setup_py.html
 
 Tasks to do:
-    - [ ] Use the module argparse for the parameters
+    - [X] Use the module argparse for the parameters
 
     - [ ] use "with open(xxx, ?) as yyy" to read files.
         It is much more efficient
@@ -45,17 +44,21 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 """
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description=__description__)  # setup parser
+    parser = argparse.ArgumentParser(description=__description__)
     groupA = parser.add_argument_group('Mandatory arguments')
     groupB = parser.add_argument_group('Mode - READS')
     groupC = parser.add_argument_group('Mode - ASSEMBLY')
     groupD = parser.add_argument_group('Mode - CDS')
     groupE = parser.add_argument_group('KRYPTON run on HPC')
-    groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from which'
-                        ' the pipeline is run', default="reads", type=str,
+    groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from '
+                        'which the pipeline is run', default="reads", type=str,
                         choices=['reads', 'assembly', 'cds'])
     groupA.add_argument('--out', help='Prefix for the output directory',
                         dest='outdir', metavar="OUT_DIR", required=True)
+    groupA.add_argument('--overwrite', help='Overwrite the output if it'
+                        'exists. Do you really want to use this feature?'
+                        ' -- NOT YET IMPLEMENTED', action='store_true',
+                        default=False)
     groupB.add_argument('--single-end', help='In case of **Single-End reads**,'
                         ' use this option and provide `--r1` only.',
                         action='store_false', dest='paired', default=True)
@@ -66,8 +69,8 @@ if __name__ == '__main__':
     groupC.add_argument('--transcripts', help='A file containing transcrits'
                         ' already assembled, in FASTA format (bar.fa[.gz])',
                         metavar="")
-    groupD.add_argument('--cds', help='A file containing the cds extracted from'
-                        'a set of transcripts, in FASTA format (baz.fa[.gz])',
+    groupD.add_argument('--cds', help='File with the cds extracted from a set'
+                        ' of transcripts, in FASTA format (baz.fa[.gz])',
                         metavar="")
     groupE.add_argument('--bucketin', help='Name of the bucket used to read'
                         ' data from. This option is required to run KRYPTON on'
@@ -90,47 +93,30 @@ if __name__ == '__main__':
         I will see later to implement the stuff related to
             --bucketin / -- bucketout / --run-on-hpc2
         """
-        test = k.parse_arguments(args)
+        test = k.Krypton(args)
         # Here run the process, based on the arguments
 
     except Exception as e:
         print(e)
         sys.exit(1)
 
-#
-# """ #previous way to read parameters
-# mode_pipeline = sys.argv[1]
-# if mode_pipeline == "reads":
-#     read_forward = sys.argv[2]
-#     read_backward = sys.argv[3]
-#     dir_output = sys.argv[4]
-#     assembly_mode = "trinity"
-#
-# if mode_pipeline == "assembly" or mode_pipeline == "cds":
-#     assembly_input = sys.argv[2]
-#     dir_output = sys.argv[3]
-#     assembly_mode = "trinity"
-#     path_assembly_input = os.path.abspath(assembly_input)
-# """
-#
-#
-# """
-# from initialize.py import nom_base_donnees_reference
-# from initialize.py import base_donnees_reference
-#
-# annotation_Pfam = sys.argv[5]
-#
-# if annotation_Pfam == "Pfam" :
-#         from initialize.py import base_reference_Pfam
-#
-# if len(sys.argv) == 6 :
-#         nom_base_donnees_reference = sys.argv[5]
-#         base_donnees_reference = sys.argv[6]
-#
-# if len(sys.argv) == 7 :
-#         nom_base_donnees_reference = sys.argv[6]
-#         base_donnees_reference = sys.argv[7]
-# """
+"""
+from initialize.py import nom_base_donnees_reference
+from initialize.py import base_donnees_reference
+
+annotation_Pfam = sys.argv[5]
+
+if annotation_Pfam == "Pfam" :
+        from initialize.py import base_reference_Pfam
+
+if len(sys.argv) == 6 :
+        nom_base_donnees_reference = sys.argv[5]
+        base_donnees_reference = sys.argv[6]
+
+if len(sys.argv) == 7 :
+        nom_base_donnees_reference = sys.argv[6]
+        base_donnees_reference = sys.argv[7]
+"""
 #
 #
 # def create_dir(d):
