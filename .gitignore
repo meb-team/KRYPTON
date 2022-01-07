@@ -2,3 +2,4 @@ krypton.egg-info/
 krypton/__pycache__*
 damien
 foo
+krypton_conda_env.yml
