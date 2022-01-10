@@ -13,6 +13,7 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
 
 ## To-do list:
 
+- [ ] add a `requirements.txt`
 - [ ] check if a step ended nicely?
     - [ ] trimmomatic output the information in STDOUT/STDERR
         (_TrimmomaticPE: Completed successfully_)
