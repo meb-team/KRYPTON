@@ -82,7 +82,7 @@ if __name__ == '__main__':
                         ' data in. This option is required to run KRYPTON on'
                         ' the HPC2 cluster', metavar="BUCKET_OUT")
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
-                        ' is meant to be run on a HPC cluster',
+                        ' is meant to be run on a HPC cluster -- WIP',
                         action='store_true', default=False, dest='hpc2')
 
     if len(sys.argv) == 1:  # In the case where nothing is provided
@@ -140,58 +140,7 @@ if len(sys.argv) == 7 :
 #
 # if mode_pipeline == "reads":
 #     # ########## Partie assemblage ##########
-#
-#     # ########## trimmomatic ##########
-#     print("Debut de l etape de nettoyage avec trimmomatic des reads,\
-#             cette etape peut prendre du temps, patience.")
-#     debut_timeTrim = time.time()
-#     # permet de revenir au dossier de resultats
-#     os.chdir(dir_output)
-#     # definit le dossier de sortie pour trimmomatic
-#     output_trimmomatic = "trimmomatic_out"
-#     # creer le dossier de sortie et s'y deplace dedans
-#     create_dir(output_trimmomatic)
-#     fichier_cible = "forward*.paired.fastq"
-#     command = "java -jar /opt/apps/trimmomatic-0.33/trimmomatic-0.33.jar\
-#             PE {} {} forward.trimmomatic.paired.fastq\
-#             forward.trimmomatic.unpaired.fastq\
-#             reverse.trimmomatic.paired.fastq\
-#             reverse.trimmomatic.unpaired.fastq MINLEN:32 SLIDINGWINDOW:10:20\
-#             LEADING:5 TRAILING:5 > trimmomatic.log 2>&1"\
-#             .format(read_forward, read_backward)
-#
-#     check_step(fichier_cible, command)
-#     fin_timeTrim = time.time()
-#
-#     print_time_used(debut_timeTrim, fin_timeTrim, "Trimmomatic")
-#
-#     trim_forward = "forward.trimmomatic.paired.fastq"
-#     trim_backward = "reverse.trimmomatic.paired.fastq"
-#     path_trim_forward = os.path.abspath(trim_forward)
-#     path_trim_backward = os.path.abspath(trim_backward)
-#
-#     # ########## trim_fastqc ##########
-#     print("Debut de l etape de fastqc sur les reads nettoyes par Trimmomatic,\
-#             cette etape peut prendre du temps, patience.")
-#     debut_timefastqc_Trim = time.time()
-#
-#     # permet de revenir au dossier de resultats
-#     os.chdir(dir_output)
-#     # définit un dossier de sortie pour trim_fastqc
-#     output_fastqc_trimmed = "fastqc_trimmed"
-#
-#     # creer le dossier de sortie et s'y deplace dedans
-#     create_dir(output_fastqc_trimmed)
-#     fichier_cible = "forward*.zip"
-#     command = "fastqc {} {} --outdir ./ --threads 15 > trim_fastqc.log 2>&1".\
-#         format(path_trim_forward, path_trim_backward)
-#
-#     check_step(fichier_cible, command)
-#     fin_timefastqc_Trim = time.time()
-#
-#     print_time_used(debut_timefastqc_Trim, fin_timefastqc_Trim, "FastQC_Trim")
-#
-#     # if assembly_mode == "trinity": # For the moment, only Trinity is available
+
 #     # ########## Trinity ##########
 #     print("Debut de l etape d'assemblage sur les reads nettoyes \
 #         par Trimmomatic, cette etape est longue, patience !!!")

@@ -1,59 +1,116 @@
 # KRYPTON
 
-
-
 [![Build Status](https://github.com/meb-team/CRYPTON.git)](https://github.com/meb-team/CRYPTON)
 
-### euKaRYote ProtisT fOnctionnal aNnotation of transcriptome
+## Introduction
 
-
-
-KRYPTON est un pipeline permettant l'assemblage et l'annotation fonctionnelle de transcriptomes.
-
-KRYPTON combine Trinity, mmseqs2 clust, mmseqs2 search et MetaPathExplorer
+This package, _euKaRYote ProtisT fOnctionnal aNnotation of transcriptome_,
+abbreviated as _KRYPTON_, is a Python package containing a pipeline for
+transcriptome assembly and annotation (functional and taxonomic).  
+KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer.
 
 ![Workflow KRYPTON](ressources/Workflow_KRYPTON.PNG)
 
-## DEPENDANCES :
+## Dependencies
 
-  - python 3.5
-  - fastQC v 0.11.4
-  - Trimmomatic v 0.33
+  - python >= 3.5
+  - fastQC >= 0.11.4
+  - Trimmomatic >= 0.33
   - Trinity v 2.9.1
   - MMseqs2 v 10-6d92c
 
-# INSTALLATION :
+## Install
 
 ```sh
 git clone https://github.com/meb-team/KRYPTON.git
 cd KRYPTON
+pip install -e .
 ```
 
-Il y'a trois modes d'utilisation de KRYPTON; soit avec des reads (mode="reads"), soit avec un assemblage déjà réalisé (mode="assembly"), soit avec un fichier contenant les cds (mode="cds").
+## Usage
 
-### Exemple d'utilisation :
+There are kind of usage. From the sequencing _reads_ (`--mode reads`), or by
+providing a set of transcripts (`--mode assembly`) or from a set of CDS (`--mode cds`).
 
-#### Important :
+The help menu is available with the command `python bin/KRYPTON.py -h`, and bellow.
 
-. Tous les chemins utilisés (reads, assemblages, dossier output) doivent être des chemins absolus
+```text
+usage: KRYPTON.py [-h] [--mode {reads,assembly,cds}] --out OUT_DIR
+                  [--overwrite] [--single-end] [--r1] [--r2] [--trimmomatic]
+                  [--transcripts] [--cds] [--bucketin BUCKET_IN]
+                  [--bucketout BUCKET_OUT] [--run-on-HPC]
 
-. Le mode "reads" doit utiliser UNIQUEMENT des reads paired (reads forward et reads backward)
+Run the pipeline KRYPTON, for transcriptome assembly and annotation
 
- - exemple mode "reads" :
+optional arguments:
+  -h, --help            show this help message and exit
 
-```sh
-python3.5 ./bin/KRYPTON.py reads /chemin/absolu/reads/forward.fastq.gz /chemin/absolu/reads/reverse.fastq.gz /chemin/absolu/output
+Mandatory arguments:
+  --mode {reads,assembly,cds}
+                        Pipeline mode, a.k.a the step from which the pipeline
+                        is run
+  --out OUT_DIR         Prefix for the output directory
+  --overwrite           Overwrite the output if itexists. Do you really want
+                        to use this feature? -- NOT YET IMPLEMENTED
+
+Mode - READS:
+  --single-end          In case of **Single-End reads**, use this option and
+                        provide `--r1` only.
+  --r1                  The first read of the pair, in FASTQ (foo_R1.fq[.gz])
+                        format.
+  --r2                  The second read of the pair, in FASTQ (foo_R2.fq[.gz])
+                        format.
+  --trimmomatic         Path to the executable `trimmomatic-<version>.jar`
+
+Mode - ASSEMBLY:
+  --transcripts         A file containing transcrits already assembled, in
+                        FASTA format (bar.fa[.gz])
+
+Mode - CDS:
+  --cds                 File with the cds extracted from a set of transcripts,
+                        in FASTA format (baz.fa[.gz])
+
+KRYPTON run on HPC:
+  --bucketin BUCKET_IN  Name of the bucket used to read data from. This option
+                        is required to run KRYPTON on the HPC2 cluster
+  --bucketout BUCKET_OUT
+                        Name of the bucket used to store data in. This option
+                        is required to run KRYPTON on the HPC2 cluster
+  --run-on-HPC          Turn on this option when KRYPTON is meant to be run on
+                        a HPC cluster
 ```
+
+## Example
+
+1. Basic example with the mode `reads`:
+
+```bash
+python3 bin/KRYPTON.py --out \<out_dir\> --r1 \<path/to/reads/\>read1.fq \
+--r2 \<path/to/reads/\>read2.fq
+```
+
 - exemple mode "assembly" :
-```sh
+
+```bash
+
 python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/assemblage chemin/absolu/output
 ```
+
 - exemple mode "cds" :
-```sh
+
+```bash
 python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/fichier_cds chemin/absolu/output
 ```
 
 ### Résultats
+
+For each step, the result are present under `<out_dir>` as follow:
+- `<out_dir>/00_fastqc_raw/`: results FastQC on the raw reads
+- `<out_dir>/01_trimmomatic/`: results of Trimmomatic
+- `<out_dir>/02_fastqc_trimmed/`: results of FastQC on the cleaned reads
+- `<out_dir>/03_trinity/`: Assembly of the reads
+
+__WIP...__
 
 Les séquences de la clusterisation nucléotidique se trouvent :
 
