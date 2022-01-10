@@ -39,3 +39,20 @@ def run_command(command, capture_out=False, log=None, step=None):
     time_cmd.append(time.time())
     time_used(time_cmd, step)
     return True
+
+
+def format_command_trimmomatic(out, bin, mod, r1, r2=None, params=None):
+    command = f"java -jar {bin} {mod} "
+    if mod == "PE":
+        command += f"{r1} {r2} {out}/r1.paired.fq {out}/r1.unpaired.fq "
+        command += f"{out}/r2.paired.fq {out}/r2.unpaired.fq " \
+                   + f"{'' if not params else params}"
+    else:
+        command += f"{r1} {out}/r1.fq {'' if not params else params}"
+    return command
+
+
+def format_command_fastqc(out, r1, r2=None):
+    command = f"fastqc --outdir {out}"
+    command = f"{command} {r1}" if not r2 else f"{command} {r1} {r2}"
+    return command

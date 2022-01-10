@@ -66,6 +66,9 @@ if __name__ == '__main__':
                         ' (foo_R1.fq[.gz]) format.', metavar="")
     groupB.add_argument('--r2', help='The second read of the pair, in FASTQ'
                         ' (foo_R2.fq[.gz]) format.', metavar="")
+    groupB.add_argument('--trimmomatic', help="Path to the executable "
+                        '`trimmomatic-<version>.jar`', metavar="",
+                        default="/usr/share/java/trimmomatic-0.39.jar")
     groupC.add_argument('--transcripts', help='A file containing transcrits'
                         ' already assembled, in FASTA format (bar.fa[.gz])',
                         metavar="")
