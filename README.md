@@ -11,12 +11,25 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
 
 ![Workflow KRYPTON](ressources/Workflow_KRYPTON.PNG)
 
+## To-do list:
+
+- [ ] check if a step ended nicely?
+    - [ ] trimmomatic output the information in STDOUT/STDERR
+        (_TrimmomaticPE: Completed successfully_)
+    - [ ] Trinity too ("_All commands completed successfully. :-)_")
+- [ ] Add parameters to tweak tool parameters:
+    - [ ] fastQC _--threads_
+    - [ ] trimmomatic _MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5_
+    - [ ] trinity _--CPU_ and _--max_memory_
+    - [ ] MMseqs2 _WIP_
+
 ## Dependencies
 
   - python >= 3.5
+  - numpy >= 1.22
   - fastQC >= 0.11.4
   - Trimmomatic >= 0.33
-  - Trinity v 2.9.1
+  - Trinity >= v 2.9.1
   - MMseqs2 v 10-6d92c
 
 ## Install

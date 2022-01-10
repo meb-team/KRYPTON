@@ -83,6 +83,15 @@ class Krypton:
             u.run_command(command, log=log, step=step)
         return True
 
+    def run_trinity(self, step=None, r1=None, r2=None):
+        out_dir_trinity = self.output + "/03_trinity"
+        u.create_dir(out_dir_trinity)
+
+        command = u.format_command_trinity(out_dir_trinity, r1, r2)
+        with open(out_dir_trinity + "/trinity_logs.log", "w") as log:
+            u.run_command(command, log=log, step=step)
+        return True
+
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "
               "Please be patient...")
@@ -99,13 +108,16 @@ class Krypton:
             be a good idea to implement a function that checks this and
             terminate the process in case of failure?
             """
+            clean_r1 = f"{self.output}/01_trimmomatic/r1.paired.fq"
+            clean_r2 = f"{self.output}/01_trimmomatic/r2.paired.fq"
+
             if self.paired:
                 self.run_fastqc(step="FastQC - Trimmed reads",
-                                r1=f"{self.output}/01_trimmomatic/r1.paired.fq",
-                                r2=f"{self.output}/01_trimmomatic/r2.paired.fq")
+                                r1=clean_r1, r2=clean_r2)
+                self.run_trinity(step="Trinity", r1=clean_r1, r2=clean_r2)
+
             else:
-                self.run_fastqc(step="FastQC - Trimmed reads",
-                                r1=f"{self.output}/01_trimmomatic/r1.fq")
+                self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1)
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")

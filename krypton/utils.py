@@ -43,7 +43,7 @@ def run_command(command, capture_out=False, log=None, step=None):
 
 def format_command_trimmomatic(out, bin, mod, r1, r2=None, params=None):
     command = f"java -jar {bin} {mod} "
-    if mod == "PE":
+    if r2:
         command += f"{r1} {r2} {out}/r1.paired.fq {out}/r1.unpaired.fq "
         command += f"{out}/r2.paired.fq {out}/r2.unpaired.fq " \
                    + f"{'' if not params else params}"
@@ -55,4 +55,14 @@ def format_command_trimmomatic(out, bin, mod, r1, r2=None, params=None):
 def format_command_fastqc(out, r1, r2=None):
     command = f"fastqc --outdir {out}"
     command = f"{command} {r1}" if not r2 else f"{command} {r1} {r2}"
+    return command
+
+
+def format_command_trinity(out, r1, r2=None):
+    command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq "\
+            + f" --output {out} --CPU 4 --max_memory 10G --full_cleanup "
+    if r2:
+        command += f"--left {r1} --right {r2}"
+    else:
+        command += f"--single {r1}"
     return command

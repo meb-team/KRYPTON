@@ -46,7 +46,11 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description=__description__)
     groupA = parser.add_argument_group('Mandatory arguments')
-    groupB = parser.add_argument_group('Mode - READS')
+    groupB = parser.add_argument_group('Mode - READS', description="From reads"
+                                       " up to the annotation. Use the BASH "
+                                       " environment variable `TRINITY_HOME` "
+                                       "to point the directory containing the"
+                                       " executable for Trinity.")
     groupC = parser.add_argument_group('Mode - ASSEMBLY')
     groupD = parser.add_argument_group('Mode - CDS')
     groupE = parser.add_argument_group('KRYPTON run on HPC')
@@ -55,7 +59,7 @@ if __name__ == '__main__':
                         choices=['reads', 'assembly', 'cds'])
     groupA.add_argument('--out', help='Prefix for the output directory',
                         dest='outdir', metavar="OUT_DIR", required=True)
-    groupA.add_argument('--overwrite', help='Overwrite the output if it'
+    groupA.add_argument('--overwrite', help='Overwrite the output if it '
                         'exists. Do you really want to use this feature?'
                         ' -- NOT YET IMPLEMENTED', action='store_true',
                         default=False)
@@ -141,32 +145,6 @@ if len(sys.argv) == 7 :
 # if mode_pipeline == "reads":
 #     # ########## Partie assemblage ##########
 
-#     # ########## Trinity ##########
-#     print("Debut de l etape d'assemblage sur les reads nettoyes \
-#         par Trimmomatic, cette etape est longue, patience !!!")
-#     debut_timeTrinity = time.time()
-#     # permet de revenir au dossier de resultats
-#     os.chdir(dir_output)
-#     # définit un dossier de sortie pour Trinity
-#     output_trinity = "trinity_out"
-#
-#     # creer le dossier de sortie et s'y deplace dedans
-#     create_dir(output_trinity)
-#
-#     fichier_cible = "Trinity.fasta"
-#     command = "Trinity --seqType fq --left {} --right {} --output\
-#         ../trinity_out --CPU 20 --max_memory 95G > trinity.log 2>&1"\
-#         .format(path_trim_forward, path_trim_backward)
-#
-#     check_step(fichier_cible, command)
-#     fin_timeTrinity = time.time()
-#     print_time_used(debut_timeTrinity, fin_timeTrinity, "Trinity_assembly")
-#
-#     file_trinity = "Trinity.fasta"
-#
-#     # donne le chemin absolue du fichier file_trinity
-#     path_trinity = os.path.abspath(file_trinity)
-#
 # if mode_pipeline == "assembly" or mode_pipeline == "reads":
 #     # ########## Clusterisation ##########
 #     # permet de revenir au dossier de resultats
