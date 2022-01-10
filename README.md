@@ -12,7 +12,7 @@ KRYPTON est un pipeline permettant l'assemblage et l'annotation fonctionnelle de
 
 KRYPTON combine Trinity, mmseqs2 clust, mmseqs2 search et MetaPathExplorer
 
-![Workflow Krypton](Workflow_KRYPTON.PNG)
+![Workflow KRYPTON](ressources/Workflow_KRYPTON.PNG)
 
 ## DEPENDANCES :
 
