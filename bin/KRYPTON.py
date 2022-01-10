@@ -118,16 +118,7 @@ if len(sys.argv) == 7 :
         nom_base_donnees_reference = sys.argv[6]
         base_donnees_reference = sys.argv[7]
 """
-#
-#
-# def create_dir(d):
-#     """ Create a directory if not available and move into it"""
-#
-#     if not os.path.exists(d):
-#         os.makedirs(d)
-#     os.chdir(d)
-#
-#
+
 # def check_step(fichier_teste, command):
 #     """ Check if a step is complete or not"""
 #
@@ -144,35 +135,8 @@ if len(sys.argv) == 7 :
 #
 # # ########## main ##########
 #
-# print("Bienvenue sur le pipeline KRYPTON, la totalité des étapes \
-#         risque de prendre du temps soyez patient.")
-# debut_time_Global = time.time()
-# directory_KRYPTON = Path(__file__).parent
-# create_dir(dir_output)
-#
-# sys.exit(1)
-#
 # if mode_pipeline == "reads":
 #     # ########## Partie assemblage ##########
-#     # ########## fastqc ##########
-#     """
-#     Integrate this step into a function as it is used twice. Also make sure
-#     to control all parameters for fastqc, like the number of CPUs.
-#     """
-#     print("Debut de l etape de fastqc sur les reads, cette etape peut \
-#             prendre du temps, patience.")
-#     debut_timefastqc_raw = time.time()
-#     # définit un dossier de sortie pour fastqc
-#     output_fastqc_raw = "fastqc_raw"
-#     # creer le dossier de sortie et s'y deplace dedans
-#     create_dir(output_fastqc_raw)
-#     fichier_cible = "*1_1*.zip"
-#     command = "fastqc {} {} --outdir ./ --threads 15 \
-#                 >raw_fastqc.log 2>&1".format(read_forward, read_backward)
-#     check_step(fichier_cible, command)
-#     fin_timefastqc_raw = time.time()
-#
-#     print_time_used(debut_timefastqc_raw, fin_timefastqc_raw, "FastQC_Raw")
 #
 #     # ########## trimmomatic ##########
 #     print("Debut de l etape de nettoyage avec trimmomatic des reads,\
