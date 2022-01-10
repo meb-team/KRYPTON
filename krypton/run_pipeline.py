@@ -92,6 +92,16 @@ class Krypton:
             u.run_command(command, log=log, step=step)
         return True
 
+    def run_mmseqs(self, module, step=None, transcripts=None):
+        out_dir_mmseq = self.output + "04/mmseqs"
+        u.create_dir(out_dir_mmseq)
+        command = u.format_command_mmseqs(transcripts, out_dir_mmseq,
+                                          module=module,
+                                          temp=f"{self.output}/tmp")
+        with open(out_dir_mmseq + "/mmseqs_logs.log", "w") as log:
+            u.run_command(command, log=log, step=step)
+        return True
+
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "
               "Please be patient...")
@@ -118,6 +128,14 @@ class Krypton:
 
             else:
                 self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1)
+
+        if self.mode != "cds":  # a.k.a _reads_ or _assembly_
+            transcripts_path = self.transcripts if self.transcripts \
+                        else f"{self.output}/03_trinity/Trinity.fasta"
+
+            self.run_mmseqs(module="easy-linclust",
+                            step="MMseqs2 easy-linclust",
+                            transcripts=transcripts_path)
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")

@@ -66,3 +66,7 @@ def format_command_trinity(out, r1, r2=None):
     else:
         command += f"--single {r1}"
     return command
+
+
+def format_command_mmseqs(transcripts, out, module, temp):
+    command = f"mmseq {module} {transcripts} {out} {temp} --threads 4"
