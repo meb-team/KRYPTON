@@ -115,17 +115,31 @@ class Krypton:
         return True
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
-        out_dir_pred = self.output + "/05_TransDecoder_ORF"
-        u.create_dir(out_dir_pred)
+        out_dir_long = self.output + "/05_transdecoder_longorfs"
+        u.create_dir(out_dir_long)
 
+        """
+        Note about the parameters from the wiki: "the rate of false positive
+        ORF predictions increases drastically with shorter minimum length
+        """
         command = transdec.format_longorf(transcrits_clust=transcrits_clust,
-                                          outdir=out_dir_pred + "/longorfs",
-                                          min_size=30)
-        with open(out_dir_pred + "/longorfs_logs.log", "w") as log:
-            u.run_command(command, log=log, step=step)
-        u.remove_dir(out_dir_pred + "/longorfs.__checkpoints_longorfs",
-                     other=True)
-        transdec.remove_pipeliner(glob.glob("pipeliner.*.cmds"))
+                                          outdir=out_dir_long, min_size=30)
+        with open(out_dir_long + "/td_longorfs_logs.log", "w") as log:
+            u.run_command(command, log=log, step=f"{step} - LongOrfs")
+
+        """
+        It is possible to run a PFAM annotation step for all the predicted CDS
+        here. It could be better for TransDecoder.Predict
+        """
+        out_dir_pred = self.output + "/06_transdecoder_predict"
+        u.create_dir(out_dir_pred)
+        command_2 = transdec.format_predict(transcrits_clust=transcrits_clust,
+                                            pred_input=out_dir_long, )
+        with open(out_dir_pred + "/td_predict_logs.log", "w") as log:
+            u.run_command(command_2, log=log, step=f"{step} - Predict")
+
+        transdec.clean(dest=out_dir_pred, transcripts=transcrits_clust,
+                       from_long=out_dir_long)
         return True
 
 # if mode_pipeline == "assembly" or mode_pipeline == "reads":
