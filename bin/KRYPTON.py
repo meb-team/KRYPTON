@@ -145,28 +145,7 @@ if len(sys.argv) == 7 :
 # if mode_pipeline == "reads":
 #     # ########## Partie assemblage ##########
 
-# if mode_pipeline == "assembly" or mode_pipeline == "reads":
-#     # ########## Clusterisation ##########
-#     # permet de revenir au dossier de resultats
-#     os.chdir(dir_output)
-#     output_clust = "mmseqs2_Trans_clust"
-#     create_dir(output_clust)
-#     fichier_cible = "clusterRes_cluster.tsv"
-#     command = "mmseqs easy-linclust {} clusterRes tmp > cluster.log 2>&1"\
-#         .format(path_trinity)
-#     check_step(fichier_cible, command)
-#
-#     path_clust = os.path.abspath("clusterRes_rep_seq.fasta")
-#     print("etape clusterisation terminee")
-#
 # # ########## Transdecoder ##########
-# # permet de revenir au dossier de resultats
-#
-# os.chdir(dir_output)
-# print("Debut de l etape de traduction des transcrits apres une clusterisation\
-#         en proteines, cette etape peut prendre du temps, patience.")
-# debut_timeTansdecoder = time.time()
-#
 # output_transdecoder = "Transdecoder"
 # create_dir(output_transdecoder)
 # if mode_pipeline == "assembly" or mode_pipeline == "reads":

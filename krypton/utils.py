@@ -10,7 +10,7 @@ import subprocess
 def create_dir(file_path):
     try:
         os.mkdir(file_path)
-    except:
+    except Exception:
         raise Exception(f"\nThe path you have provided for your output files:"
                         f"\n\n\t'{os.path.abspath(file_path)}'\n\n"
                         f"already is used by a directory. KRYPTON tries to not"

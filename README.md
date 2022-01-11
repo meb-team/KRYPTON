@@ -23,15 +23,22 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
     - [ ] trimmomatic _MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5_
     - [ ] trinity _--CPU_ and _--max_memory_
     - [ ] MMseqs2 _WIP_
+    - [ ] TransDecoder --> min ORF size, other
 
 ## Dependencies
+- _All modes_
+    - python >= 3.8
+    - numpy >= 1.22
+    - MMseqs2 v 10-6d92c
 
-  - python >= 3.5
-  - numpy >= 1.22
-  - fastQC >= 0.11.4
-  - Trimmomatic >= 0.33
-  - Trinity >= v 2.9.1
-  - MMseqs2 v 10-6d92c
+- _Mode reads_
+    - fastQC >= 0.11.4
+    - Trimmomatic >= 0.33
+    - Trinity >= 2.9.1
+    - [TransDecoder](https://github.com/TransDecoder/TransDecoder) >= 5.5.0
+
+- _Mode assembly_
+    - TransDecoder
 
 ## Install
 

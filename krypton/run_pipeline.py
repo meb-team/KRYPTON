@@ -107,6 +107,22 @@ class Krypton:
         u.remove_dir(out_tmp)
         return True
 
+    def run_prot_prediction(self, step=None, transcrits_clust=None):
+        out_dir_pred = self.output + "/05_TransDecoder_ORF"
+        u.create_dir(out_dir_pred)
+        # I need to change dir to run TransDecoder, which is weird... But you know...
+
+
+# if mode_pipeline == "assembly" or mode_pipeline == "reads":
+#     os.system("TransDecoder.LongOrfs -m 30 -t {}".format(path_clust))
+#     os.system("TransDecoder.Predict -t {}".format(path_clust))
+#     os.system("python {}/modifi_format.py\
+#             clusterRes_rep_seq.fasta.transdecoder.pep >\
+#             clusterpep.fasta 2>&1".format(directory_KRYPTON))
+
+
+
+
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "
               "Please be patient...")
@@ -141,6 +157,8 @@ class Krypton:
             self.run_mmseqs(module="easy-linclust",
                             step="MMseqs2 easy-linclust",
                             transcripts=transcripts_path)
+
+            self.run_prot_prediction()
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")
