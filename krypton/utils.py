@@ -26,11 +26,11 @@ def is_file_exists(file_path):
     return True
 
 
-def remove_dir(dir_path):
+def remove_dir(dir_path, other=None):
     if (os.path.isdir(dir_path)) and (os.path.basename(dir_path) == 'tmp'):
         shutil.rmtree(dir_path)
-    elif False:  # This is for future case, not only for tmp dir
-        toto = 1
+    elif other:  # This is for future case, not only for tmp dir
+        shutil.rmtree(dir_path)
     else:
         raise Exception("The dir can't be deleted. This message is for KRYPTON"
                         " devs only.")
@@ -71,8 +71,15 @@ def format_command_fastqc(out, r1, r2=None):
 
 
 def format_command_trinity(out, r1, r2=None):
+    """
+    The Trinity parameter `--full_cleanup` change the behaviour of the tool.
+    WITHOUT: the result is {self.output}/03_trinity/Trinity.fa
+    WITH: Trinity remove all temp files generated and output the results in
+        {self.output}/03_trinity.Trinity.fasta
+        N.B., with this way, I have to trust Trinity for the dirrectory setup
+    """
     command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq "\
-            + f" --output {out} --CPU 4 --max_memory 10G --full_cleanup "
+              + f" --output {out} --CPU 8 --max_memory 64G --full_cleanup "
     if r2:
         command += f"--left {r1} --right {r2}"
     else:

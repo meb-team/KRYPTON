@@ -24,6 +24,12 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
     - [ ] trinity _--CPU_ and _--max_memory_
     - [ ] MMseqs2 _WIP_
     - [ ] TransDecoder --> min ORF size, other
+- [ ] Add a dict to store the subpath values
+    - eg:
+        - {"00" : "00_FastQC_raw",
+        - "01" : "01_trimmomatic",
+        - ... }
+- [ ] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log`
 
 ## Dependencies
 - _All modes_

@@ -19,5 +19,14 @@ def check_version():
     return True
 
 
+def format_longorf(transcrits_clust, outdir, min_size=None):
+    command = f"TransDecoder.LongOrfs --output_dir {outdir}"\
+              + f" -t {transcrits_clust}"
+    if min_size:
+        command += f" -m {min_size}"
+
+    return command
+
+
 if __name__ == '__main__':
     check_version()

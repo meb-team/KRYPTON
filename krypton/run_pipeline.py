@@ -3,6 +3,7 @@
 import time
 
 import krypton.utils as u
+import krypton.tasks.transdecoder as transdec
 
 
 class Krypton:
@@ -85,14 +86,19 @@ class Krypton:
 
     def run_trinity(self, step=None, r1=None, r2=None):
         out_dir_trinity = self.output + "/03_trinity"
-        u.create_dir(out_dir_trinity)
+        # u.create_dir(out_dir_trinity)
 
         command = u.format_command_trinity(out_dir_trinity, r1, r2)
-        with open(out_dir_trinity + "/trinity_logs.log", "w") as log:
+        with open(f"{self.out}/03_trinity_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True
 
     def run_mmseqs(self, module, step=None, transcripts=None):
+        """
+        all sequences for each cluster => <out>/<out>_all_seqs.fasta
+        representative sequences  => <out>/<out>_rep_seq.fasta)
+        identifiers for all cluster members => <out>/<out>_cluster.tsv
+        """
         out_dir_mmseq = self.output + "/04_mmseqs"
         out_prefix = out_dir_mmseq + "/04_mmseqs"
         out_tmp = f"{self.output}/tmp"
@@ -110,8 +116,15 @@ class Krypton:
     def run_prot_prediction(self, step=None, transcrits_clust=None):
         out_dir_pred = self.output + "/05_TransDecoder_ORF"
         u.create_dir(out_dir_pred)
-        # I need to change dir to run TransDecoder, which is weird... But you know...
 
+        command = transdec.format_longorf(transcrits_clust=transcrits_clust,
+                                          outdir=out_dir_pred + "/longorfs",
+                                          min_size=30)
+        with open(out_dir_pred + "/longorfs_logs.log", "w") as log:
+            u.run_command(command, log=log, step=step)
+        u.remove_dir(out_dir_pred + "/longorfs.__checkpoints_longorfs")
+        return True
+# - pipeliner.xxxxx.cmds
 
 # if mode_pipeline == "assembly" or mode_pipeline == "reads":
 #     os.system("TransDecoder.LongOrfs -m 30 -t {}".format(path_clust))
@@ -119,9 +132,6 @@ class Krypton:
 #     os.system("python {}/modifi_format.py\
 #             clusterRes_rep_seq.fasta.transdecoder.pep >\
 #             clusterpep.fasta 2>&1".format(directory_KRYPTON))
-
-
-
 
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "
@@ -152,13 +162,14 @@ class Krypton:
 
         if self.mode != "cds":  # a.k.a _reads_ or _assembly_
             transcripts_path = self.transcripts if self.transcripts \
-                        else f"{self.output}/03_trinity/Trinity.fasta"
+                        else f"{self.output}/03_trinity.Trinity.fasta"
 
             self.run_mmseqs(module="easy-linclust",
                             step="MMseqs2 easy-linclust",
                             transcripts=transcripts_path)
 
-            self.run_prot_prediction()
+            self.run_prot_prediction(step="TransDecoder",
+                                     transcrits_clust=f"{self.output}/04_mmseqs/04_mmseqs_rep_seq.fasta")
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")
