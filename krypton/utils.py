@@ -3,17 +3,18 @@
 import os
 import math
 import time
+import shutil
 import subprocess
 
 
 def create_dir(file_path):
-    if os.path.isdir(file_path):
+    try:
+        os.mkdir(file_path)
+    except:
         raise Exception(f"\nThe path you have provided for your output files:"
                         f"\n\n\t'{os.path.abspath(file_path)}'\n\n"
                         f"already is used by a directory. KRYPTON tries to not"
                         f" overwright existing files and directories.")
-    else:
-        os.mkdir(file_path)
     return True
 
 
@@ -22,6 +23,17 @@ def is_file_exists(file_path):
         raise Exception("\nNo input file is declared...")
     if not os.path.exists(os.path.abspath(file_path)):
         raise Exception(f"\nNo such file: {os.path.abspath(file_path)}")
+    return True
+
+
+def remove_dir(dir_path):
+    if (os.path.isdir(dir_path)) and (os.path.basename(dir_path) == 'tmp'):
+        shutil.rmtree(dir_path)
+    elif False:  # This is for future case, not only for tmp dir
+        toto = 1
+    else:
+        raise Exception("The dir can't be deleted. This message is for KRYPTON"
+                        " devs only.")
     return True
 
 
@@ -68,5 +80,8 @@ def format_command_trinity(out, r1, r2=None):
     return command
 
 
-def format_command_mmseqs(transcripts, out, module, temp):
-    command = f"mmseq {module} {transcripts} {out} {temp} --threads 4"
+def format_command_mmseqs(transcripts, prefix, module, temp):
+    # I know, this function looks useless, but I can't predict the future...
+    # So let's keept it and see whether I can re-use it!
+    command = f"mmseqs {module} {transcripts} {prefix} {temp} --threads 4"
+    return command

@@ -93,13 +93,18 @@ class Krypton:
         return True
 
     def run_mmseqs(self, module, step=None, transcripts=None):
-        out_dir_mmseq = self.output + "04/mmseqs"
+        out_dir_mmseq = self.output + "/04_mmseqs"
+        out_prefix = out_dir_mmseq + "/04_mmseqs"
+        out_tmp = f"{self.output}/tmp"
         u.create_dir(out_dir_mmseq)
-        command = u.format_command_mmseqs(transcripts, out_dir_mmseq,
+        command = u.format_command_mmseqs(transcripts, prefix=out_prefix,
                                           module=module,
-                                          temp=f"{self.output}/tmp")
+                                          temp=out_tmp)
+
         with open(out_dir_mmseq + "/mmseqs_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
+
+        u.remove_dir(out_tmp)
         return True
 
     def run_krypton(self):
