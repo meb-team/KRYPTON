@@ -1,5 +1,7 @@
 # -*- coding: utf-8
 
+import os
+import glob
 import subprocess
 from subprocess import CalledProcessError
 
@@ -28,5 +30,17 @@ def format_longorf(transcrits_clust, outdir, min_size=None):
     return command
 
 
+def remove_pipeliner(file_path):
+    for file in file_path:
+        try:
+            os.remove(file)
+        except FileNotFoundError:
+            print("Message for KRYPTON devs:\n",
+                  f"Cannot remove the file {os.path.abspath(file)}", sep='')
+    return True
+
+
 if __name__ == '__main__':
     check_version()
+    # remove_pipeliner(glob.glob("pipeliner.*.cmds"))
+    # remove_pipeliner(["pipeliner.123456.cmds"])

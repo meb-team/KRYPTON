@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 # import os
 import time
+import glob
 
 import krypton.utils as u
 import krypton.tasks.transdecoder as transdec
@@ -89,7 +90,7 @@ class Krypton:
         # u.create_dir(out_dir_trinity)
 
         command = u.format_command_trinity(out_dir_trinity, r1, r2)
-        with open(f"{self.out}/03_trinity_logs.log", "w") as log:
+        with open(f"{self.output}/03_trinity_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True
 
@@ -122,9 +123,10 @@ class Krypton:
                                           min_size=30)
         with open(out_dir_pred + "/longorfs_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
-        u.remove_dir(out_dir_pred + "/longorfs.__checkpoints_longorfs")
+        u.remove_dir(out_dir_pred + "/longorfs.__checkpoints_longorfs",
+                     other=True)
+        transdec.remove_pipeliner(glob.glob("pipeliner.*.cmds"))
         return True
-# - pipeliner.xxxxx.cmds
 
 # if mode_pipeline == "assembly" or mode_pipeline == "reads":
 #     os.system("TransDecoder.LongOrfs -m 30 -t {}".format(path_clust))
