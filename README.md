@@ -23,13 +23,14 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
     - [ ] trimmomatic _MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5_
     - [ ] trinity _--CPU_ and _--max_memory_
     - [ ] MMseqs2 _WIP_
-    - [ ] TransDecoder --> min ORF size, other
+    - [ ] TransDecoder --> min ORF size, Pfam annotation
 - [ ] Add a dict to store the subpath values
     - eg:
         - {"00" : "00_FastQC_raw",
         - "01" : "01_trimmomatic",
         - ... }
 - [ ] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log`
+- [ ] Add the HMMER suite (TransDecoder) + other step
 
 ## Dependencies
 - _All modes_

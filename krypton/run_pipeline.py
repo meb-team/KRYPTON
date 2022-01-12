@@ -5,6 +5,7 @@ import glob
 
 import krypton.utils as u
 import krypton.tasks.transdecoder as transdecoder
+import krypton.tasks.mmseqs as mmseqs
 
 
 class Krypton:
@@ -94,7 +95,7 @@ class Krypton:
             u.run_command(command, log=log, step=step)
         return True
 
-    def run_mmseqs(self, module, step=None, transcripts=None):
+    def run_mmseqs(self, step=None, transcripts=None):
         """
         all sequences for each cluster => <out>/<out>_all_seqs.fasta
         representative sequences  => <out>/<out>_rep_seq.fasta)
@@ -104,9 +105,10 @@ class Krypton:
         out_prefix = out_dir_mmseq + "/04_mmseqs"
         out_tmp = f"{self.output}/tmp"
         u.create_dir(out_dir_mmseq)
-        command = u.format_command_mmseqs(transcripts, prefix=out_prefix,
-                                          module=module,
-                                          temp=out_tmp)
+
+        m = mmseqs.MMseqs2()
+        command = m.command_cluster(transcripts, prefix=out_prefix,
+                                    temp=out_tmp)
 
         with open(out_dir_mmseq + "/mmseqs_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
@@ -176,8 +178,7 @@ class Krypton:
             transcripts_path = self.transcripts if self.transcripts \
                         else f"{self.output}/03_trinity.Trinity.fasta"
 
-            self.run_mmseqs(module="easy-linclust",
-                            step="MMseqs2 easy-linclust",
+            self.run_mmseqs(step="MMseqs2 cluster",
                             transcripts=transcripts_path)
 
             self.run_prot_prediction(step="TransDecoder",

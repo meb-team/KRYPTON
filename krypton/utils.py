@@ -115,10 +115,3 @@ def format_command_trinity(out, r1, r2=None):
     else:
         command += f"--single {r1}"
     return command
-
-
-def format_command_mmseqs(transcripts, prefix, module, temp):
-    # I know, this function looks useless, but I can't predict the future...
-    # So let's keept it and see whether I can re-use it!
-    command = f"mmseqs {module} {transcripts} {prefix} {temp} --threads 4"
-    return command
