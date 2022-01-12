@@ -94,12 +94,6 @@ def format_command_trimmomatic(out, bin, mod, r1, r2=None, params=None):
     return command
 
 
-def format_command_fastqc(out, r1, r2=None):
-    command = f"fastqc --outdir {out}"
-    command = f"{command} {r1}" if not r2 else f"{command} {r1} {r2}"
-    return command
-
-
 def format_command_trinity(out, r1, r2=None):
     """
     The Trinity parameter `--full_cleanup` change the behaviour of the tool.

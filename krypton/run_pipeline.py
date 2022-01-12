@@ -6,6 +6,7 @@ import glob
 import krypton.utils as u
 import krypton.tasks.transdecoder as transdecoder
 import krypton.tasks.mmseqs as mmseqs
+import krypton.tasks.fastqc as fastqc
 
 
 class Krypton:
@@ -64,12 +65,10 @@ class Krypton:
 
     def run_fastqc(self, step=None, raw=False, r1=None, r2=None):
         """ It assumes that FastQC is in the Path """
-        out_dir_fastqc = f"{self.output}/00_fastqc_raw" if raw else \
-                         f"{self.output}/02_fastqc_trimmed"
-        u.create_dir(out_dir_fastqc)
+        f = fastqc.FastQC(raw=raw, project=self.output)
 
-        with open(out_dir_fastqc + "/fastqc_logs.log", "w") as log:
-            command = u.format_command_fastqc(out_dir_fastqc, r1, r2)
+        with open(f.output + "/fastqc_logs.log", "w") as log:
+            command = f.format_command_fastqc(f.output, r1, r2)
             u.run_command(command, log=log, step=step)
         return True
 
