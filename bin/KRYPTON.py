@@ -126,34 +126,8 @@ if len(sys.argv) == 7 :
         base_donnees_reference = sys.argv[7]
 """
 
-# def check_step(fichier_teste, command):
-#     """ Check if a step is complete or not"""
-#
-#     try:
-#         process = Popen(['ls {}'.format(fichier_teste)], stdout=PIPE,
-#                         stderr=PIPE, shell=True)
-#         stdout, stderr = process.communicate()
-#         stdout = stdout.rstrip()
-#         stdout = stdout.decode("utf-8")
-#         with open(stdout):
-#             pass
-#     except:
-#         os.system(command)
-#
 # # ########## main ##########
 #
-# if mode_pipeline == "reads":
-#     # ########## Partie assemblage ##########
-
-# # ########## Transdecoder ##########
-# output_transdecoder = "Transdecoder"
-# create_dir(output_transdecoder)
-# if mode_pipeline == "assembly" or mode_pipeline == "reads":
-#     os.system("TransDecoder.LongOrfs -m 30 -t {}".format(path_clust))
-#     os.system("TransDecoder.Predict -t {}".format(path_clust))
-#     os.system("python {}/modifi_format.py\
-#             clusterRes_rep_seq.fasta.transdecoder.pep >\
-#             clusterpep.fasta 2>&1".format(directory_KRYPTON))
 #
 # if mode_pipeline == "cds":
 #     os.system("TransDecoder.LongOrfs -m 30 -t {} 2>&1".format(path_trinity))

@@ -95,19 +95,13 @@ class Krypton:
             u.run_command(command, log=log, step=step)
         return True
 
-    def run_mmseqs(self, step=None, transcripts=None):
-        """
-        all sequences for each cluster => <out>/<out>_all_seqs.fasta
-        representative sequences  => <out>/<out>_rep_seq.fasta)
-        identifiers for all cluster members => <out>/<out>_cluster.tsv
-        """
-        out_dir_mmseq = self.output + "/04_mmseqs"
-        out_prefix = out_dir_mmseq + "/04_mmseqs"
-        out_tmp = f"{self.output}/tmp"
-        u.create_dir(out_dir_mmseq)
-
+    def run_mmseqs(self, step=None, seqs=None, clust_prot=None):
         m = mmseqs.MMseqs2()
-        command = m.command_cluster(transcripts, prefix=out_prefix,
+        out_dir_mmseq, out_prefix = m.setup_path_dir(out=self.output,
+                                                     clust_prot=clust_prot)
+        out_tmp = f"{self.output}/tmp"
+        print(out_dir_mmseq, out_prefix, out_tmp)
+        command = m.command_cluster(seqs=seqs, prefix=out_prefix,
                                     temp=out_tmp)
 
         with open(out_dir_mmseq + "/mmseqs_logs.log", "w") as log:
@@ -178,11 +172,18 @@ class Krypton:
             transcripts_path = self.transcripts if self.transcripts \
                         else f"{self.output}/03_trinity.Trinity.fasta"
 
-            self.run_mmseqs(step="MMseqs2 cluster",
-                            transcripts=transcripts_path)
+            self.run_mmseqs(step="MMseqs2 cluster transcripts",
+                            seqs=transcripts_path)
 
             self.run_prot_prediction(step="TransDecoder",
                                      transcrits_clust=f"{self.output}/04_mmseqs/04_mmseqs_rep_seq.fasta")
+
+        # Start from the cds provided by the user
+        cds_path = self.cds if self.cds else \
+            glob.glob(self.output + '/06_*/*.pep.oneline.pep')[0]
+
+        self.run_mmseqs(seqs=cds_path, step="MMseqs cluster proteins",
+                        clust_prot=True,)
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")
