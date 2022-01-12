@@ -83,17 +83,6 @@ def multi_to_single_line_fasta(file_path):
     return True
 
 
-def format_command_trimmomatic(out, bin, mod, r1, r2=None, params=None):
-    command = f"java -jar {bin} {mod} "
-    if r2:
-        command += f"{r1} {r2} {out}/r1.paired.fq {out}/r1.unpaired.fq "
-        command += f"{out}/r2.paired.fq {out}/r2.unpaired.fq " \
-                   + f"{'' if not params else params}"
-    else:
-        command += f"{r1} {out}/r1.fq {'' if not params else params}"
-    return command
-
-
 def format_command_trinity(out, r1, r2=None):
     """
     The Trinity parameter `--full_cleanup` change the behaviour of the tool.

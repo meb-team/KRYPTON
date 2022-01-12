@@ -7,7 +7,7 @@ import krypton.utils as u
 import krypton.tasks.transdecoder as transdecoder
 import krypton.tasks.mmseqs as mmseqs
 import krypton.tasks.fastqc as fastqc
-
+import krypton.tasks.trimmomatic as trimmomatic
 
 class Krypton:
     def __init__(self, args=None):
@@ -73,15 +73,13 @@ class Krypton:
         return True
 
     def run_trimmomatic(self, step=None):
-        out_dir_trim = self.output + "/01_trimmomatic"
-        u.create_dir(out_dir_trim)
+        t = trimmomatic.Trimmomatic(project=self.output)
 
-        command = u.format_command_trimmomatic(out_dir_trim, self.trimmomatic,
-                                               self.trimmo_mod, r1=self.r1,
-                                               r2=self.r2, params="MINLEN:32" +
-                                               " SLIDINGWINDOW:10:20" +
-                                               " LEADING:5 TRAILING:5")
-        with open(out_dir_trim + "/trimmomatic_logs.log", "w") as log:
+        command = t.format_command(bin=self.trimmomatic, mod=self.trimmo_mod,
+                                   r1=self.r1, r2=self.r2,
+                                   params="MINLEN:32 SLIDINGWINDOW:10:20 " +
+                                   "LEADING:5 TRAILING:5")
+        with open(t.output + "/trimmomatic_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True
 
