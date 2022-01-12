@@ -4,10 +4,11 @@ import time
 import glob
 
 import krypton.utils as u
-import krypton.tasks.transdecoder as transdecoder
 import krypton.tasks.mmseqs as mmseqs
 import krypton.tasks.fastqc as fastqc
+import krypton.tasks.trinity as trinity
 import krypton.tasks.trimmomatic as trimmomatic
+import krypton.tasks.transdecoder as transdecoder
 
 class Krypton:
     def __init__(self, args=None):
@@ -74,7 +75,6 @@ class Krypton:
 
     def run_trimmomatic(self, step=None):
         t = trimmomatic.Trimmomatic(project=self.output)
-
         command = t.format_command(bin=self.trimmomatic, mod=self.trimmo_mod,
                                    r1=self.r1, r2=self.r2,
                                    params="MINLEN:32 SLIDINGWINDOW:10:20 " +
@@ -84,11 +84,10 @@ class Krypton:
         return True
 
     def run_trinity(self, step=None, r1=None, r2=None):
-        out_dir_trinity = self.output + "/03_trinity"
-        # u.create_dir(out_dir_trinity)
-
-        command = u.format_command_trinity(out_dir_trinity, r1, r2)
-        with open(f"{self.output}/03_trinity_logs.log", "w") as log:
+        ty = trinity.Trinity(project=self.output)
+        command = ty.format_command(r1, r2)
+        # With --full_cleanup, I have to let Trinity deal with its output dir
+        with open(self.output + "/03_trinity_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True
 
@@ -97,7 +96,6 @@ class Krypton:
         out_dir_mmseq, out_prefix = m.setup_path_dir(out=self.output,
                                                      clust_prot=clust_prot)
         out_tmp = f"{self.output}/tmp"
-        print(out_dir_mmseq, out_prefix, out_tmp)
         command = m.command_cluster(seqs=seqs, prefix=out_prefix,
                                     temp=out_tmp)
 

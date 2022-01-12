@@ -81,20 +81,3 @@ def multi_to_single_line_fasta(file_path):
         for k, v in d.items():
             print("%s\n%s" % (k, v), file=fo)
     return True
-
-
-def format_command_trinity(out, r1, r2=None):
-    """
-    The Trinity parameter `--full_cleanup` change the behaviour of the tool.
-    WITHOUT: the result is {self.output}/03_trinity/Trinity.fa
-    WITH: Trinity remove all temp files generated and output the results in
-        {self.output}/03_trinity.Trinity.fasta
-        N.B., with this way, I have to trust Trinity for the dirrectory setup
-    """
-    command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq "\
-              + f" --output {out} --CPU 8 --max_memory 64G --full_cleanup "
-    if r2:
-        command += f"--left {r1} --right {r2}"
-    else:
-        command += f"--single {r1}"
-    return command
