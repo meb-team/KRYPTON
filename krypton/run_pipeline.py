@@ -141,14 +141,9 @@ class Krypton:
 
         t.clean(dest=out_dir_pred, transcripts=transcrits_clust,
                 from_long=out_dir_long)
-        return True
 
-# if mode_pipeline == "assembly" or mode_pipeline == "reads":
-#     os.system("TransDecoder.LongOrfs -m 30 -t {}".format(path_clust))
-#     os.system("TransDecoder.Predict -t {}".format(path_clust))
-#     os.system("python {}/modifi_format.py\
-#             clusterRes_rep_seq.fasta.transdecoder.pep >\
-#             clusterpep.fasta 2>&1".format(directory_KRYPTON))
+        u.multi_to_single_line_fasta(glob.glob(f"{out_dir_pred}/*.transdecoder.pep")[0])
+        return True
 
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "

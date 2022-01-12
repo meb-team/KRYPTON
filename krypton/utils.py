@@ -53,6 +53,36 @@ def run_command(command, capture_out=False, log=None, step=None):
     return True
 
 
+def multi_to_single_line_fasta(file_path):
+    try:
+        is_file_exists(file_path)
+    except Exception:
+        print("For DEVs: Something went wrong with the file %s" % file_path)
+    d = dict()  # From Python 3.6, dict() keep the insertion order
+
+    with open(file_path, 'r') as fi:
+        lines = fi.readlines()
+        curr_k = ""
+        curr_v = ""
+        for line in lines:
+            line = line.rstrip()
+            if line[0] == ">":
+                if curr_k != "":
+                    # populate the dict with the previous complete sequence
+                    d[curr_k] = curr_v
+                curr_k = line
+                curr_v = ""  # reset of the previous sequence
+            else:
+                curr_v += line
+        d[curr_k] = curr_v  # DO NOT FORGET THE LAST SEQUENCE
+
+    # Write
+    with open(file_path + ".oneline.pep", "w") as fo:
+        for k, v in d.items():
+            print("%s\n%s" % (k, v), file=fo)
+    return True
+
+
 def format_command_trimmomatic(out, bin, mod, r1, r2=None, params=None):
     command = f"java -jar {bin} {mod} "
     if r2:
