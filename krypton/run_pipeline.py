@@ -4,7 +4,7 @@ import time
 import glob
 
 import krypton.utils as u
-import krypton.tasks.transdecoder as transdec
+import krypton.tasks.transdecoder as transdecoder
 
 
 class Krypton:
@@ -122,8 +122,9 @@ class Krypton:
         Note about the parameters from the wiki: "the rate of false positive
         ORF predictions increases drastically with shorter minimum length
         """
-        command = transdec.format_longorf(transcrits_clust=transcrits_clust,
-                                          outdir=out_dir_long, min_size=30)
+        t = transdecoder.TransDecoder()
+        command = t.format_longorf(transcrits_clust=transcrits_clust,
+                                   outdir=out_dir_long, min_size=30)
         with open(out_dir_long + "/td_longorfs_logs.log", "w") as log:
             u.run_command(command, log=log, step=f"{step} - LongOrfs")
 
@@ -133,13 +134,13 @@ class Krypton:
         """
         out_dir_pred = self.output + "/06_transdecoder_predict"
         u.create_dir(out_dir_pred)
-        command_2 = transdec.format_predict(transcrits_clust=transcrits_clust,
-                                            pred_input=out_dir_long, )
+        command_2 = t.format_predict(transcrits_clust=transcrits_clust,
+                                     pred_input=out_dir_long)
         with open(out_dir_pred + "/td_predict_logs.log", "w") as log:
             u.run_command(command_2, log=log, step=f"{step} - Predict")
 
-        transdec.clean(dest=out_dir_pred, transcripts=transcrits_clust,
-                       from_long=out_dir_long)
+        t.clean(dest=out_dir_pred, transcripts=transcrits_clust,
+                from_long=out_dir_long)
         return True
 
 # if mode_pipeline == "assembly" or mode_pipeline == "reads":
