@@ -53,7 +53,7 @@ def run_command(command, capture_out=False, log=None, step=None):
     return True
 
 
-def multi_to_single_line_fasta(file_path):
+def read_fasta(file_path):
     try:
         is_file_exists(file_path)
     except Exception:
@@ -75,9 +75,43 @@ def multi_to_single_line_fasta(file_path):
             else:
                 curr_v += line
         d[curr_k] = curr_v  # DO NOT FORGET THE LAST SEQUENCE
+    return d
 
+
+def multi_to_single_line_fasta(file_path):
+    d = read_fasta(file_path)
     # Write
     with open(file_path + ".oneline.pep", "w") as fo:
         for k, v in d.items():
             print("%s\n%s" % (k, v), file=fo)
+    return True
+
+
+def simplify_seq_id(count, string_size):
+    """
+    input a number, eg 361, return a string of size 'size'
+    with X leading 0s. Eg 000000361 for num=361, size=9
+    """
+    if len(str(count)) <= string_size:
+        return ("0" * (string_size - len(str(count)))) + str(count)
+    else:
+        raise Exception("For DEVs: You did not expected some many sequences..."
+                        + f"There are at least {count} sequences")
+
+
+def clean_deflines(infile, seq_prefix, name_size=9):
+    count = 0
+    with open(infile, "r") as fi:
+        with open(infile + ".clean_defline.fa", "w") as fo:
+            with open(infile + ".corres_tab.tab", "w") as corres:
+                lines = fi.readlines()
+                for line in lines:
+                    line = line.rstrip()
+                    if line[0] == ">":
+                        new_s = f">{seq_prefix}_{simplify_seq_id(count, name_size)}"
+                        print(new_s, file=fo)
+                        print(line[1:], new_s[1:], sep="\t", file=corres)
+                        count += 1
+                    else:
+                        print(line, file=fo)
     return True

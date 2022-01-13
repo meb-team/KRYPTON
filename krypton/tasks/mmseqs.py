@@ -13,7 +13,7 @@ class MMseqs2():
         self.subdir = "04_mmseqs" if not self.prot else "07_mmseqs"
         self.output = project + "/" + self.subdir
         self.prefix = self.output + "/" + self.subdir
-        self.tmp = self.output + "/tmp"
+        self.tmp = project + "/tmp"
         u.create_dir(self.output)
 
     def command_cluster(self, seqs):

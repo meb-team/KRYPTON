@@ -1,7 +1,8 @@
 # -*- coding: utf-8
 import os
+import glob
 
-# import krypton.utils as u
+import krypton.utils as u
 
 """
 Add something to test the presence of Trinity in the PATH, and the version
@@ -12,7 +13,6 @@ class Trinity():
 
     def __init__(self, project=None):
         self.output = project + "/03_trinity"
-        # u.create_dir(self.output)
 
     def format_command(self, r1, r2=None):
         """
@@ -30,3 +30,23 @@ class Trinity():
         else:
             command += f"--single {r1}"
         return command
+
+    def clean(self):
+        """ Clean everything after the run of Trinity"""
+
+        # (re)Create the directory "03_trinity" and copy the results there
+        u.create_dir(self.output)
+
+        for file in glob.glob(f"{self.output}*.*"):
+            file_base = os.path.basename(file)
+            os.replace(file, f"{self.output}/{file_base}")
+
+        # clean the names
+        u.clean_deflines(infile=self.output + "/03_trinity.Trinity.fasta",
+                         seq_prefix="seq")
+
+
+if __name__ == '__main__':
+    # ty = Trinity('damien/test_08')
+    # ty.clean()
+    toto = 1

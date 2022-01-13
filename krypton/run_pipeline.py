@@ -89,6 +89,8 @@ class Krypton:
         # With --full_cleanup, I have to let Trinity deal with its output dir
         with open(self.output + "/03_trinity_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
+        time.sleep(10)  # leave Trinity the time to clean its stuff
+        ty.clean()
         return True
 
     def run_mmseqs(self, step=None, seqs=None, prot=None):
@@ -127,7 +129,7 @@ class Krypton:
         t.clean(dest=out_dir_pred, transcripts=transcrits_clust,
                 from_long=out_dir_long)
 
-        u.multi_to_single_line_fasta(glob.glob(f"{out_dir_pred}/*.transdecoder.pep")[0])
+        # u.multi_to_single_line_fasta(glob.glob(f"{out_dir_pred}/*.transdecoder.pep")[0])
         return True
 
     def run_krypton(self):
@@ -158,8 +160,8 @@ class Krypton:
                 self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1)
 
         if self.mode != "cds":  # a.k.a _reads_ or _assembly_
-            transcripts_path = self.transcripts if self.transcripts \
-                        else f"{self.output}/03_trinity.Trinity.fasta"
+            transcripts_path = self.transcripts if self.transcripts else \
+                    glob.glob(f"{self.output}/03_trinity/*clean_defline.fa")[0]
 
             self.run_mmseqs(step="MMseqs2 cluster transcripts",
                             seqs=transcripts_path)
@@ -169,7 +171,7 @@ class Krypton:
 
         # Start from the cds provided by the user
         cds_path = self.cds if self.cds else \
-            glob.glob(self.output + '/06_*/*.pep.oneline.pep')[0]
+            glob.glob(self.output + '/06_*/*.pep')[0]
 
         self.run_mmseqs(seqs=cds_path, step="MMseqs cluster proteins",
                         prot=True,)
