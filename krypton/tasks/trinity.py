@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 import os
 
-import krypton.utils as u
+# import krypton.utils as u
 
 """
 Add something to test the presence of Trinity in the PATH, and the version
@@ -12,7 +12,7 @@ class Trinity():
 
     def __init__(self, project=None):
         self.output = project + "/03_trinity"
-        u.create_dir(self.output)
+        # u.create_dir(self.output)
 
     def format_command(self, r1, r2=None):
         """
@@ -23,7 +23,8 @@ class Trinity():
         N.B., with this way, I have to trust Trinity for the dirrectory setup
         """
         command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq " +\
-                  f" --output {self.output} --CPU 8 --max_memory 64G --full_cleanup "
+                  "--full_cleanup --CPU 8 --max_memory 64G " +\
+                  f"--output {self.output} "
         if r2:
             command += f"--left {r1} --right {r2}"
         else:

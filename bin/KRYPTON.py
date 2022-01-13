@@ -125,20 +125,3 @@ if len(sys.argv) == 7 :
         nom_base_donnees_reference = sys.argv[6]
         base_donnees_reference = sys.argv[7]
 """
-
-# # ########## main ##########
-#
-#
-# if mode_pipeline == "cds":
-#     os.system("TransDecoder.LongOrfs -m 30 -t {} 2>&1".format(path_trinity))
-#     os.system("TransDecoder.Predict -t {} 2>&1".format(path_trinity))
-#     os.system("python {}/modifi_format.py \
-#             assembly.fasta.transdecoder.pep > clusterpep.fasta 2>&1\
-#             ".format(directory_KRYPTON))
-#
-# fin_timeTansdecoder = time.time()
-# print_time_used(debut_timeTansdecoder, fin_timeTansdecoder, "Transdecoder")
-#
-# # ########## End ##########
-# end_time_Global = time.time()
-# print_time_used(debut_time_Global, end_time_Global, "KRYPTON complete")
