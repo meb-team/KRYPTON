@@ -91,18 +91,12 @@ class Krypton:
             u.run_command(command, log=log, step=step)
         return True
 
-    def run_mmseqs(self, step=None, seqs=None, clust_prot=None):
-        m = mmseqs.MMseqs2()
-        out_dir_mmseq, out_prefix = m.setup_path_dir(out=self.output,
-                                                     clust_prot=clust_prot)
-        out_tmp = f"{self.output}/tmp"
-        command = m.command_cluster(seqs=seqs, prefix=out_prefix,
-                                    temp=out_tmp)
-
-        with open(out_dir_mmseq + "/mmseqs_logs.log", "w") as log:
+    def run_mmseqs(self, step=None, seqs=None, prot=None):
+        m = mmseqs.MMseqs2(project=self.output, prot=prot)
+        command = m.command_cluster(seqs=seqs)
+        with open(m.output + "/mmseqs_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
-
-        u.remove_dir(out_tmp)
+        u.remove_dir(m.tmp)
         return True
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
@@ -178,7 +172,7 @@ class Krypton:
             glob.glob(self.output + '/06_*/*.pep.oneline.pep')[0]
 
         self.run_mmseqs(seqs=cds_path, step="MMseqs cluster proteins",
-                        clust_prot=True,)
+                        prot=True,)
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")
