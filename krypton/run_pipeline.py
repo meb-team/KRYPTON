@@ -26,6 +26,7 @@ class Krypton:
         self.trimmo_mod = "PE" if self.paired else "SE"
         self.transcripts = A('transcripts')
         self.cds = A('cds')
+        self.mmseq_db = 'UniRef100' if not A('mmseq_db') else A('mmseq_db')
         """ Let's first make KRYPTON running on a regular computer. """
         # self.bucket_in = A('bucketin')
         # self.bucket_out = A('bucketout')
@@ -50,6 +51,9 @@ class Krypton:
 
         if self.mode == "cds":
             u.is_file_exists(self.cds)
+
+        if self.mmseq_db != 'UniRef100':
+            mmseqs.check_input_db_user(self.mmseq_db)
 
         u.create_dir(self.output)
 
@@ -93,13 +97,24 @@ class Krypton:
         ty.clean()
         return True
 
-    def run_mmseqs(self, step=None, seqs=None, prot=None):
+    def run_mmseqs_clust(self, step=None, seqs=None, prot=None):
         m = mmseqs.MMseqs2(project=self.output, prot=prot)
         command = m.command_cluster(seqs=seqs)
         with open(m.output + "/mmseqs_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         u.remove_dir(m.tmp)
         return True
+
+    def run_mmseqs_search(self, cds_file, ref_file, ref_nameDB):
+        """
+        This is a litteral transposition of Baptiste's work.
+        I will tune it later.
+        """
+        ms = mmseqs.MMseqs2(project=self.output, module='createdb')
+
+        # The CDS, from Krypton or the user
+        ms.internal_db(seqs=cds_file)
+
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
         out_dir_long = self.output + "/05_transdecoder_longorfs"
@@ -128,7 +143,6 @@ class Krypton:
 
         t.clean(dest=out_dir_pred, transcripts=transcrits_clust,
                 from_long=out_dir_long)
-
         # u.multi_to_single_line_fasta(glob.glob(f"{out_dir_pred}/*.transdecoder.pep")[0])
         return True
 
@@ -173,8 +187,13 @@ class Krypton:
         cds_path = self.cds if self.cds else \
             glob.glob(self.output + '/06_*/*.pep')[0]
 
-        self.run_mmseqs(seqs=cds_path, step="MMseqs cluster proteins",
-                        prot=True,)
+        self.run_mmseqs_clust(seqs=cds_path, step="MMseqs cluster proteins",
+                        prot=True)
+
+        cds_clusterised = glob.glob(f'{self.output}/07_*/07_*_rep_seq.*')[0]
+        self.run_mmseqs_search(cds_file=cds_clusterised,
+                               ,ref_file= , ref_name=):
+            toto = 1
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")

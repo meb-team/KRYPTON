@@ -54,6 +54,7 @@ if __name__ == '__main__':
     groupC = parser.add_argument_group('Mode - ASSEMBLY')
     groupD = parser.add_argument_group('Mode - CDS')
     groupE = parser.add_argument_group('KRYPTON run on HPC')
+    groupF = parser.add_argument_group('MMseqs2 options')
     groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from '
                         'which the pipeline is run', default="reads", type=str,
                         choices=['reads', 'assembly', 'cds'])
@@ -88,6 +89,16 @@ if __name__ == '__main__':
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
                         ' is meant to be run on a HPC cluster -- WIP',
                         action='store_true', default=False, dest='hpc2')
+    groupF.add_argument('--mmseqs-search-db', help=' One of 1) Path to an'
+                        'existing MMseqs2 database (Fast); 2) The name of a '
+                        'database provided by MMseqs2; a list is present here'
+                        'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases'
+                        '(Can be long and take lot of disk space, eg UniRef90'
+                        '~=70GB; 3) Path to a FastA/Q[.gz] file, with the follo'
+                        'wing extensions: .fa .fasta .fq .fastq in .gz or not.'
+                        '---- Default = UniRef100', dest="mmseq_db")
+
+    """UniRef90 take about 70GB of diskspace"""
 
     if len(sys.argv) == 1:  # In the case where nothing is provided
         parser.print_help(sys.stderr)

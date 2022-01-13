@@ -37,6 +37,17 @@ def remove_dir(dir_path, other=None):
     return True
 
 
+def check_seq_file_extension(file_path):
+    _ext_ok = ['.fa', '.fasta', '.fq', '.fastq']
+    if file_path[-3:] == '.gz':
+        if (file_path[-6:-3] in _ext_ok) or (file_path[-9:-3] in _ext_ok):
+            return True
+    elif (file_path[-6:-3] in _ext_ok) or (file_path[-9:-3] in _ext_ok):
+        return True
+    else:
+        return False
+
+
 def time_used(timing, step_name="Unknown step"):
     """This function prints the time taken by the system to run a step"""
     time_min = int((timing[1] - timing[0]) // 60)  # get the minutes
