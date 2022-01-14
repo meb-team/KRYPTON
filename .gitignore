@@ -2,3 +2,4 @@ krypton.egg-info/
 *__pycache__*
 damien
 foo
+hidden_notes.txt
