@@ -38,11 +38,11 @@ def remove_dir(dir_path, other=None):
 
 
 def check_seq_file_extension(file_path):
-    _ext_ok = ['.fa', '.fasta', '.fq', '.fastq']
-    if file_path[-3:] == '.gz':
-        if (file_path[-6:-3] in _ext_ok) or (file_path[-9:-3] in _ext_ok):
+    _ext_ok = ('.fa', '.fasta', '.fq', '.fastq', '.pep')
+    if file_path.lower().endswith('.gz'):
+        if file_path.lower()[:-3].endswith(_ext_ok):
             return True
-    elif (file_path[-6:-3] in _ext_ok) or (file_path[-9:-3] in _ext_ok):
+    elif file_path.lower().endswith(_ext_ok):
         return True
     else:
         return False

@@ -80,10 +80,10 @@ if __name__ == '__main__':
     groupD.add_argument('--cds', help='File with the cds extracted from a set'
                         ' of transcripts, in FASTA format (baz.fa[.gz])',
                         metavar="")
-    groupE.add_argument('--bucketin', help='Name of the bucket used to read'
+    groupE.add_argument('--bucket-in', help='Name of the bucket used to read'
                         ' data from. This option is required to run KRYPTON on'
                         ' the HPC2 cluster', metavar="BUCKET_IN")
-    groupE.add_argument('--bucketout', help='Name of the bucket used to store'
+    groupE.add_argument('--bucket-out', help='Name of the bucket used to store'
                         ' data in. This option is required to run KRYPTON on'
                         ' the HPC2 cluster', metavar="BUCKET_OUT")
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
@@ -91,12 +91,13 @@ if __name__ == '__main__':
                         action='store_true', default=False, dest='hpc2')
     groupF.add_argument('--mmseqs-search-db', help=' One of 1) Path to an'
                         'existing MMseqs2 database (Fast); 2) The name of a '
-                        'database provided by MMseqs2; a list is present here'
+                        'database provided by MMseqs2 (a list is present here '
                         'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases'
-                        '(Can be long and take lot of disk space, eg UniRef90'
-                        '~=70GB; 3) Path to a FastA/Q[.gz] file, with the follo'
-                        'wing extensions: .fa .fasta .fq .fastq in .gz or not.'
-                        '---- Default = UniRef100', dest="mmseq_db")
+                        ' - It can be long and take lot of disk space, eg UniRef90'
+                        '~=70GB); 3) Path to a FastA/Q[.gz] file, with the '
+                        'extension: .fa .fasta .fq or .fastq .pep and .gz '
+                        'or not. ##### Default = UniRef100', dest="mmseq_db",
+                        metavar="")
 
     """UniRef90 take about 70GB of diskspace"""
 

@@ -27,6 +27,7 @@ class Krypton:
         self.transcripts = A('transcripts')
         self.cds = A('cds')
         self.mmseq_db = 'UniRef100' if not A('mmseq_db') else A('mmseq_db')
+        self.mmseq_db_kind = None
         """ Let's first make KRYPTON running on a regular computer. """
         # self.bucket_in = A('bucketin')
         # self.bucket_out = A('bucketout')
@@ -52,8 +53,7 @@ class Krypton:
         if self.mode == "cds":
             u.is_file_exists(self.cds)
 
-        if self.mmseq_db != 'UniRef100':
-            mmseqs.check_input_db_user(self.mmseq_db)
+        self.mmseq_db_kind = mmseqs.check_input_db(self.mmseq_db)
 
         u.create_dir(self.output)
 
@@ -105,7 +105,7 @@ class Krypton:
         u.remove_dir(m.tmp)
         return True
 
-    def run_mmseqs_search(self, cds_file, ref_file, ref_nameDB):
+    def run_mmseqs_search(self, cds_file):
         """
         This is a litteral transposition of Baptiste's work.
         I will tune it later.
@@ -113,8 +113,16 @@ class Krypton:
         ms = mmseqs.MMseqs2(project=self.output, module='createdb')
 
         # The CDS, from Krypton or the user
-        ms.internal_db(seqs=cds_file)
+        ms.qry_db(seqs=cds_file)
+        # The database reference db; 3 possible cases
+        ms.ref_db(kind=self.mmseq_db_kind, infiles=self.mmseq_db)
 
+        ms.mmseqs_search(step="MMseqs - search")
+
+        # Converts the DB into a tsv
+        ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
+
+        u.remove_dir(ms.tmp)
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
         out_dir_long = self.output + "/05_transdecoder_longorfs"
@@ -191,9 +199,7 @@ class Krypton:
                         prot=True)
 
         cds_clusterised = glob.glob(f'{self.output}/07_*/07_*_rep_seq.*')[0]
-        self.run_mmseqs_search(cds_file=cds_clusterised,
-                               ,ref_file= , ref_name=):
-            toto = 1
+        self.run_mmseqs_search(cds_file=cds_clusterised)
 
         time_global.append(time.time())
         u.time_used(time_global, "Krypton")
