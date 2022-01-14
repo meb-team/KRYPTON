@@ -111,13 +111,12 @@ class MMseqs2():
             self.sbj = f"{self.output}/db/sbjDB"
         return True
 
-    def mmseqs_search(self, qry, sbj, step, eval='1e-5',
-                      num_hit=1, sensitiv=7.5):
+    def mmseqs_search(self, step, eval='1e-5', num_hit=1, sensitiv=7.5):
         """
         important parameters: -c --cov-mode --min-seq-id REVIEW THEM!!!
         """
         self.aln = f"{self.output}/resultDB"
-        command = f"mmseqs search {qry} {sbj} {self.aln} " +\
+        command = f"mmseqs search {self.qry} {self.sbj} {self.aln} " +\
                   f"{self.tmp} --threads 8 " +\
                   f"-s {sensitiv} -e {eval} --max-seqs {num_hit}"
         with open(f"{self.output}/mmseqs_search_logs.log", 'w') as log:
@@ -125,7 +124,7 @@ class MMseqs2():
         return True
 
     def mmseqsDB_to_tsv(self, step):
-        command = f"mmseqs {self.qry} {self.sbj} {self.aln} " +\
+        command = f"mmseqs convertalis {self.qry} {self.sbj} {self.aln} " +\
                   f"{self.output}/result.tsv --format-mode 2 -v 3"
         with open(f"{self.output}/mmseqs_convert_logs.log", 'w') as log:
             u.run_command(command, log=log, step=step)
