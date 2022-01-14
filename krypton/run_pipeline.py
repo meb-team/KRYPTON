@@ -118,11 +118,17 @@ class Krypton:
         ms.ref_db(kind=self.mmseq_db_kind, infiles=self.mmseq_db)
 
         ms.mmseqs_search(step="MMseqs - search")
+        u.remove_dir(ms.tmp)
 
         # Converts the DB into a tsv
         ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
 
-        u.remove_dir(ms.tmp)
+        # Sort the result, By query name and bit score
+        with open(f"{ms.result}.sort.tsv", "w") as log:
+            u.run_command(command=f"sort -rk1,12 {ms.result}", log=log)
+
+        # Get transcripts with >80% coverage
+        # to do...
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
         out_dir_long = self.output + "/05_transdecoder_longorfs"

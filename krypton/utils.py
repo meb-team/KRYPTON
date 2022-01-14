@@ -48,17 +48,18 @@ def check_seq_file_extension(file_path):
         return False
 
 
-def time_used(timing, step_name="Unknown step"):
+def time_used(timing, step_name=None):
     """This function prints the time taken by the system to run a step"""
-    time_min = int((timing[1] - timing[0]) // 60)  # get the minutes
-    time_sec = math.trunc((timing[1] - timing[0]) % 60)  # get the seconds
-    print("%s: %smin %ssec" % (step_name, time_min, time_sec))
+    if step_name:
+        time_min = int((timing[1] - timing[0]) // 60)  # get the minutes
+        time_sec = math.trunc((timing[1] - timing[0]) % 60)  # get the seconds
+        print("%s: %smin %ssec" % (step_name, time_min, time_sec))
+    return True
 
 
-def run_command(command, capture_out=False, log=None, step=None):
+def run_command(command, log=None, step=None):
     time_cmd = [time.time()]
-    subprocess.run(command.split(), capture_output=capture_out, stdout=log,
-                   stderr=subprocess.STDOUT)
+    subprocess.run(command.split(), stdout=log, stderr=subprocess.STDOUT)
     time_cmd.append(time.time())
     time_used(time_cmd, step)
     return True

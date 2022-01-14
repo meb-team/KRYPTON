@@ -124,8 +124,9 @@ class MMseqs2():
         return True
 
     def mmseqsDB_to_tsv(self, step):
+        self.result = f"{self.output}/result.tsv"
         command = f"mmseqs convertalis {self.qry} {self.sbj} {self.aln} " +\
-                  f"{self.output}/result.tsv --format-mode 2 -v 3"
+                  f"{self.result} --format-mode 2 -v 3"
         with open(f"{self.output}/mmseqs_convert_logs.log", 'w') as log:
             u.run_command(command, log=log, step=step)
         return True
