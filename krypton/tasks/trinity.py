@@ -26,7 +26,7 @@ class Trinity():
         """
         command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq " + \
                   f"--full_cleanup --CPU {self.max_threads} " + \
-                  f"--max_memory {self.max_mem}" + \
+                  f"--max_memory {self.max_mem} " + \
                   f"--output {self.output} "
         if r2:
             command += f"--left {r1} --right {r2}"
