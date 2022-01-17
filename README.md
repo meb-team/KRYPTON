@@ -64,8 +64,12 @@ Then, several tools are available if you cannot or do not want to update your sy
 
 ```bash
 #make sure you activated the Conda environment first
-conda install fastqc trimmomatic=0.39 trinity=2.13.2 mmseqs2=13.45111  transdecoder=5.5.0
+conda install fastqc trimmomatic=0.39 mmseqs2=13.45111  transdecoder=5.5.0
+
 ```
+
+Unfortunately, _Trinity_ can't be installed in the same Conda environment,
+so make sure it is available on your system.
 
 ## Install
 
