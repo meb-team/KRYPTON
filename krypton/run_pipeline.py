@@ -10,6 +10,7 @@ import krypton.tasks.trinity as trinity
 import krypton.tasks.trimmomatic as trimmomatic
 import krypton.tasks.transdecoder as transdecoder
 
+
 class Krypton:
     def __init__(self, args=None):
         self.args = args
@@ -39,13 +40,17 @@ class Krypton:
                     raise Exception("Mode - READS:\n Please provides "
                                     "the paired-end reads via `--r1` **and**"
                                     " `--r2`, or use `--single-end`.")
-                u.is_file_exists(self.r1)
-                u.is_file_exists(self.r2)
+                for file in [self.r1, self.r2]:
+                    if not u.full_check_file(file):
+                        raise Exception(f"The file {file} does not exist or"
+                                        " has an unknown extention.")
             else:
                 if self.r1 is None:
                     raise Exception("Mode - READS:\n Please provides at least "
                                     "one file for the reads.")
-                u.is_file_exists(self.r1)
+                if not u.full_check_file(self.r1):
+                    raise Exception(f"The file {self.r1} does not exist or"
+                                    " has an unknown extention.")
 
         if self.mode == "assembly":
             u.is_file_exists(self.transcripts)

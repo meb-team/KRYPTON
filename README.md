@@ -47,6 +47,26 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
 - _Mode assembly_
     - TransDecoder
 
+### Conda environment
+
+To fill the requirements linked to Python, a recipe for a **Conda environment**
+is present in the file `ressources/krypton_conda_env.yml`.
+
+To install it, make sure you have a [Conda](https://docs.conda.io/) installed
+on your system and run:
+
+```bash
+conda env create -f ressources/krypton_conda_env.yml
+conda activate krypton_base
+```
+
+Then, several tools are available if you cannot or do not want to update your system:
+
+```bash
+#make sure you activated the Conda environment first
+conda install fastqc trimmomatic=0.39 trinity=2.13.2 mmseqs2=13.45111  transdecoder=5.5.0
+```
+
 ## Install
 
 ```sh
@@ -106,58 +126,52 @@ KRYPTON run on HPC:
                         is required to run KRYPTON on the HPC2 cluster
   --run-on-HPC          Turn on this option when KRYPTON is meant to be run on
                         a HPC cluster
+
+MMseqs2 options:
+  --mmseqs-search-db    One of 1) Path to anexisting MMseqs2 database (Fast); 2) The name of a database provided by MMseqs2 (a list is present here https://github.com/soedinglab/MMseqs2/wiki#downloading-
+                        databases - It can be long and take lot of disk space, eg UniRef90~=70GB); 3) Path to a FastA/Q[.gz] file, with the extension: .fa .fasta .fq or .fastq .pep and .gz or not. #####
+                        Default = UniRef100
 ```
 
-## Example
+### Example
 
 1. Basic example with the mode `reads`:
 
 ```bash
-python3 bin/KRYPTON.py --out \<out_dir\> --r1 \<path/to/reads/\>read1.fq \
---r2 \<path/to/reads/\>read2.fq
+python3 bin/KRYPTON.py --out out_dir --r1 path/to/reads/read1.fq \
+    --r2 path/to/reads/read2.fq
 ```
 
-- exemple mode "assembly" :
+- Basic example with the mode `assembly`:
 
 ```bash
-
-python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/assemblage chemin/absolu/output
+python3 bin/KRYPTON.py --mode assembly --transcripts path/to/transcripts/infile.fa[.gz] --out out_dir
 ```
 
-- exemple mode "cds" :
+- Basic example with the mode `cds`:
 
 ```bash
-python3.5 ./bin/KRYPTON.py assembly /chemin/absolu/fichier_cds chemin/absolu/output
+python3 ./bin/KRYPTON.py --mode cds --cds path/to/predicted/cds/infile.fa
 ```
 
-### Résultats
+### Results
 
 For each step, the result are present under `<out_dir>` as follow:
-- `<out_dir>/00_fastqc_raw/`: results FastQC on the raw reads
-- `<out_dir>/01_trimmomatic/`: results of Trimmomatic
-- `<out_dir>/02_fastqc_trimmed/`: results of FastQC on the cleaned reads
-- `<out_dir>/03_trinity/`: Assembly of the reads
+- **Start of `read` mode**
+    - `<out_dir>/00_fastqc_raw/`: results FastQC on the raw reads
+    - `<out_dir>/01_trimmomatic/`: results of Trimmomatic
+    - `<out_dir>/02_fastqc_trimmed/`: results of FastQC on the cleaned reads
+    - `<out_dir>/03_trinity/`: Assembly of the reads
+- **Start of `assembly` mode**
+    - `<out_dir>/04_mmseqs/`: Clustering of the transcripts
+    - `<out_dir>/05_transdecoder_longorfs/`: Predict the CDS from the transcripts
+    - `<out_dir>/06_transdecoder_predict/`: Extract CDS that are most likely to code for a protein
+- **Start of `cds` mode**
+- `<out_dir>/07_mmseqs/`: Clustering of the CDS
+- `<out_dir>/08_mmseq_search/`: Align the CDS (1 representative per cluster) against a reference database
 
-__WIP...__
 
-Les séquences de la clusterisation nucléotidique se trouvent :
-
-```sh
-/chemin/absolu/dossier_output/mmseqs2_Trans_clust/clusterRes_rep_seq.fasta
-```
-
-Les séquences protéiques se trouvent :
-
-```sh
-/chemin/absolu/dossier_output/Transdecoder/clusterpep.fasta
-```
-
-Les séquences de la clusterisation protéique se trouvent :
-
-```sh
-/chemin/absolu/dossier_output/mmseqs2_Pep_clust/clusterpepRes_rep_seq.fasta
-```
-
+<!--
 Les résultats de l'annotation fonctionnelle se trouvent dans le dossier :
 
 
@@ -199,4 +213,4 @@ téléchargé sur : https://zenodo.org/record/1212585
 ### Commentaires :
 
 
-Il peut avoir un problème avec MetaPathExplorer si la base de donnée utilisé par MetaPathExplorer n'est pas à jour, à surveiller.
+Il peut avoir un problème avec MetaPathExplorer si la base de donnée utilisé par MetaPathExplorer n'est pas à jour, à surveiller. -->

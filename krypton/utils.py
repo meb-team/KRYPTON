@@ -48,6 +48,14 @@ def check_seq_file_extension(file_path):
         return False
 
 
+def full_check_file(file_path):
+    if is_file_exists(file_path) and check_seq_file_extension(file_path):
+        print(file_path)
+        return True
+    else:
+        return False
+
+
 def time_used(timing, step=None):
     """This function prints the time taken by the system to run a step"""
     if step:
