@@ -27,7 +27,8 @@ class Krypton:
         self.trimmo_mod = "PE" if self.paired else "SE"
         self.transcripts = A('transcripts')
         self.cds = A('cds')
-        self.mmseq_db = 'UniRef100' if not A('mmseq_db') else A('mmseq_db')
+        self.mmseq_db = 'UniProtKB/Swiss-Prot' if not A('mmseq_db') \
+                        else A('mmseq_db')
         self.mmseq_db_kind = None
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'

@@ -97,7 +97,8 @@ if __name__ == '__main__':
                         ' - It can be long and take lot of disk space, eg UniRef90'
                         '~=70GB); 3) Path to a FastA/Q[.gz] file, with the '
                         'extension: .fa .fasta .fq or .fastq .pep and .gz '
-                        'or not. ##### Default = UniRef100', dest="mmseq_db",
+                        'or not. ##### Default = UniProtKB/Swiss-Prot',
+                        dest="mmseq_db",
                         metavar="")
     groupG.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
