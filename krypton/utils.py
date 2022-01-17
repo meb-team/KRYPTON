@@ -50,7 +50,6 @@ def check_seq_file_extension(file_path):
 
 def full_check_file(file_path):
     if is_file_exists(file_path) and check_seq_file_extension(file_path):
-        print(file_path)
         return True
     else:
         return False

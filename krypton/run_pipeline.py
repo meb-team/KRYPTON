@@ -29,6 +29,8 @@ class Krypton:
         self.cds = A('cds')
         self.mmseq_db = 'UniRef100' if not A('mmseq_db') else A('mmseq_db')
         self.mmseq_db_kind = None
+        self.max_threads = 2 if not A('threads') else int(A('threads'))
+        self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
         """ Let's first make KRYPTON running on a regular computer. """
         # self.bucket_in = A('bucketin')
         # self.bucket_out = A('bucketout')
@@ -75,7 +77,8 @@ class Krypton:
 
     def run_fastqc(self, step=None, raw=False, r1=None, r2=None):
         """ It assumes that FastQC is in the Path """
-        f = fastqc.FastQC(raw=raw, project=self.output)
+        f = fastqc.FastQC(raw=raw, project=self.output,
+                          threads=self.max_threads, mem=self.max_mem)
 
         with open(f.output + "/fastqc_logs.log", "w") as log:
             command = f.format_command_fastqc(f.output, r1, r2)

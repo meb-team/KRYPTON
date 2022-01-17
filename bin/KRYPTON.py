@@ -55,6 +55,7 @@ if __name__ == '__main__':
     groupD = parser.add_argument_group('Mode - CDS')
     groupE = parser.add_argument_group('KRYPTON run on HPC')
     groupF = parser.add_argument_group('MMseqs2 options')
+    groupG = parser.add_argument_group('General options')
     groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from '
                         'which the pipeline is run', default="reads", type=str,
                         choices=['reads', 'assembly', 'cds'])
@@ -98,8 +99,10 @@ if __name__ == '__main__':
                         'extension: .fa .fasta .fq or .fastq .pep and .gz '
                         'or not. ##### Default = UniRef100', dest="mmseq_db",
                         metavar="")
-
-    """UniRef90 take about 70GB of diskspace"""
+    groupG.add_argument('-t', help='Maximum number of threads that KRYPTON '
+                        'can use.', dest='threads')
+    groupG.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
+                        'KRYPTON can use, eg 64 to ask for 64GB of RAM')
 
     if len(sys.argv) == 1:  # In the case where nothing is provided
         parser.print_help(sys.stderr)
