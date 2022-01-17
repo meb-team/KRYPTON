@@ -86,17 +86,19 @@ class Krypton:
         return True
 
     def run_trimmomatic(self, step=None):
-        t = trimmomatic.Trimmomatic(project=self.output)
+        t = trimmomatic.Trimmomatic(project=self.output,
+                                    threads=self.max_threads)
         command = t.format_command(bin=self.trimmomatic, mod=self.trimmo_mod,
                                    r1=self.r1, r2=self.r2,
-                                   params="MINLEN:32 SLIDINGWINDOW:10:20 " +
+                                   params="MINLEN:32 SLIDINGWINDOW:4:5 " +
                                    "LEADING:5 TRAILING:5")
         with open(t.output + "/trimmomatic_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True
 
     def run_trinity(self, step=None, r1=None, r2=None):
-        ty = trinity.Trinity(project=self.output)
+        ty = trinity.Trinity(project=self.output, threads=self.max_threads,
+                             mem=self.max_mem)
         command = ty.format_command(r1, r2)
         # With --full_cleanup, I have to let Trinity deal with its output dir
         with open(self.output + "/03_trinity_logs.log", "w") as log:
@@ -106,7 +108,8 @@ class Krypton:
         return True
 
     def run_mmseqs_clust(self, step=None, seqs=None, prot=None):
-        m = mmseqs.MMseqs2(project=self.output, prot=prot)
+        m = mmseqs.MMseqs2(project=self.output, prot=prot,
+                           threads=self.threads, mem=self.max_mem)
         command = m.command_cluster(seqs=seqs)
         with open(m.output + "/mmseqs_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
@@ -118,7 +121,8 @@ class Krypton:
         This is a litteral transposition of Baptiste's work.
         I will tune it later.
         """
-        ms = mmseqs.MMseqs2(project=self.output, module='createdb')
+        ms = mmseqs.MMseqs2(project=self.output, module='createdb',
+                            threads=self.threads, mem=self.max_mem)
 
         # The CDS, from Krypton or the user
         ms.qry_db(seqs=cds_file)

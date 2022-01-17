@@ -11,7 +11,9 @@ Add something to test the presence of Trinity in the PATH, and the version
 
 class Trinity():
 
-    def __init__(self, project=None):
+    def __init__(self, project=None, threads=None, mem=None):
+        self.max_threads = threads
+        self.max_mem = mem
         self.output = project + "/03_trinity"
 
     def format_command(self, r1, r2=None):
@@ -22,8 +24,9 @@ class Trinity():
             {priject}/03_trinity.Trinity.fasta
         N.B., with this way, I have to trust Trinity for the dirrectory setup
         """
-        command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq " +\
-                  "--full_cleanup --CPU 8 --max_memory 64G " +\
+        command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq " + \
+                  f"--full_cleanup --CPU {self.max_threads} " + \
+                  f"--max_memory {self.max_mem}" + \
                   f"--output {self.output} "
         if r2:
             command += f"--left {r1} --right {r2}"

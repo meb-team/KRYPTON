@@ -33,9 +33,11 @@ def check_input_db(name):
 class MMseqs2():
     """ Class that handle operations related to MMseqs2 """
 
-    def __init__(self, project=None, prot=None, module=None):
+    def __init__(self, project=None, prot=None, module=None, threads=None,
+                 mem=None):
         self.module = 'easy-cluster' if not module else module
-        self.threads = 8  # Ideally, this value would be provided by the user
+        self.max_threads = threads
+        self.max_mem = mem
         self.prot = prot
         self.subdir = self._get_subdir()
         self.output = project + "/" + self.subdir
@@ -54,8 +56,9 @@ class MMseqs2():
     def command_cluster(self, seqs):
         # I know, this function looks useless, but I can't predict the future.
         # So let's keept it and see whether I can re-use it!
-        command = f"mmseqs {self.module} {seqs} {self.prefix} {self.tmp}" +\
-                  f" --threads {self.threads}"
+        command = f"mmseqs {self.module} {seqs} {self.prefix} {self.tmp}" + \
+                  f" --threads {self.max_threads} " + \
+                  f"--split-memory-limit {self.max_mem}"
         return command
 
     def mmseqs_createdb(self, seqs, db_prefix, logfile, step):
@@ -117,7 +120,8 @@ class MMseqs2():
         """
         self.aln = f"{self.output}/resultDB"
         command = f"mmseqs search {self.qry} {self.sbj} {self.aln} " +\
-                  f"{self.tmp} --threads 8 " +\
+                  f"{self.tmp} --threads {self.max_threads} " + \
+                  f"--split-memory-limit {self.max_mem}" + \
                   f"-s {sensitiv} -e {eval} --max-seqs {num_hit}"
         with open(f"{self.output}/mmseqs_search_logs.log", 'w') as log:
             u.run_command(command, log=log, step=step)

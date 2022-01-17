@@ -9,12 +9,13 @@ Add something to test the presence of Trimmomatic in the PATH
 
 class Trimmomatic():
 
-    def __init__(self, raw=None, project=None):
+    def __init__(self, raw=None, project=None, threads=None):
+        self.max_threads = threads
         self.output = project + "/01_trimmomatic"
         u.create_dir(self.output)
 
     def format_command(self, bin, mod, r1, r2=None, params=None):
-        command = f"java -jar {bin} {mod} "
+        command = f"java -jar {bin} {mod} -threads {self.max_threads} "
         if r2:
             command += f"{r1} {r2} {self.output}/r1.paired.fq " +\
                        f"{self.output}/r1.unpaired.fq {self.output}" +\
