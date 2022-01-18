@@ -57,20 +57,20 @@ def full_check_file(file_path):
 
 def time_used(timing, step=None):
     """This function prints the time taken by the system to run a step"""
-    if step:
-        time_min = int((timing[1] - timing[0]) // 60)  # get the minutes
-        time_sec = math.trunc((timing[1] - timing[0]) % 60)  # get the seconds
-        print(": %smin %ssec" % (time_min, time_sec))
+    time_min = int((timing[1] - timing[0]) // 60)  # get the minutes
+    time_sec = math.trunc((timing[1] - timing[0]) % 60)  # get the seconds
+    if not step:
+        print("%smin %ssec" % (time_min, time_sec))
+    else:
+        print("%s: %smin %ssec" % (step, time_min, time_sec))
     return True
 
 
 def run_command(command, log=None, step=None):
     time_cmd = [time.time()]
-    if step:
-        print(step, end="")
     subprocess.run(command.split(), stdout=log, stderr=subprocess.STDOUT)
     time_cmd.append(time.time())
-    time_used(time_cmd, step)
+    time_used(time_cmd, step=step)
     return True
 
 

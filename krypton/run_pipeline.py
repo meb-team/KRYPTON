@@ -139,7 +139,8 @@ class Krypton:
 
         # Sort the result, By query name and bit score
         with open(f"{ms.result}.sort.tsv", "w") as log:
-            u.run_command(command=f"sort -rk1,12 {ms.result}", log=log)
+            u.run_command(command=f"sort -rk1,12 {ms.result}", log=log,
+                          step="Sort the MMseqs tsv file")
 
         # Get transcripts with >80% coverage
         # to do...
