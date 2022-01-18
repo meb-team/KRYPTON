@@ -221,4 +221,4 @@ class Krypton:
         self.run_mmseqs_search(cds_file=cds_clusterised)
 
         time_global.append(time.time())
-        u.time_used(time_global, "Krypton")
+        u.time_used(time_global, step="Krypton")
