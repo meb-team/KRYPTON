@@ -19,18 +19,18 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
         (_TrimmomaticPE: Completed successfully_)
     - [ ] Trinity too ("_All commands completed successfully. :-)_")
 - [ ] Tweak tool parameters by passing them to the command line:
-    - [ ] fastQC _--threads_
+    - [x] fastQC _--threads_
     - [ ] trimmomatic _MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5_
-    - [ ] trinity _--CPU_ and _--max_memory_
+    - [X] trinity _--CPU_ and _--max_memory_
     - [ ] MMseqs2: cluster mode; sensitivity, min seq ID, ...
-    - [ ] TransDecoder --> min ORF size, Pfam annotation
+    - [ ] TransDecoder --> min ORF size, Pfam annotation?
 - [ ] Add a dict to store the subpath values
     - eg:
         - {"00" : "00_FastQC_raw",
         - "01" : "01_trimmomatic",
         - ... }
 - <s>[ ] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log` </s> **BAD IDEA**
-- [ ] Add the HMMER suite (TransDecoder) + other step
+- <s>[ ] Add the HMMER suite (TransDecoder?) + other step</s> **Not interesting**
 
 ## Dependencies
 - _All modes_
@@ -41,7 +41,11 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
 - _Mode reads_
     - fastQC >= 0.11.4
     - Trimmomatic >= 0.33
-    - Trinity >= 2.9.1
+    - Trinity >= 2.9.1 and [Salmon](https://github.com/COMBINE-lab/salmon/releases/download/v1.0.0/Salmon-1.0.0_linux_x86_64.tar.gz) >= v1.0.0
+        - I ran all my tests with **Trinity v2.9.1 which requires Salmon v1.0.0**
+        - More recent version of Trinity may require Salmon > v1.0.0
+        - The recipe for their [Docker image](https://hub.docker.com/r/trinityrnaseq/trinityrnaseq/tags) can help you decide if the information is not given
+        in the Trinity's documentation.
     - [TransDecoder](https://github.com/TransDecoder/TransDecoder) >= 5.5.0
 
 - _Mode assembly_
