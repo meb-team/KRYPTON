@@ -110,7 +110,7 @@ class Krypton:
 
     def run_mmseqs_clust(self, step=None, seqs=None, prot=None):
         m = mmseqs.MMseqs2(project=self.output, prot=prot,
-                           threads=self.threads, mem=self.max_mem)
+                           threads=self.max_threads, mem=self.max_mem)
         command = m.command_cluster(seqs=seqs)
         with open(m.output + "/mmseqs_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
@@ -123,7 +123,7 @@ class Krypton:
         I will tune it later.
         """
         ms = mmseqs.MMseqs2(project=self.output, module='createdb',
-                            threads=self.threads, mem=self.max_mem)
+                            threads=self.max_threads, mem=self.max_mem)
 
         # The CDS, from Krypton or the user
         ms.qry_db(seqs=cds_file)
@@ -204,8 +204,8 @@ class Krypton:
             transcripts_path = self.transcripts if self.transcripts else \
                     glob.glob(f"{self.output}/03_trinity/*clean_defline.fa")[0]
 
-            self.run_mmseqs(step="MMseqs2 cluster transcripts",
-                            seqs=transcripts_path)
+            self.run_mmseqs_clust(step="MMseqs2 cluster transcripts",
+                                  seqs=transcripts_path)
 
             self.run_prot_prediction(step="TransDecoder",
                                      transcrits_clust=f"{self.output}/04_mmseqs/04_mmseqs_rep_seq.fasta")
@@ -215,7 +215,7 @@ class Krypton:
             glob.glob(self.output + '/06_*/*.pep')[0]
 
         self.run_mmseqs_clust(seqs=cds_path, step="MMseqs cluster proteins",
-                        prot=True)
+                              prot=True)
 
         cds_clusterised = glob.glob(f'{self.output}/07_*/07_*_rep_seq.*')[0]
         self.run_mmseqs_search(cds_file=cds_clusterised)
