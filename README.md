@@ -13,6 +13,8 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
 
 ## To-do list:
 
+- [ ] Clarify the 3 steps: use the right vocabulary, eg "_peptide sequence_"
+    instead of "_cds_"
 - [ ] add a `requirements.txt`
 - [ ] check if a step ended nicely?
     - [ ] trimmomatic output the information in STDOUT/STDERR
@@ -29,7 +31,7 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
         - {"00" : "00_FastQC_raw",
         - "01" : "01_trimmomatic",
         - ... }
-- <s>[ ] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log` </s> **BAD IDEA**
+- <s>[ ] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log`</s> **BAD IDEA**
 - <s>[ ] Add the HMMER suite (TransDecoder?) + other step</s> **Not interesting**
 
 ## Dependencies
@@ -44,8 +46,8 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
     - Trinity >= 2.9.1 and [Salmon](https://github.com/COMBINE-lab/salmon/releases/download/v1.0.0/Salmon-1.0.0_linux_x86_64.tar.gz) >= v1.0.0
         - I ran all my tests with **Trinity v2.9.1 which requires Salmon v1.0.0**
         - More recent version of Trinity may require Salmon > v1.0.0
-        - The recipe for their [Docker image](https://hub.docker.com/r/trinityrnaseq/trinityrnaseq/tags) can help you decide if the information is not given
-        in the Trinity's documentation.
+        - The recipe for their [Docker image](https://hub.docker.com/r/trinityrnaseq/trinityrnaseq/tags) can help you choose the righ version of Salmon to use
+        whether this information is not present in the Trinity's documentation.
     - [TransDecoder](https://github.com/TransDecoder/TransDecoder) >= 5.5.0
 
 - _Mode assembly_
@@ -85,8 +87,9 @@ pip install -e .
 
 ## Usage
 
-There are kind of usage. From the sequencing _reads_ (`--mode reads`), or by
-providing a set of transcripts (`--mode assembly`) or from a set of CDS (`--mode cds`).
+There are several kind of usage. From the sequencing _reads_ (`--mode reads`), by
+providing a set of transcripts (`--mode assembly`) or from a set of
+**translated** CDS (`--mode cds`).
 
 The help menu is available with the command `python bin/KRYPTON.py -h`, and bellow.
 
