@@ -92,7 +92,7 @@ class Krypton:
                                     threads=self.max_threads)
         command = t.format_command(bin=self.trimmomatic, mod=self.trimmo_mod,
                                    r1=self.r1, r2=self.r2,
-                                   params="MINLEN:32 SLIDINGWINDOW:4:5 " +
+                                   params="MINLEN:32 SLIDINGWINDOW:4:20 " +
                                    "LEADING:5 TRAILING:5")
         with open(t.output + "/trimmomatic_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)

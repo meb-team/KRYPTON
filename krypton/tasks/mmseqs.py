@@ -100,6 +100,7 @@ class MMseqs2():
         self.sbj = ""
         if kind == "db_ok":
             self.sbj = infiles
+            print("MMseqs database provided by the user is fine.")
         elif kind == "db_to_create":
             self.mmseqs_createdb(seqs=infiles,
                                  db_prefix=f"{self.output}/db/sbjDB",
@@ -114,23 +115,25 @@ class MMseqs2():
             self.sbj = f"{self.output}/db/sbjDB"
         return True
 
-    def mmseqs_search(self, step, eval='1e-5', num_hit=1, sensitiv=7.5):
+    def mmseqs_search(self, step, eval='1e-5', num_hit=300, sensitiv=7.5,
+                      max_hit=1):
         """
         important parameters: -c --cov-mode --min-seq-id REVIEW THEM!!!
         """
         self.aln = f"{self.output}/db/resultDB"
-        command = f"mmseqs search {self.qry} {self.sbj} {self.aln} " +\
+        command = f"mmseqs search {self.qry} {self.sbj} {self.aln} " + \
                   f"{self.tmp} --threads {self.max_threads} " + \
-                  f"--split-memory-limit {self.max_mem} " + \
-                  f"-s {sensitiv} -e {eval} --max-seqs {num_hit}"
+                  f"--split-memory-limit {self.max_mem} -s {sensitiv} " + \
+                  f"-e {eval} --max-seqs {num_hit} --max-accept {max_hit}"
         with open(f"{self.output}/mmseqs_search_logs.log", 'w') as log:
             u.run_command(command, log=log, step=step)
         return True
 
     def mmseqsDB_to_tsv(self, step):
         self.result = f"{self.output}/result.tsv"
-        command = f"mmseqs convertalis {self.qry} {self.sbj} {self.aln} " +\
-                  f"{self.result} --format-mode 2 -v 3"
+        command = f"mmseqs convertalis {self.qry} {self.sbj} {self.aln} " + \
+                  f"{self.result} --threads {self.max_threads} " + \
+                  "--format-mode 2 -v 3"
         with open(f"{self.output}/mmseqs_convert_logs.log", 'w') as log:
             u.run_command(command, log=log, step=step)
         return True
