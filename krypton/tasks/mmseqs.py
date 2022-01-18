@@ -118,10 +118,10 @@ class MMseqs2():
         """
         important parameters: -c --cov-mode --min-seq-id REVIEW THEM!!!
         """
-        self.aln = f"{self.output}/resultDB"
+        self.aln = f"{self.output}/db/resultDB"
         command = f"mmseqs search {self.qry} {self.sbj} {self.aln} " +\
                   f"{self.tmp} --threads {self.max_threads} " + \
-                  f"--split-memory-limit {self.max_mem}" + \
+                  f"--split-memory-limit {self.max_mem} " + \
                   f"-s {sensitiv} -e {eval} --max-seqs {num_hit}"
         with open(f"{self.output}/mmseqs_search_logs.log", 'w') as log:
             u.run_command(command, log=log, step=step)
