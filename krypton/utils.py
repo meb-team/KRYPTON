@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import os
+import sys
 import math
 import time
 import shutil
@@ -9,12 +10,16 @@ import subprocess
 
 def create_dir(file_path):
     try:
-        os.mkdir(file_path)
-    except Exception:
-        raise Exception(f"\nThe path you have provided for your output files:"
-                        f"\n\n\t'{os.path.abspath(file_path)}'\n\n"
-                        f"already is used by a directory. KRYPTON tries to not"
-                        f" overwright existing files and directories.")
+        os.makedirs(file_path)
+    except FileExistsError:
+        # raise Exception(f"\nThe path you have provided for your output files:"
+        #                 f"\n\n\t'{os.path.abspath(file_path)}'\n\n"
+        #                 f"already is used by a directory. KRYPTON tries to not"
+        #                 f" overwright existing files and directories.")
+        print("Impossible to create the directory %s.\n Krypton can't reach it"
+              % os.path.abspath(file_path),
+              "Or Krypton it is already present. \n Krypton is terminating")
+        sys.exit(1)
     return True
 
 
