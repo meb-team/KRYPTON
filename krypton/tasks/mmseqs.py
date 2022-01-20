@@ -115,7 +115,7 @@ class MMseqs2():
             self.sbj = f"{self.output}/db/sbjDB"
         return True
 
-    def mmseqs_search(self, step, eval='1e-5', num_hit=300, sensitiv=7.5,
+    def mmseqs_search(self, step, eval='1e-5', num_hit=100, sensitiv=7.5,
                       max_hit=1):
         """
         important parameters: -c --cov-mode --min-seq-id REVIEW THEM!!!

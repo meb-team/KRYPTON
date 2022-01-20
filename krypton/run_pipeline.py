@@ -32,7 +32,6 @@ class Krypton:
         self.mmseq_db_kind = None
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
-        print(self.max_mem)
         """ Let's first make KRYPTON running on a regular computer. """
         # self.bucket_in = A('bucketin')
         # self.bucket_out = A('bucketout')
