@@ -78,6 +78,9 @@ if __name__ == '__main__':
     groupC.add_argument('--transcripts', help='A file containing transcrits'
                         ' already assembled, in FASTA format (bar.fa[.gz])',
                         metavar="")
+    groupC.add_argument('--min-protein-len', help="Minimal protein length "
+                        ", for TransDecoder.LongOrfs. Default is 100 AA",
+                        dest="min_prot_len", metavar="")
     groupD.add_argument('--cds', help='File with the cds extracted from a set'
                         ' of transcripts, in FASTA format (baz.fa[.gz])',
                         metavar="")

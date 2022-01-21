@@ -27,6 +27,7 @@ class Krypton:
         self.trimmo_mod = "PE" if self.paired else "SE"
         self.transcripts = A('transcripts')
         self.cds = A('cds')
+        self.min_prot_len = A('min_prot_len')
         self.mmseq_db = 'UniProtKB/Swiss-Prot' if not A('mmseq_db') \
                         else A('mmseq_db')
         self.mmseq_db_kind = None
@@ -152,9 +153,9 @@ class Krypton:
         Note about the parameters from the wiki: "the rate of false positive
         ORF predictions increases drastically with shorter minimum length
         """
-        t = transdecoder.TransDecoder()
+        t = transdecoder.TransDecoder(min_prot_len=self.min_prot_len)
         command = t.format_longorf(transcrits_clust=transcrits_clust,
-                                   outdir=out_dir_long, min_size=30)
+                                   outdir=out_dir_long)
         with open(out_dir_long + "/td_longorfs_logs.log", "w") as log:
             u.run_command(command, log=log, step=f"{step} - LongOrfs")
 

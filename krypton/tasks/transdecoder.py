@@ -10,10 +10,11 @@ import krypton.utils as u
 
 class TransDecoder():
 
-    def __init__(self):
+    def __init__(self, min_prot_len=None):
         self.required_version = "5.5.0"
         self._check_avail()
         self._check_version()
+        self.min_prot_len = 100 if not min_prot_len else int(min_prot_len)
 
     def _check_avail(self):
         try:
@@ -41,11 +42,9 @@ class TransDecoder():
     def __repr__(self):
         return f"TransDecoder Object, tool version : {self.required_version}"
 
-    def format_longorf(self, transcrits_clust, outdir, min_size=None):
+    def format_longorf(self, transcrits_clust, outdir):
         command = f"TransDecoder.LongOrfs --output_dir {outdir}"\
-                  + f" -t {transcrits_clust}"
-        if min_size:
-            command += f" -m {min_size}"
+                  + f" -t {transcrits_clust} -m {self.min_prot_len}"
         return command
 
     def format_predict(self, transcrits_clust, pred_input, pfam=None,
