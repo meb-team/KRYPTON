@@ -196,10 +196,11 @@ class Krypton:
             if self.paired:
                 self.run_fastqc(step="FastQC - Trimmed reads",
                                 r1=clean_r1, r2=clean_r2)
-                self.run_trinity(step="Trinity", r1=clean_r1, r2=clean_r2)
-
+                self.run_trinity(step="Trinity Paired-End reads",
+                                 r1=clean_r1, r2=clean_r2)
             else:
                 self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1)
+                self.run_trinity(step="Trinity Single-End reads", r1=clean_r1)
 
         if self.mode != "cds":  # a.k.a _reads_ or _assembly_
             transcripts_path = self.transcripts if self.transcripts else \
