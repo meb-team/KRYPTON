@@ -13,6 +13,8 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
 
 ## To-do list:
 
+- [ ] **TransDecoder-Predict** capture the log and check if it ends correctly
+        otherwise, re-run it with the parameter **`--no_refine_starts`**.
 - [ ] Clarify the 3 steps: use the right vocabulary, eg "_peptide sequence_"
     instead of "_cds_"
 - [ ] add a `requirements.txt`

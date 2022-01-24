@@ -214,6 +214,8 @@ class Krypton:
                                      transcrits_clust=f"{self.output}/04_mmseqs/04_mmseqs_rep_seq.fasta")
 
         # Start from the cds provided by the user
+        """ This step would require an extra check, in case of failure
+        from TansDecoder-Predict"""
         cds_path = self.cds if self.cds else \
             glob.glob(self.output + '/06_*/*.pep')[0]
 
