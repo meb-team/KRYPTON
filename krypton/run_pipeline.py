@@ -203,6 +203,8 @@ class Krypton:
                 self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1)
                 self.run_trinity(step="Trinity Single-End reads", r1=clean_r1)
 
+            trimmomatic.clean(self.output)
+
         if self.mode != "cds":  # a.k.a _reads_ or _assembly_
             transcripts_path = self.transcripts if self.transcripts else \
                     glob.glob(f"{self.output}/03_trinity/*clean_defline.fa")[0]

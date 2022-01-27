@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import glob
 import krypton.utils as u
 
 """
@@ -25,3 +26,9 @@ class Trimmomatic():
 
         command += f"{'' if not params else params}"
         return command
+
+
+def clean(project):
+    for file in glob.glob(f"{project}/01_trimmomatic/*.fq"):
+        u.remove_file(file)
+    return True

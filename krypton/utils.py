@@ -42,6 +42,15 @@ def remove_dir(dir_path, other=None):
     return True
 
 
+def remove_file(file_path):
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        print("Message for KRYPTON devs:\n",
+              f"Cannot remove the file {os.path.abspath(file_path)}", sep='')
+    return True
+
+
 def check_seq_file_extension(file_path):
     _ext_ok = ('.fa', '.fasta', '.fq', '.fastq', '.pep')
     if file_path.lower().endswith('.gz'):

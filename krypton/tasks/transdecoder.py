@@ -72,20 +72,12 @@ class TransDecoder():
 
         for file in glob.glob(f"{os.path.basename(transcripts)}*"):
             os.replace(file, f"{dest}/{file}")
-        self.remove_pipeliner(glob.glob("pipeliner.*.cmds"))
+
+        for pipeliner in glob.glob("pipeliner.*.cmds"):
+            u.remove_file(pipeliner)
 
         for dir_to_rm in glob.glob(f"{from_long}.*"):
             u.remove_dir(dir_to_rm, other=True)
-
-    def remove_pipeliner(self, file_path):
-        for file in file_path:
-            try:
-                os.remove(file)
-            except FileNotFoundError:
-                print("Message for KRYPTON devs:\n",
-                      f"Cannot remove the file {os.path.abspath(file)}",
-                      sep='')
-        return True
 
 
 if __name__ == '__main__':
