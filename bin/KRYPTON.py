@@ -93,16 +93,19 @@ if __name__ == '__main__':
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
                         ' is meant to be run on a HPC cluster -- WIP',
                         action='store_true', default=False, dest='hpc2')
-    groupF.add_argument('--mmseqs-search-db', help=' One of 1) Path to an'
-                        'existing MMseqs2 database (Fast); 2) The name of a '
-                        'database provided by MMseqs2 (a list is present here '
-                        'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases'
-                        ' - It can be long and take lot of disk space, eg UniRef90'
-                        '~=70GB); 3) Path to a FastA/Q[.gz] file, with the '
-                        'extension: .fa .fasta .fq or .fastq .pep and .gz '
-                        'or not. ##### Default = UniProtKB/Swiss-Prot',
-                        dest="mmseq_db",
-                        metavar="")
+    groupF.add_argument('--mmseqs-db', help=' One of'
+                        '1) Path to an existing MMseqs2 database; '
+                        '2) The name of a database provided by MMseqs2 '
+                        '(a list is present here: '
+                        'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases '
+                        '3) Path to a {fa,fasta,fq,fastq,pep}[.gz] file, '
+                        '##### Default is = UniProtKB/Swiss-Prot',
+                        dest="mmseq_db", metavar="")
+    groupF.add_argument('--mmseqs-db-path', help='Path to a directory that '
+                        'contains databases ready-to-use by MMseqs. If the '
+                        'database provided to "--mmseqs-db-path" does not '
+                        'exists, KRYPTON will set it up there.',
+                        dest='mmseq_db_path', metavar="")
     groupG.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
     groupG.add_argument('--mem', help='Maximum amount of RAM - in GB - that '

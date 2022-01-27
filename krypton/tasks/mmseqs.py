@@ -9,9 +9,8 @@ mmseqs_db_to_dl = ["UniRef100", "UniRef90", "UniRef50", "UniProtKB",
 
 
 def check_input_db(name):
-
     """
-    Fix the functoin, it can't reach the else...
+    Fix this function, it cannot reach the 'else' statement.
     """
 
     if name in mmseqs_db_to_dl:
@@ -26,8 +25,27 @@ def check_input_db(name):
         return "db_ok"
     else:
         raise Exception(f"Krypton don't know this MMseqs2 database: {name}.\n"
-                        "There is probably an error in the name of the"
-                        "database or the file ")
+                        "There is probably an error with the name provided.")
+
+
+def check_input_db_path(mmseq_db_path, db_kind):
+    if db_kind == "db_ok":  # The user has provided a valid database
+        return True
+    elif db_kind == "db_to_dl":  # The user provided a db that has to be dl
+        if not mmseq_db_path:  # The user does not want to store the db
+            toto = 1
+        # else:
+        #     # dl and store the database where the user asked
+        #     titi = 1
+    # elif db_kind == "db_to_create":  # The user provided a Fa to setup the db
+    #     if not mmseq_db_path:  # The user does not want to store the db
+    #         toto = 1
+    #     else:
+    #         # setup and store the database where the user asked
+    #         titi = 1
+    # if not mmseq_db_path:
+    #     toto = 1
+    #     # Do something here
 
 
 class MMseqs2():
