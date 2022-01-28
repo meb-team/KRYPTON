@@ -16,9 +16,9 @@ def create_dir(file_path):
         #                 f"\n\n\t'{os.path.abspath(file_path)}'\n\n"
         #                 f"already is used by a directory. KRYPTON tries to not"
         #                 f" overwright existing files and directories.")
-        print("Impossible to create the directory %s.\n Krypton can't reach it"
-              % os.path.abspath(file_path),
-              "Or Krypton it is already present. \n Krypton is terminating")
+        print("\n\nImpossible to create the directory %s.\n"
+              % os.path.abspath(file_path), "KRYPTON can't reach it or it is",
+              "already present.\nKRYPTON is terminating.\n")
         sys.exit(1)
     return True
 
@@ -27,7 +27,8 @@ def is_file_exists(file_path):
     if not file_path:
         raise Exception("\nNo input file is declared...")
     if not os.path.exists(os.path.abspath(file_path)):
-        raise Exception(f"\nNo such file: {os.path.abspath(file_path)}")
+        raise Exception("\n\nKRYPTON cannot reach the file: "
+                        f"{os.path.abspath(file_path)}\n")
     return True
 
 

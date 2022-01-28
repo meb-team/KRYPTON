@@ -29,12 +29,13 @@ class Krypton:
         self.cds = A('cds')
         self.min_prot_len = A('min_prot_len')
 #############################################################################
-        # ### Check the database arguments here ###
-#############################################################################
-        # self.mmseq_db = 'UniProtKB/Swiss-Prot' if not A('mmseq_db') \
-        #                 else A('mmseq_db')
-        # self.mmseq_db_path = A('mmseq_db_path')
-        # self.mmseq_db_kind = None
+        self.mmseq_db = 'UniProtKB/Swiss-Prot' if not A('mmseq_db') \
+                        else A('mmseq_db')
+        self.mmseq_db_path = A('mmseq_db_path')
+
+        self.mmseq_sbj = mmseqs.check_mmseq_db_param(db=self.mmseq_db,
+                                                     db_path=self.mmseq_db_path
+                                                     )
 #############################################################################
 
         self.max_threads = 2 if not A('threads') else int(A('threads'))
@@ -68,17 +69,7 @@ class Krypton:
         if self.mode == "cds":
             u.is_file_exists(self.cds)
 
-#############################################################################
-        self.mmseq_db_kind = mmseqs.check_input_db(self.mmseq_db)
-        mmseqs.check_input_db_path(self.mmseq_db_path, self.mmseq_db_kind)
-#############################################################################
-
         u.create_dir(self.output)
-
-#############################################################################
-        #  Call again the function for mmseq db and write the options in a
-        # file
-#############################################################################
 
         """
         Just a reminder that I will have to
@@ -142,9 +133,13 @@ class Krypton:
 
         # The CDS, from Krypton or the user
         ms.qry_db(seqs=cds_file)
+#############################################################################
+#############################################################################
+        """This must be modified ==> read from the file"""
         # The database reference db; 3 possible cases
-        ms.ref_db(kind=self.mmseq_db_kind, infiles=self.mmseq_db)
-
+        ms.ref_db(info_d=self.mmseq_sbj)
+#############################################################################
+#############################################################################
         ms.mmseqs_search(step="MMseqs - search")
         u.remove_dir(ms.tmp)
 
