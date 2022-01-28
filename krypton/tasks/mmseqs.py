@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import os
 import krypton.utils as u
 
 mmseqs_db_to_dl = ["UniRef100", "UniRef90", "UniRef50", "UniProtKB",
@@ -8,24 +9,37 @@ mmseqs_db_to_dl = ["UniRef100", "UniRef90", "UniRef50", "UniProtKB",
                    "eggNOG", "dbCAN2", "Resfinder", "Kalamari"]
 
 
-def check_input_db(name):
-    """
-    Fix this function, it cannot reach the 'else' statement.
-    """
-
-    if name in mmseqs_db_to_dl:
-        # A valild name for MMseqs-provided database
-        return "db_to_dl"
-    elif u.is_file_exists(name) and u.check_seq_file_extension(name):
-        # A valid FastA/Q/pep[.gz]
-        return "db_to_create"
-    elif u.is_file_exists(name) and u.is_file_exists(name+'.dbtype') and \
-            u.is_file_exists(name+'.index'):
-        # A valid DB preformated by the user
-        return "db_ok"
+def check_mmseq_db_param(db=None, db_path=None, out_json=None):
+    if not db:
+        if not db_path:
+            print("\nYou did not provided a database to KRYPTON, so it "
+                  "assumes you wish work with Swiss-Prot in your project "
+                  "directory.")
+        else:
+            if u.is_file_exists(db_path) and \
+             u.is_file_exists(db_path+'.dbtype') and \
+             u.is_file_exists(db_path+'.index') and \
+             u.is_file_exists(db_path+'_h'):
+                return True
+    elif db in mmseqs_db_to_dl:  # The name is valid
+        if db_path:
+            u.check_dir_exists(db_path, '--mmseq-db-path')
+            print(f"The database will be downloaded and formated in {db_path}"
+                  f"/{db}.\n")
+        else:
+            print("The database will be downloaded and formated in the "
+                  "project directory.\n")
+        return True
+    elif u.check_seq_file_extension(db) and u.is_file_exists(db):  # Valid Fa
+        if db_path:
+            u.check_dir_exists(db_path, '--mmseq-db-path')
+            print(f"The database will be formated in {db_path}/\n")
+        else:
+            print("The database will be formated in the project directory.\n")
+        return True
     else:
-        raise Exception(f"Krypton don't know this MMseqs2 database: {name}.\n"
-                        "There is probably an error with the name provided.")
+        raise Exception('KRYPTON cannot handle the value passed to the param'
+                        'meter "--mmseqs-db". Is there a typo in the name?')
 
 
 def check_input_db_path(mmseq_db_path, db_kind):
@@ -33,10 +47,10 @@ def check_input_db_path(mmseq_db_path, db_kind):
         return True
     elif db_kind == "db_to_dl":  # The user provided a db that has to be dl
         if not mmseq_db_path:  # The user does not want to store the db
-            toto = 1
-        # else:
-        #     # dl and store the database where the user asked
-        #     titi = 1
+            return True
+        else:
+            # dl and store the database where the user asked
+            titi = 1
     # elif db_kind == "db_to_create":  # The user provided a Fa to setup the db
     #     if not mmseq_db_path:  # The user does not want to store the db
     #         toto = 1
@@ -158,4 +172,8 @@ class MMseqs2():
 
 
 if __name__ == '__main__':
-    t = MMseqs2()
+    # t = MMseqs2()
+    check_mmseq_db_param(db='Pfam-A.seed')
+    check_mmseq_db_param(db='test.fa')
+    check_mmseq_db_param(db='test.fa', db_path="/home/dacourti/databases")
+    check_mmseq_db_param(db='Pfam-A.seeed')

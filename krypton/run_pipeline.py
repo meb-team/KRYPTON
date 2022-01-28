@@ -28,10 +28,15 @@ class Krypton:
         self.transcripts = A('transcripts')
         self.cds = A('cds')
         self.min_prot_len = A('min_prot_len')
-        self.mmseq_db = 'UniProtKB/Swiss-Prot' if not A('mmseq_db') \
-                        else A('mmseq_db')
-        self.mmseq_db_path = A('mmseq_db_path')
-        self.mmseq_db_kind = None
+#############################################################################
+        # ### Check the database arguments here ###
+#############################################################################
+        # self.mmseq_db = 'UniProtKB/Swiss-Prot' if not A('mmseq_db') \
+        #                 else A('mmseq_db')
+        # self.mmseq_db_path = A('mmseq_db_path')
+        # self.mmseq_db_kind = None
+#############################################################################
+
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
         """ Let's first make KRYPTON running on a regular computer. """
@@ -63,13 +68,17 @@ class Krypton:
         if self.mode == "cds":
             u.is_file_exists(self.cds)
 
+#############################################################################
         self.mmseq_db_kind = mmseqs.check_input_db(self.mmseq_db)
-
-        # ##########
         mmseqs.check_input_db_path(self.mmseq_db_path, self.mmseq_db_kind)
-        # ##########
+#############################################################################
 
         u.create_dir(self.output)
+
+#############################################################################
+        #  Call again the function for mmseq db and write the options in a
+        # file
+#############################################################################
 
         """
         Just a reminder that I will have to

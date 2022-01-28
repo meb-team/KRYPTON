@@ -62,6 +62,13 @@ def check_seq_file_extension(file_path):
         return False
 
 
+def check_dir_exists(dir_path, param=None):
+    if not os.path.isdir(dir_path):
+        raise Exception('KRYPTON cannot access the path provided to the '
+                        f'parameter "{param}". This directory MUST exists.')
+    return True
+
+
 def full_check_file(file_path):
     if is_file_exists(file_path) and check_seq_file_extension(file_path):
         return True

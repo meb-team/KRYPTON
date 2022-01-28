@@ -61,10 +61,10 @@ if __name__ == '__main__':
                         choices=['reads', 'assembly', 'cds'])
     groupA.add_argument('--out', help='Prefix for the output directory',
                         dest='outdir', metavar="OUT_DIR", required=True)
-    groupA.add_argument('--overwrite', help='Overwrite the output if it '
-                        'exists. Do you really want to use this feature?'
-                        ' -- NOT YET IMPLEMENTED', action='store_true',
-                        default=False)
+    # groupA.add_argument('--overwrite', help='Overwrite the output if it '
+    #                     'exists. Do you really want to use this feature?'
+    #                     ' -- NOT YET IMPLEMENTED', action='store_true',
+    #                     default=False)
     groupB.add_argument('--single-end', help='In case of **Single-End reads**,'
                         ' use this option and provide `--r1` only.',
                         action='store_false', dest='paired', default=True)
@@ -93,18 +93,19 @@ if __name__ == '__main__':
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
                         ' is meant to be run on a HPC cluster -- WIP',
                         action='store_true', default=False, dest='hpc2')
-    groupF.add_argument('--mmseqs-db', help=' One of'
-                        '1) Path to an existing MMseqs2 database; '
-                        '2) The name of a database provided by MMseqs2 '
-                        '(a list is present here: '
+    groupF.add_argument('--mmseqs-db', help='The name of a database provided '
+                        'by MMseqs2 (a list is present at '
                         'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases '
-                        '3) Path to a {fa,fasta,fq,fastq,pep}[.gz] file, '
-                        '##### Default is = UniProtKB/Swiss-Prot',
-                        dest="mmseq_db", metavar="")
-    groupF.add_argument('--mmseqs-db-path', help='Path to a directory that '
-                        'contains databases ready-to-use by MMseqs. If the '
-                        'database provided to "--mmseqs-db-path" does not '
-                        'exists, KRYPTON will set it up there.',
+                        '**OR** a path to a {fa,fasta,fq,fastq,pep}[.gz] '
+                        'file. ##### By default, the database is setup '
+                        'within the output directory. It is possible to '
+                        'use the parameter "--mmseqs-db-path" to store the '
+                        'database elsewhere on the disk to re-use it later. '
+                        '##### If nothing is provided, KRYPTON uses '
+                        'UniProtKB/Swiss-Prot.', dest="mmseq_db", metavar="")
+    groupF.add_argument('--mmseqs-db-path', help='Path to an existing database'
+                        ' **OR** path to a directory in which to store the '
+                        'database provided to "--mmseqs-db".',
                         dest='mmseq_db_path', metavar="")
     groupG.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
