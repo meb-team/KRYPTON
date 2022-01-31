@@ -57,7 +57,8 @@ if __name__ == '__main__':
     groupD = parser.add_argument_group('Mode - CDS')
     groupE = parser.add_argument_group('KRYPTON run on HPC')
     groupF = parser.add_argument_group('MMseqs2 options')
-    groupG = parser.add_argument_group('General options')
+    groupG = parser.add_argument_group('KO annotation')
+    groupH = parser.add_argument_group('General options')
     groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from '
                         'which the pipeline starts', default="reads", type=str,
                         choices=['reads', 'assembly', 'cds'])
@@ -107,9 +108,11 @@ if __name__ == '__main__':
                         '\n**OR**\nPath to a directory to store the database '
                         'passed to `--mmseqs-db`',
                         dest='mmseq_db_path', metavar="")
-    groupG.add_argument('-t', help='Maximum number of threads that KRYPTON '
+    # groupF.add_argument('--kegg-ko', help='Annotate your proteins with KO.')
+
+    groupH.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
-    groupG.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
+    groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
                         'KRYPTON can use, eg 64 to ask for 64GB of RAM')
 
     if len(sys.argv) == 1:  # In the case where nothing is provided

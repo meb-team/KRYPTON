@@ -56,7 +56,7 @@ class MMseqs2():
 
     def __init__(self, project=None, prot=None, module=None, threads=None,
                  mem=None):
-        self.module = 'easy-cluster' if not module else module
+        self.module = module
         self.max_threads = threads
         self.max_mem = mem
         self.prot = prot
@@ -74,13 +74,15 @@ class MMseqs2():
         elif self.prot:
             return "07_mmseqs"
 
-    def command_cluster(self, seqs):
-        # I know, this function looks useless, but I can't predict the future.
-        # So let's keept it and see whether I can re-use it!
+    def mmseqs_cluster(self, seqs, step, cluster_mode=0, cov_mode=0):
+
         command = f"mmseqs {self.module} {seqs} {self.prefix} {self.tmp}" + \
                   f" --threads {self.max_threads} " + \
-                  f"--split-memory-limit {self.max_mem}"
-        return command
+                  f"--split-memory-limit {self.max_mem} " +\
+                  f"--cluster-mode {cluster_mode} --cov-mode {cov_mode}"
+        with open(f"{self.output}/mmseqs_cluster_logs.log", "w") as log:
+            u.run_command(command, log=log, step=step)
+        return True
 
     def mmseqs_createdb(self, seqs, db_prefix, logfile, step):
         """

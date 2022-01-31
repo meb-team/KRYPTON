@@ -111,10 +111,13 @@ class Krypton:
 
     def run_mmseqs_clust(self, step=None, seqs=None, prot=None):
         m = mmseqs.MMseqs2(project=self.output, prot=prot,
-                           threads=self.max_threads, mem=self.max_mem)
-        command = m.command_cluster(seqs=seqs)
-        with open(m.output + "/mmseqs_logs.log", "w") as log:
-            u.run_command(command, log=log, step=step)
+                           module='easy-cluster', threads=self.max_threads,
+                           mem=self.max_mem)
+        if not prot:
+            m.mmseqs_cluster(seqs=seqs, step=step)
+        else:
+            m.mmseqs_cluster(seqs=seqs, step=step, cov_mode=1, cluster_mode=2)
+
         u.remove_dir(m.tmp)
         return True
 
@@ -135,13 +138,10 @@ class Krypton:
         # Converts the DB into a tsv
         ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
 
-        # Sort the result, By query name and bit score
-        with open(f"{ms.result}.sort.tsv", "w") as log:
-            u.run_command(command=f"sort -rk1,12 {ms.result}", log=log,
-                          step="Sort the MMseqs tsv file")
-
-        # Get transcripts with >80% coverage
-        # to do...
+        # # Sort the result, By query name and bit score
+        # with open(f"{ms.result}.sort.tsv", "w") as log:
+        #     u.run_command(command=f"sort -rk1,12 {ms.result}", log=log,
+        #                   step="Sort the MMseqs tsv file")
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
         out_dir_long = self.output + "/05_transdecoder_longorfs"
