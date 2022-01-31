@@ -110,8 +110,8 @@ if __name__ == '__main__':
                         dest='mmseq_db_path', metavar="")
     groupG.add_argument('--kegg-ko', help='Turn ON KEGG annotation for the '
                         'proteins, and visualise the results with '
-                        'MetaPathExplorer', action='store_true', default=False,
-                        dest="kegg")
+                        'MetaPathExplorer\nThis turns OFF the',
+                        action='store_true', default=False, dest="kegg")
     groupH.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
     groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '

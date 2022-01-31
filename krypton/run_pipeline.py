@@ -33,6 +33,7 @@ class Krypton:
         self.mmseq_sbj = mmseqs.check_mmseq_db_param(db=self.mmseq_db,
                                                      db_path=self.mmseq_db_path
                                                      )
+        self.kegg_annot = A('kegg')
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
         """ Let's first make KRYPTON running on a regular computer. """
@@ -172,6 +173,10 @@ class Krypton:
                 from_long=out_dir_long)
         # u.multi_to_single_line_fasta(glob.glob(f"{out_dir_pred}/*.transdecoder.pep")[0])
         return True
+
+    def prot_KO_annot(self, proteins, step=None):
+        """ Protein annotation using KOFamScan and MetaPathExplorer"""
+        toto = 1
 
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "

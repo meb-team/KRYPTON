@@ -41,4 +41,3 @@ dependencies:
   - xz=5.2.5=h516909a_1
   - yaml=0.2.5=h7f98852_2
   - zlib=1.2.11=h36c2ea0_1013
-prefix: /home/dacourti/bioware/miniconda3/envs/krypton_base
