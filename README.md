@@ -35,6 +35,12 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
         - ... }
 - <s>[ ] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log`</s> **BAD IDEA**
 - <s>[ ] Add the HMMER suite (TransDecoder?) + other step</s> **Not interesting**
+- [ ] **PRIORITY** Add [AntiFam](https://github.com/ebi-pf-team/antifam)
+to filter out spurious proteins after the second MMseqs clustering.
+- [ ] Add [Phytool](https://caninuzzo.shinyapps.io/phytool_v1/) ??
+- [ ] Add [Tiara](10.1093/bioinformatics/btab672) for the identification of
+Eukaryotic data (_a.k.a_ it can remove prokaryotic sequences??) and moreover it
+is supposed to distinguish nuclear and organellar sequences.
 
 ## Dependencies
 - _All modes_

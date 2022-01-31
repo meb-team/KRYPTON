@@ -44,7 +44,9 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 """
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description=__description__)
+    parser = argparse.ArgumentParser(description=__description__,
+                                     formatter_class=argparse.RawTextHelpFormatter
+                                     )
     groupA = parser.add_argument_group('Mandatory arguments')
     groupB = parser.add_argument_group('Mode - READS', description="From reads"
                                        " up to the annotation. Use the BASH "
@@ -57,7 +59,7 @@ if __name__ == '__main__':
     groupF = parser.add_argument_group('MMseqs2 options')
     groupG = parser.add_argument_group('General options')
     groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from '
-                        'which the pipeline is run', default="reads", type=str,
+                        'which the pipeline starts', default="reads", type=str,
                         choices=['reads', 'assembly', 'cds'])
     groupA.add_argument('--out', help='Prefix for the output directory',
                         dest='outdir', metavar="OUT_DIR", required=True)
@@ -65,25 +67,23 @@ if __name__ == '__main__':
     #                     'exists. Do you really want to use this feature?'
     #                     ' -- NOT YET IMPLEMENTED', action='store_true',
     #                     default=False)
-    groupB.add_argument('--single-end', help='In case of **Single-End reads**,'
-                        ' use this option and provide `--r1` only.',
+    groupB.add_argument('--single-end', help='For Single-End reads, use this '
+                        'option and provide the dataset through `--r1`',
                         action='store_false', dest='paired', default=True)
     groupB.add_argument('--r1', help='The first read of the pair, in FASTQ'
-                        ' (foo_R1.fq[.gz]) format.', metavar="")
+                        ' (foo_R1.fq[.gz]).', metavar="")
     groupB.add_argument('--r2', help='The second read of the pair, in FASTQ'
-                        ' (foo_R2.fq[.gz]) format.', metavar="")
+                        ' (foo_R2.fq[.gz]).', metavar="")
     groupB.add_argument('--trimmomatic', help="Path to the executable "
                         '`trimmomatic-<version>.jar`', metavar="",
                         default="/usr/share/java/trimmomatic-0.39.jar")
-    groupC.add_argument('--transcripts', help='A file containing transcrits'
-                        ' already assembled, in FASTA format (bar.fa[.gz])',
-                        metavar="")
-    groupC.add_argument('--min-protein-len', help="Minimal protein length "
-                        ", for TransDecoder.LongOrfs. Default is 100 AA",
+    groupC.add_argument('--transcripts', help='File with ASSEMBLED TRANSCRIPTS'
+                        ', in FASTA (foo.fa[.gz])', metavar="")
+    groupC.add_argument('--min-protein-len', help="Minimal protein length"
+                        " for TransDecoder.LongOrfs. Default is 100 AA",
                         dest="min_prot_len", metavar="")
-    groupD.add_argument('--cds', help='File with the cds extracted from a set'
-                        ' of transcripts, in FASTA format (baz.fa[.gz])',
-                        metavar="")
+    groupD.add_argument('--cds', help='File with TRANSLATED CDS, in FASTA '
+                        '(foo.fa[.gz])', metavar="")
     groupE.add_argument('--bucket-in', help='Name of the bucket used to read'
                         ' data from. This option is required to run KRYPTON on'
                         ' the HPC2 cluster', metavar="BUCKET_IN")
@@ -95,17 +95,17 @@ if __name__ == '__main__':
                         action='store_true', default=False, dest='hpc2')
     groupF.add_argument('--mmseqs-db', help='The name of a database provided '
                         'by MMseqs2 (a list is present at '
-                        'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases '
-                        '**OR** a path to a {fa,fasta,fq,fastq,pep}[.gz] '
-                        'file. ##### By default, the database is setup '
-                        'within the output directory. It is possible to '
-                        'use the parameter "--mmseqs-db-path" to store the '
-                        'database elsewhere on the disk to re-use it later. '
-                        '##### If nothing is provided, KRYPTON uses '
-                        'UniProtKB/Swiss-Prot.', dest="mmseq_db", metavar="")
+                        'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases) '
+                        '\n**OR**\nPath to a fa,fasta,fq,fastq,pep[.gz] '
+                        'file.\n#####\nDefault:\n\t- the database is setup '
+                        'within the output directory. To store the database '
+                        'elsewhere on the disk, provide a path with '
+                        '`--mmseqs-db-path`\n\t- If nothing is provided, '
+                        'KRYPTON uses UniProtKB/Swiss-Prot',
+                        dest="mmseq_db", metavar="",)
     groupF.add_argument('--mmseqs-db-path', help='Path to an existing database'
-                        ' **OR** path to a directory in which to store the '
-                        'database provided to "--mmseqs-db".',
+                        '\n**OR**\nPath to a directory to store the database '
+                        'passed to `--mmseqs-db`',
                         dest='mmseq_db_path', metavar="")
     groupG.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
