@@ -108,8 +108,10 @@ if __name__ == '__main__':
                         '\n**OR**\nPath to a directory to store the database '
                         'passed to `--mmseqs-db`',
                         dest='mmseq_db_path', metavar="")
-    # groupF.add_argument('--kegg-ko', help='Annotate your proteins with KO.')
-
+    groupG.add_argument('--kegg-ko', help='Turn ON KEGG annotation for the '
+                        'proteins, and visualise the results with '
+                        'MetaPathExplorer', action='store_true', default=False,
+                        dest="kegg")
     groupH.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
     groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
