@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import os
 import krypton.utils as u
 
 mmseqs_db_to_dl = ["UniRef100", "UniRef90", "UniRef50", "UniProtKB",
@@ -8,34 +9,39 @@ mmseqs_db_to_dl = ["UniRef100", "UniRef90", "UniRef50", "UniProtKB",
                    "eggNOG", "dbCAN2", "Resfinder", "Kalamari"]
 
 
-def check_mmseq_db_param(db=None, db_path=None, out_json=None):
-    info = {"mmseq_db": None, "user_file": None, "db_name": None,
-            "path_to_store": None}
+def check_mmseq_db_param(db=None, db_path=None):
+    info = {"db_ready_to_go": None, "db_user_input": None,
+            "db_storage_path": None}
 
-    if not db:
+    if not db and not db_path:  # Nothing was provided, so SP within out
+        info["db_user_input"] = "UniProtKB/Swiss-Prot"
+        print(f'KRYPTON will work with {info["db_user_input"]} '
+              'in the project directory.\n')
+
+    if not db and db_path:  # DB ready
         if u.is_file_exists(db_path) and \
          u.is_file_exists(db_path+'.dbtype') and \
          u.is_file_exists(db_path+'.index') and \
          u.is_file_exists(db_path+'_h'):  # Valid user-provided database
-            info["mmseq_db"] = db_path
+            info["db_ready_to_go"] = db_path
             print(f"KRYPTON will work with your database {db_path}.\n")
 
-    elif db in mmseqs_db_to_dl:  # The name is valid ##==> SwissProt by default
-        info["db_name"] = db
+    elif db in mmseqs_db_to_dl:  # The name is valid
+        info["db_user_input"] = db
         if db_path:
-            info["path_to_store"] = db_path.rtrip('/')
             u.check_dir_exists(db_path, '--mmseq-db-path')
+            info["db_storage_path"] = db_path.rstrip('/')
             print(f"KRYPTON will download the database {db} and format it "
                   f"in {db_path}.\n")
         else:
-            print("TKRYPTON will download the database {db} and format it "
+            print(f"KRYPTON will download the database {db} and format it "
                   "in the project directory.\n")
 
     elif u.check_seq_file_extension(db) and u.is_file_exists(db):  # Valid Fa
-        info["user_file"] = db
+        info["db_user_input"] = db
         if db_path:
-            info["path_to_store"] = db_path.rtrip('/')
             u.check_dir_exists(db_path, '--mmseq-db-path')
+            info["db_storage_path"] = db_path.rstrip('/')
             print(f"The database will be formated in {db_path}\n")
         else:
             print("The database will be formated in the project directory.\n")
@@ -108,36 +114,39 @@ class MMseqs2():
     def ref_db(self, info_d):
         logfile = self.output + "/mmseqs_sbjDB_logs.log"
         self.sbj = ""
-        if info_d["mmseq_db"]:
-            self.sbj = info_d["mmseq_db"]
+        if info_d["db_ready_to_go"]:  # Database ready to go
+            self.sbj = info_d["db_ready_to_go"]
             return True
-        elif info_d["user_file"]:
-            if not info_d["path_to_store"]:
+
+        elif info_d["db_user_input"] in mmseqs_db_to_dl:  # DL and format DB
+            if not info_d["db_storage_path"]:
                 self.sbj = f"{self.output}/db/sbjDB"
-                self.mmseqs_createdb(seqs=info_d["user_file"],
+                self.mmseqs_dl_db(name=info_d["db_user_input"],
+                                  db_prefix=self.sbj, tmp=self.tmp,
+                                  step="MMseqs - createdb - sbjct - download",
+                                  logfile=logfile)
+            else:
+                self.sbj = f'{info_d["db_storage_path"]}/' +\
+                           f'{info_d["db_user_input"].replace("/", "_")}DB'
+                self.mmseqs_dl_db(name=info_d["db_user_input"],
+                                  db_prefix=self.sbj,
+                                  step="MMseqs - createdb - sbjct - download",
+                                  tmp=self.tmp, logfile=logfile)
+
+        else:  # User provides a sequence file
+            if not info_d["db_storage_path"]:
+                self.sbj = f"{self.output}/db/sbjDB"
+                self.mmseqs_createdb(seqs=info_d["db_user_input"],
                                      db_prefix=self.sbj, logfile=logfile,
-                                     step="MMseqs - createdb - subject" +
+                                     step="MMseqs - createdb - sbjct" +
                                           " - User seq")
             else:
-                self.sbj = f'{info_d["path_to_store"]}/{info_d["user_file"]}DB'
-                self.mmseqs_createdb(seqs=info_d["user_file"],
+                self.sbj = f'{info_d["db_storage_path"]}/'
+                self.sbj += os.path.basename(info_d["db_user_input"]) + 'DB'
+                self.mmseqs_createdb(seqs=info_d["db_user_input"],
                                      db_prefix=self.sbj, logfile=logfile,
-                                     step="MMseqs - createdb - subject -" +
+                                     step="MMseqs - createdb - sbjct -" +
                                      " User seq")
-        elif info_d["user_file"]:
-            if not info_d["path_to_store"]:
-                self.sbj = f"{self.output}/db/sbjDB"
-                self.mmseqs_dl_db(name=info_d["db_name"], db_prefix=self.sbj,
-                                  tmp=self.tmp, logfile=logfile,
-                                  step="MMseqs - createdb - subject - download"
-                                  )
-            else:
-                self.sbj = f'{info_d["path_to_store"]}/' +\
-                           f'{info_d["db_name"].replace("/","_")}DB'
-                self.mmseqs_dl_db(name=info_d["db_name"], db_prefix=self.sbj,
-                                  tmp=self.tmp, logfile=logfile,
-                                  step="MMseqs - createdb - subject - download"
-                                  )
         return True
 
     def mmseqs_search(self, step, eval='1e-5', num_hit=100, sensitiv=7.5,

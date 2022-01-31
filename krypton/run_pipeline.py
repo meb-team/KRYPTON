@@ -28,16 +28,11 @@ class Krypton:
         self.transcripts = A('transcripts')
         self.cds = A('cds')
         self.min_prot_len = A('min_prot_len')
-#############################################################################
-        self.mmseq_db = 'UniProtKB/Swiss-Prot' if not A('mmseq_db') \
-                        else A('mmseq_db')
+        self.mmseq_db = A('mmseq_db')
         self.mmseq_db_path = A('mmseq_db_path')
-
         self.mmseq_sbj = mmseqs.check_mmseq_db_param(db=self.mmseq_db,
                                                      db_path=self.mmseq_db_path
                                                      )
-#############################################################################
-
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
         """ Let's first make KRYPTON running on a regular computer. """
@@ -133,13 +128,7 @@ class Krypton:
 
         # The CDS, from Krypton or the user
         ms.qry_db(seqs=cds_file)
-#############################################################################
-#############################################################################
-        """This must be modified ==> read from the file"""
-        # The database reference db; 3 possible cases
         ms.ref_db(info_d=self.mmseq_sbj)
-#############################################################################
-#############################################################################
         ms.mmseqs_search(step="MMseqs - search")
         u.remove_dir(ms.tmp)
 
