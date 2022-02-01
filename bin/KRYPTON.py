@@ -94,6 +94,9 @@ if __name__ == '__main__':
     groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
                         ' is meant to be run on a HPC cluster -- WIP',
                         action='store_true', default=False, dest='hpc2')
+    groupF.add_argument('--mmseqs-annot', help='Turn ON the annotation with '
+                        'MMseqs2 and a database.', action="store_true",
+                        default=True, dest='mmseq_annot')
     groupF.add_argument('--mmseqs-db', help='The name of a database provided '
                         'by MMseqs2 (a list is present at '
                         'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases) '

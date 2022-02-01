@@ -29,11 +29,17 @@ class Krypton:
         self.transcripts = A('transcripts')
         self.cds = A('cds')
         self.min_prot_len = A('min_prot_len')
-        self.mmseq_db = A('mmseq_db')
-        self.mmseq_db_path = A('mmseq_db_path')
-        self.mmseq_sbj = mmseqs.check_mmseq_db_param(db=self.mmseq_db,
-                                                     db_path=self.mmseq_db_path
-                                                     )
+
+        # ## MMseqs2 annotation setup
+        self.mmseq_annot = A('mmseq_annot')
+        self.mmseq_db, self.mmseq_db_path, self.mmseq_sbj = None, None, None
+        if self.mmseq_annot:
+            self.mmseq_db = A('mmseq_db')
+            self.mmseq_db_path = A('mmseq_db_path')
+            self.mmseq_sbj = mmseqs.check_mmseq_db_param(
+                                        db=self.mmseq_db,
+                                        db_path=self.mmseq_db_path)
+        # ## Other parameters
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
         """ Let's first make KRYPTON running on a regular computer. """
@@ -239,7 +245,8 @@ class Krypton:
 
         # Annotation
         prot_clusterised = glob.glob(f'{self.output}/07_*/07_*_rep_seq.*')[0]
-        # self.run_mmseqs_search(cds_file=prot_clusterised)
+        if self.mmseq_annot:
+            self.run_mmseqs_search(cds_file=prot_clusterised)
         if self.kegg_annot:
             self.run_KO_annot(proteins=prot_clusterised,
                               step="KOFamScan")
