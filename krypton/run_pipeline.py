@@ -7,6 +7,7 @@ import krypton.utils as u
 import krypton.tasks.mmseqs as mmseqs
 import krypton.tasks.fastqc as fastqc
 import krypton.tasks.trinity as trinity
+import krypton.tasks.ko_annot as ko
 import krypton.tasks.trimmomatic as trimmomatic
 import krypton.tasks.transdecoder as transdecoder
 
@@ -33,7 +34,6 @@ class Krypton:
         self.mmseq_sbj = mmseqs.check_mmseq_db_param(db=self.mmseq_db,
                                                      db_path=self.mmseq_db_path
                                                      )
-        self.kegg_annot = A('kegg')
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
         """ Let's first make KRYPTON running on a regular computer. """
@@ -41,6 +41,18 @@ class Krypton:
         # self.bucket_out = A('bucketout')
         # self.hpc2 = A('hpc2')
 
+        # ## KEGG annotation setup
+        self.kegg_annot = A('kegg_annot')
+        self.kegg_annot_file = A('kegg_annot_file')
+        if self.kegg_annot:
+            if not A('kegg_annot_file'):
+                raise Exception("You asked for a KO annotation but you do "
+                                "not provide the database to run on!\nPlease "
+                                "pass something to `--kegg-ko-ref`.\n")
+            if ko.ko_check_user_files(self.kegg_annot_file):
+                self.kegg_annot_file = self.kegg_annot_file.rstrip('/')
+
+        # ## Check the mode
         if self.mode == 'reads':
             if self.paired:
                 if self.r1 is None or self.r2 is None:
@@ -139,11 +151,6 @@ class Krypton:
         # Converts the DB into a tsv
         ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
 
-        # # Sort the result, By query name and bit score
-        # with open(f"{ms.result}.sort.tsv", "w") as log:
-        #     u.run_command(command=f"sort -rk1,12 {ms.result}", log=log,
-        #                   step="Sort the MMseqs tsv file")
-
     def run_prot_prediction(self, step=None, transcrits_clust=None):
         out_dir_long = self.output + "/05_transdecoder_longorfs"
         u.create_dir(out_dir_long)
@@ -160,7 +167,7 @@ class Krypton:
 
         """
         It is possible to run a PFAM annotation step for all the predicted CDS
-        here. It could be better for TransDecoder.Predict
+        here.
         """
         out_dir_pred = self.output + "/06_transdecoder_predict"
         u.create_dir(out_dir_pred)
@@ -174,9 +181,12 @@ class Krypton:
         # u.multi_to_single_line_fasta(glob.glob(f"{out_dir_pred}/*.transdecoder.pep")[0])
         return True
 
-    def prot_KO_annot(self, proteins, step=None):
+    def run_KO_annot(self, proteins, step=None):
         """ Protein annotation using KOFamScan and MetaPathExplorer"""
-        toto = 1
+        k = ko.KO_annot(threads=self.max_threads, project=self.output,
+                        ko_files=self.kegg_annot_file,
+                        proteins=proteins)
+        k.run_kofamscan(format='detail-tsv', step=step)
 
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "
@@ -227,8 +237,12 @@ class Krypton:
         self.run_mmseqs_clust(seqs=cds_path, step="MMseqs cluster proteins",
                               prot=True)
 
-        cds_clusterised = glob.glob(f'{self.output}/07_*/07_*_rep_seq.*')[0]
-        self.run_mmseqs_search(cds_file=cds_clusterised)
+        # Annotation
+        prot_clusterised = glob.glob(f'{self.output}/07_*/07_*_rep_seq.*')[0]
+        # self.run_mmseqs_search(cds_file=prot_clusterised)
+        if self.kegg_annot:
+            self.run_KO_annot(proteins=prot_clusterised,
+                              step="KOFamScan")
 
         time_global.append(time.time())
         u.time_used(time_global, step="Krypton")
