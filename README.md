@@ -44,7 +44,7 @@ is supposed to distinguish nuclear and organellar sequences.
 
 ## Dependencies
 - _All modes_
-    - python >= 3.8
+    - python >= 3.7
     - numpy >= 1.22
     - MMseqs2 v 10-6d92c
 
@@ -60,6 +60,15 @@ is supposed to distinguish nuclear and organellar sequences.
 
 - _Mode assembly_
     - TransDecoder
+
+- _Annotation_
+    - KOFamScan >= v1.3, available on [KEGG](https://www.genome.jp/tools/kofamkoala/)
+    via _ftp_ or _html_, with the HMM profiles.
+    - [MetaPathExplorer](https://github.com/meb-team/MetaPathExplorer), to display
+    the KEGG annotation on KEGG metabolic pathways.
+        - **Important note**: All dependencies **except one** are available on
+        Conda (See below to install). The module _Config::IniFiles_ must be
+        installed via _CPAN_: `cpan install Config::IniFiles`.
 
 ### Conda environment
 
