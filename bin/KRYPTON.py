@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8
 
-# import os
+import os
 # import re
 import sys
 # import time
@@ -43,6 +43,8 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 #os.system("source activate snakes")
 """
 if __name__ == '__main__':
+
+    abs_path = os.path.abspath(__name__)
 
     parser = argparse.ArgumentParser(description=__description__,
                                      formatter_class=argparse.RawTextHelpFormatter
@@ -137,7 +139,7 @@ if __name__ == '__main__':
         I will see later to implement the stuff related to
             --bucketin / -- bucketout / --run-on-hpc2
         """
-        test = k.Krypton(args)
+        test = k.Krypton(args, abs_path)
         test.run_krypton()
         # Here run the process, based on the arguments
 

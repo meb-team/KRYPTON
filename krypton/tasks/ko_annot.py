@@ -55,6 +55,7 @@ class KO_annot():
                     else:
                         result_d[line[2]] += 1
         with open(self.results + '.matrix_MPE.tsv', 'w') as fo:
+            print("KO\toccurence", file=fo)
             for k, v in result_d.items():
                 print(k, v, sep='\t', file=fo)
         return True

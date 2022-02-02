@@ -1,5 +1,5 @@
 # -*- coding: utf-8
-# import os
+import os
 import time
 import glob
 
@@ -10,12 +10,14 @@ import krypton.tasks.trinity as trinity
 import krypton.tasks.ko_annot as ko
 import krypton.tasks.trimmomatic as trimmomatic
 import krypton.tasks.transdecoder as transdecoder
+import krypton.tasks.metapathexplorer as mpe
 
 
 class Krypton:
-    def __init__(self, args=None):
-        self.args = args
+    def __init__(self, args=None, abs_path=None):
+        self.abs_path = os.path.dirname(abs_path) if abs_path else None
 
+        self.args = args
         A = lambda x: args.__dict__[x] if x in args.__dict__ else None
 
         self.mode = A('mode')
@@ -194,6 +196,10 @@ class Krypton:
                         proteins=proteins)
         k.run_kofamscan(format='detail-tsv', step=step)
 
+    def run_MetaPathExplorer(self, matrix, step=None):
+        mpe.mpe(matrix, project=self.output, bin=self.abs_path)
+        mpe.run_MPE(step=step)
+
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "
               "Please be patient...")
@@ -250,6 +256,8 @@ class Krypton:
         if self.kegg_annot:
             self.run_KO_annot(proteins=prot_clusterised,
                               step="KOFamScan")
+            self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
+                                      "KEGG pathways")
 
         time_global.append(time.time())
         u.time_used(time_global, step="Krypton")

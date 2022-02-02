@@ -66,6 +66,8 @@ is supposed to distinguish nuclear and organellar sequences.
     via _ftp_ or _html_, with the HMM profiles.
     - [MetaPathExplorer](https://github.com/meb-team/MetaPathExplorer), to display
     the KEGG annotation on KEGG metabolic pathways.
+        - **Do not** download the _release_ available which cannot handle TSV matrix.
+        Instead use `git clone https://github.com/meb-team/MetaPathExplorer`
         - **Important note**: All dependencies **except one** are available on
         Conda (See below to install). The module _Config::IniFiles_ must be
         installed via _CPAN_: `cpan install Config::IniFiles`.
