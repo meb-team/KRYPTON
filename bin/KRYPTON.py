@@ -84,7 +84,7 @@ if __name__ == '__main__':
                         ', in FASTA (foo.fa[.gz])', metavar="")
     groupC.add_argument('--min-protein-len', help="Minimal protein length"
                         " for TransDecoder.LongOrfs. Default is 100 AA",
-                        dest="min_prot_len", metavar="")
+                        dest="min_prot_len", metavar="", default=100)
     groupD.add_argument('--cds', help='File with TRANSLATED CDS, in FASTA '
                         '(foo.fa[.gz])', metavar="")
     groupE.add_argument('--bucket-in', help='Name of the bucket used to read'

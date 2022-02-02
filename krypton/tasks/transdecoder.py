@@ -14,7 +14,7 @@ class TransDecoder():
         self.required_version = "5.5.0"
         self._check_avail()
         self._check_version()
-        self.min_prot_len = 100 if not min_prot_len else int(min_prot_len)
+        self.min_prot_len = min_prot_len
 
     def _check_avail(self):
         try:
