@@ -114,9 +114,11 @@ The help menu is available with the command `python bin/KRYPTON.py -h`, and bell
 
 ```text
 usage: KRYPTON.py [-h] [--mode {reads,assembly,cds}] --out OUT_DIR
-                  [--overwrite] [--single-end] [--r1] [--r2] [--trimmomatic]
-                  [--transcripts] [--cds] [--bucketin BUCKET_IN]
-                  [--bucketout BUCKET_OUT] [--run-on-HPC]
+                  [--single-end] [--r1] [--r2] [--trimmomatic] [--transcripts]
+                  [--min-protein-len] [--cds] [--bucket-in BUCKET_IN]
+                  [--bucket-out BUCKET_OUT] [--run-on-HPC] [--mmseqs-annot]
+                  [--mmseqs-db] [--mmseqs-db-path] [--kegg-ko] [--kegg-ko-ref]
+                  [-t THREADS] [--mem MEM]
 
 Run the pipeline KRYPTON, for transcriptome assembly and annotation
 
@@ -125,42 +127,55 @@ optional arguments:
 
 Mandatory arguments:
   --mode {reads,assembly,cds}
-                        Pipeline mode, a.k.a the step from which the pipeline
-                        is run
+                        Pipeline mode, a.k.a the step from which the pipeline starts
   --out OUT_DIR         Prefix for the output directory
-  --overwrite           Overwrite the output if itexists. Do you really want
-                        to use this feature? -- NOT YET IMPLEMENTED
 
 Mode - READS:
-  --single-end          In case of **Single-End reads**, use this option and
-                        provide `--r1` only.
-  --r1                  The first read of the pair, in FASTQ (foo_R1.fq[.gz])
-                        format.
-  --r2                  The second read of the pair, in FASTQ (foo_R2.fq[.gz])
-                        format.
+  From reads up to the annotation. Use the BASH  environment variable `TRINITY_HOME` to point the directory containing the executable for Trinity.
+
+  --single-end          For Single-End reads, use this option and provide the dataset through `--r1`
+  --r1                  The first read of the pair, in FASTQ (foo_R1.fq[.gz]).
+  --r2                  The second read of the pair, in FASTQ (foo_R2.fq[.gz]).
   --trimmomatic         Path to the executable `trimmomatic-<version>.jar`
 
 Mode - ASSEMBLY:
-  --transcripts         A file containing transcrits already assembled, in
-                        FASTA format (bar.fa[.gz])
+  --transcripts         File with ASSEMBLED TRANSCRIPTS, in FASTA (foo.fa[.gz])
+  --min-protein-len     Minimal protein length for TransDecoder.LongOrfs. Default is 100 AA
 
 Mode - CDS:
-  --cds                 File with the cds extracted from a set of transcripts,
-                        in FASTA format (baz.fa[.gz])
+  --cds                 File with TRANSLATED CDS, in FASTA (foo.fa[.gz])
 
 KRYPTON run on HPC:
-  --bucketin BUCKET_IN  Name of the bucket used to read data from. This option
-                        is required to run KRYPTON on the HPC2 cluster
-  --bucketout BUCKET_OUT
-                        Name of the bucket used to store data in. This option
-                        is required to run KRYPTON on the HPC2 cluster
-  --run-on-HPC          Turn on this option when KRYPTON is meant to be run on
-                        a HPC cluster
+  --bucket-in BUCKET_IN
+                        Name of the bucket used to read data from. This option is required to run KRYPTON on the HPC2 cluster
+  --bucket-out BUCKET_OUT
+                        Name of the bucket used to store data in. This option is required to run KRYPTON on the HPC2 cluster
+  --run-on-HPC          Turn on this option when KRYPTON is meant to be run on a HPC cluster -- WIP
 
 MMseqs2 options:
-  --mmseqs-search-db    One of 1) Path to anexisting MMseqs2 database (Fast); 2) The name of a database provided by MMseqs2 (a list is present here https://github.com/soedinglab/MMseqs2/wiki#downloading-
-                        databases - It can be long and take lot of disk space, eg UniRef90~=70GB); 3) Path to a FastA/Q[.gz] file, with the extension: .fa .fasta .fq or .fastq .pep and .gz or not. #####
-                        Default = UniRef100
+  --mmseqs-annot        Turn ON the annotation with MMseqs2 and a database.
+  --mmseqs-db           The name of a database provided by MMseqs2 (a list is present at https://github.com/soedinglab/MMseqs2/wiki#downloading-databases)
+                        **OR**
+                        Path to a fa,fasta,fq,fastq,pep[.gz] file.
+                        #####
+                        Default:
+                        	- the database is setup within the output directory. To store the database elsewhere on the disk, provide a path with `--mmseqs-db-path`
+                        	- If nothing is provided, KRYPTON uses UniProtKB/Swiss-Prot
+  --mmseqs-db-path      Path to an existing database
+                        **OR**
+                        Path to a directory to store the database passed to `--mmseqs-db`
+
+KO annotation:
+  --kegg-ko             Turn ON KEGG annotation for the proteins, and visualise the results with MetaPathExplorer
+                        This turns OFF the
+  --kegg-ko-ref         PATH to `ko_list` & `profiles` (dezipped) -- MANDATORY to run KofamScan.
+                        Download them BEFORE running KRYPTON, at
+                        	https://www.genome.jp/ftp/db/kofam/ko_list.gz
+                        and	https://www.genome.jp/ftp/db/kofam/profiles.tar.gz
+
+General options:
+  -t THREADS            Maximum number of threads that KRYPTON can use.
+  --mem MEM             Maximum amount of RAM - in GB - that KRYPTON can use, eg 64 to ask for 64GB of RAM
 ```
 
 ### Example

@@ -196,8 +196,8 @@ class Krypton:
                         proteins=proteins)
         k.run_kofamscan(format='detail-tsv', step=step)
 
-    def run_MetaPathExplorer(self, matrix, step=None):
-        mpe.mpe(matrix, project=self.output, bin=self.abs_path)
+    def run_MetaPathExplorer(self, step=None):
+        mpe.mpe(project=self.output, bin=self.abs_path)
         mpe.run_MPE(step=step)
 
     def run_krypton(self):

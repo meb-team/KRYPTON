@@ -4,10 +4,11 @@ import krypton.utils as u
 
 
 class MPE():
-    def __init__(self, matrix, project=None, bin=None):
+    def __init__(self, project=None, bin=None):
         self.project = project
         self.output = self.project + "/" + '10_MetaPathExplorer'
-        self.matrix = matrix
+        self.matrix = {self.project} + "/09_ko_annot/" + \
+                                       "09_kofam_results.tsv.matrix_MPE.tsv"
         self.bin = bin + '/bin/MetaPathExplorer'
         self.ini = self.project + '10_MetaPathExplorer.ini'
         self._generate_ini_file()
@@ -26,8 +27,7 @@ class MPE():
 
     def run_MPE(self, step=None):
         command = f"perl {self.bin}/bin/MetaPathExplorer --ini {self.ini} " +\
-                  f"--input matrix {self.project}" +\
-                  "/09_ko_annot/09_kofam_results.tsv.matrix_MPE.tsv"
+                  f"--input matrix {self.matrix}"
         with open(f"{self.project}/10_MPE_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True
