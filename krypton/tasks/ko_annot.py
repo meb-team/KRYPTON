@@ -44,23 +44,36 @@ class KO_annot():
     def parse_results(self):
         """Extract the significative KOs from the result of  `run_kofamscan()`
         """
+        # Recover the complete list of KO
         result_d = dict()
+        with open(self.ko_list, 'r') as fi:
+            lines = fi.readlines()
+            for line in lines:
+                if line.startswith('knum'):
+                    pass
+                else:
+                    result_d[line.split("\t")[0]] = 0
+        # Read the results from KOfamScan
         with open(self.results, 'r') as fi:
             lines = fi.readlines()
             for line in lines:
                 line = line.rstrip().split('\t')
                 if line[0] == "*":
-                    if line[2] not in result_d.keys():
+                    if line[2] in result_d.keys():
                         result_d[line[2]] = 1
                     else:
-                        result_d[line[2]] += 1
+                        print("This KO (%s) is not present in %s" % (
+                              line[2], self.ko_list)
+                              )
+        # Export the presence/absence table
         with open(self.results + '.matrix_MPE.tsv', 'w') as fo:
-            print("KO\toccurence", file=fo)
+            print("KO\tsample", file=fo)
             for k, v in result_d.items():
                 print(k, v, sep='\t', file=fo)
         return True
 
 
 if __name__ == '__main__':
-    test = KO_annot(project='damien/test_30', new_dir=False)
+    test = KO_annot(project='damien/test_32', new_dir=False,
+                    ko_files='damien/ko_fam')
     test.parse_results()

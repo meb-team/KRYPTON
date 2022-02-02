@@ -43,14 +43,15 @@ Eukaryotic data (_a.k.a_ it can remove prokaryotic sequences??) and moreover it
 is supposed to distinguish nuclear and organellar sequences.
 
 ## Dependencies
-- _All modes_
+
+<!-- - _All modes_
     - python >= 3.7
     - numpy >= 1.22
-    - MMseqs2 v 10-6d92c
+    - MMseqs2 v 10-6d92c -->
 
 - _Mode reads_
-    - fastQC >= 0.11.4
-    - Trimmomatic >= 0.33
+    <!-- - fastQC >= 0.11.4
+    - Trimmomatic >= 0.33 -->
     - Trinity >= 2.9.1 and [Salmon](https://github.com/COMBINE-lab/salmon/releases/download/v1.0.0/Salmon-1.0.0_linux_x86_64.tar.gz) >= v1.0.0
         - I ran all my tests with **Trinity v2.9.1 which requires Salmon v1.0.0**
         - More recent version of Trinity may require Salmon > v1.0.0
@@ -62,7 +63,7 @@ is supposed to distinguish nuclear and organellar sequences.
     - TransDecoder
 
 - _Annotation_
-    - KOFamScan >= v1.3, available on [KEGG](https://www.genome.jp/tools/kofamkoala/)
+    <!-- - KOFamScan >= v1.3, available on [KEGG](https://www.genome.jp/tools/kofamkoala/)
     via _ftp_ or _html_, with the HMM profiles.
     - [MetaPathExplorer](https://github.com/meb-team/MetaPathExplorer), to display
     the KEGG annotation on KEGG metabolic pathways.
@@ -70,9 +71,11 @@ is supposed to distinguish nuclear and organellar sequences.
         Instead use `git clone https://github.com/meb-team/MetaPathExplorer`
         - **Important note**: All dependencies **except one** are available on
         Conda (See below to install). The module _Config::IniFiles_ must be
-        installed via _CPAN_: `cpan install Config::IniFiles`.
+        installed via _CPAN_: `cpan install Config::IniFiles`. -->
 
-### Conda environment
+## Install
+
+### Setup the Conda environment
 
 To fill the requirements linked to Python, a recipe for a **Conda environment**
 is present in the file `ressources/krypton_conda_env.yml`.
@@ -82,23 +85,26 @@ on your system and run:
 
 ```bash
 conda env create -f ressources/krypton_conda_env.yml
-conda activate krypton_base
+conda activate krypton_base # Activate the Conda environment
 ```
 
 Then, several tools are available if you cannot or do not want to update your system:
 
 ```bash
-#make sure you activated the Conda environment first
 conda install fastqc trimmomatic=0.39 mmseqs2=13.45111  transdecoder=5.5.0
 
+cpan install Config::IniFiles # For MetaPathExplorer
 ```
 
-Unfortunately, _Trinity_ can't be installed in the same Conda environment,
-so make sure it is available on your system.
+### Trinity
 
-## Install
+Unfortunately, _Trinity_ versions > 2.8.5 can't be installed in the same Conda
+environment, so make sure it is available on your system.
+
+### KRYPTON
 
 ```sh
+# Move to the path where you wish to setup KRYPTON; Then
 git clone https://github.com/meb-team/KRYPTON.git
 cd KRYPTON
 pip install -e .
@@ -213,7 +219,11 @@ For each step, the result are present under `<out_dir>` as follow:
     - `<out_dir>/06_transdecoder_predict/`: Extract CDS that are most likely to code for a protein
 - **Start of `cds` mode**
 - `<out_dir>/07_mmseqs/`: Clustering of the CDS
-- `<out_dir>/08_mmseq_search/`: Align the CDS (1 representative per cluster) against a reference database
+- `<out_dir>/08_mmseq_search/`: Align the CDS (1 representative per cluster)
+against a reference database
+- `<out_dir>/09_ko_annot/`: KOFamScan results
+- `<out_dir>/10_MetaPathExplorer/`: MetaPathExplorer results
+
 
 
 <!--

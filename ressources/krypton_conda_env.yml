@@ -1,4 +1,4 @@
-name: damien_KRY
+name: krypton_base
 channels:
   - conda-forge
   - bioconda
@@ -7,12 +7,14 @@ dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=1_gnu
   - atk-1.0=2.36.0=h3371d22_4
+  - bzip2=1.0.8=h7f98852_4
   - c-ares=1.18.1=h7f98852_0
   - ca-certificates=2021.10.8=ha878542_0
   - cairo=1.16.0=ha00ac49_1009
   - clustalw=2.1=h7d875b9_6
   - curl=7.81.0=h2574ce0_0
   - expat=2.4.4=h9c3ff4c_0
+  - fastqc=0.11.9=hdfd78af_1
   - font-ttf-dejavu-sans-mono=2.37=hab24e00_0
   - font-ttf-inconsolata=3.000=h77eed37_0
   - font-ttf-source-code-pro=2.038=h77eed37_0
@@ -22,6 +24,7 @@ dependencies:
   - fonts-conda-forge=1=0
   - freetype=2.10.4=h0708190_1
   - fribidi=1.0.10=h36c2ea0_0
+  - gawk=5.1.0=h7f98852_0
   - gdbm=1.18=h0a1914f_2
   - gdk-pixbuf=2.42.6=h04a7f16_0
   - gettext=0.19.8.1=h73d1719_1008
@@ -52,6 +55,7 @@ dependencies:
   - libglib=2.70.2=h174f98d_1
   - libgomp=11.2.0=h1d223b6_12
   - libiconv=1.16=h516909a_0
+  - libidn2=2.3.2=h7f98852_0
   - libnghttp2=1.46.0=h812cca2_0
   - libnsl=2.0.0=h7f98852_0
   - libpng=1.6.37=h21135ba_2
@@ -60,6 +64,7 @@ dependencies:
   - libstdcxx-ng=11.2.0=he4da1e4_12
   - libtiff=4.3.0=h6f004c6_2
   - libtool=2.4.6=h9c3ff4c_1008
+  - libunistring=0.9.10=h7f98852_0
   - libuuid=2.32.1=h7f98852_1000
   - libwebp=1.2.2=h3452ae3_0
   - libwebp-base=1.2.2=h7f98852_1
@@ -68,7 +73,9 @@ dependencies:
   - libxslt=1.1.33=h0ef7038_3
   - libzlib=1.2.11=h36c2ea0_1013
   - lz4-c=1.9.3=h9c3ff4c_1
+  - mmseqs2=13.45111=h95f258a_1
   - ncurses=6.3=h9c3ff4c_0
+  - openjdk=10.0.2=h14c3975_1015
   - openssl=1.1.1l=h7f98852_0
   - paml=4.9=h779adbc_6
   - pango=1.50.3=h9967ed3_0
@@ -291,6 +298,9 @@ dependencies:
   - t_coffee=11.0.8=py37hea885bf_8
   - tidyp=1.04=h779adbc_3
   - tk=8.6.11=h27826a3_1
+  - transdecoder=5.5.0=0
+  - trimmomatic=0.39=hdfd78af_2
+  - wget=1.20.3=ha56f1ee_1
   - wheel=0.37.1=pyhd8ed1ab_0
   - xorg-kbproto=1.0.7=h7f98852_1002
   - xorg-libice=1.0.10=h7f98852_0
