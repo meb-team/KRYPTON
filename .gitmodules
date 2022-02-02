@@ -1,0 +1,3 @@
+[submodule "bin/MetaPathExplorer"]
+	path = bin/MetaPathExplorer
+	url = git@github.com:meb-team/MetaPathExplorer.git
