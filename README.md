@@ -110,6 +110,15 @@ cd KRYPTON
 pip install -e .
 ```
 
+#### KEGG data
+
+The last step of KRYPTON requires some informations about KEGG. To get them,
+runs:
+
+```bash
+python bin/download_KEGG_data.py
+```
+
 ## Usage
 
 There are several kind of usage. From the sequencing _reads_ (`--mode reads`), by

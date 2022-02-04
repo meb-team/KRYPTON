@@ -61,6 +61,7 @@ with open(t_out, "w") as fo:
     for line in lines:
         ko = line.split("\t")[0].split(":")[1]
         pathway = line.split("\t")[1].split(":")[1]
-        print(ko, pathway, sep="\t", file=fo)
+        if pathway.startswith("map"):
+            print(ko, pathway, sep="\t", file=fo)
 
 print("All data were downloaded from KEGG.")
