@@ -193,9 +193,9 @@ class Krypton:
         """ Protein annotation using KOFamScan and MetaPathExplorer"""
         k = ko.KO_annot(threads=self.max_threads, project=self.output,
                         ko_files=self.kegg_annot_file,
-                        proteins=proteins)
+                        proteins=proteins, bin_path=self.abs_path)
         k.run_kofamscan(format='detail-tsv', step=step)
-        k.parse_results()
+        k.parse_results_for_MPE()
 
     def run_MetaPathExplorer(self, step=None):
         mpe.MPE(project=self.output, bin=self.abs_path)

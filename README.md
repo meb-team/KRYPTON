@@ -42,6 +42,9 @@ to filter out spurious proteins after the second MMseqs clustering.
 Eukaryotic data (_a.k.a_ it can remove prokaryotic sequences??) and moreover it
 is supposed to distinguish nuclear and organellar sequences.
 
+- [ ] leave the possibility to the user to use the script `krypton/tasks/ko_annot.py`
+    - Add arguments to it!
+ 
 ## Dependencies
 
 <!-- - _All modes_
