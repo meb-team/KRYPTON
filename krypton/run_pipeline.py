@@ -257,8 +257,10 @@ class Krypton:
         if self.kegg_annot:
             self.run_KO_annot(proteins=prot_clusterised,
                               step="KOFamScan")
-            self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
-                                      "KEGG pathways")
+
+            """For the moment, MetaPAthExplorer is waiting a fix, about KEGG"""
+            # self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
+            #                           "KEGG pathways")
 
         time_global.append(time.time())
         u.time_used(time_global, step="Krypton")

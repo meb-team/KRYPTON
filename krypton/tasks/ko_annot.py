@@ -67,9 +67,9 @@ class KO_annot():
                               )
         # Export the presence/absence table
         with open(self.results + '.matrix_MPE.tsv', 'w') as fo:
-            print("KO\tsample", file=fo)
+            print("KO\tsample\tsample_duplication", file=fo)
             for k, v in result_d.items():
-                print(k, v, sep='\t', file=fo)
+                print(k, v, v, sep='\t', file=fo)
         return True
 
 

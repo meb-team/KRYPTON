@@ -15,7 +15,7 @@ class MPE():
         self._generate_ini_file()
 
     def _generate_ini_file(self):
-        """change the otdir in the MPE init file"""
+        """change the outdir in the MPE init file"""
         with open(self.bin + '/conf/MetaPathExplorer.ini', 'r') as fi:
             with open(self.ini, 'w') as fo:
                 lines = fi.readlines()
