@@ -7,6 +7,7 @@ import krypton.utils as u
 import krypton.tasks.mmseqs as mmseqs
 import krypton.tasks.fastqc as fastqc
 import krypton.tasks.trinity as trinity
+import krypton.tasks.antifam as antifam
 import krypton.tasks.ko_annot as ko
 import krypton.tasks.trimmomatic as trimmomatic
 import krypton.tasks.transdecoder as transdecoder
@@ -143,10 +144,6 @@ class Krypton:
         return True
 
     def run_mmseqs_search(self, cds_file):
-        """
-        This is a litteral transposition of Baptiste's work.
-        I will tune it later.
-        """
         ms = mmseqs.MMseqs2(project=self.output, module='createdb',
                             threads=self.max_threads, mem=self.max_mem)
 
@@ -156,7 +153,7 @@ class Krypton:
         ms.mmseqs_search(step="MMseqs - search")
         u.remove_dir(ms.tmp)
 
-        # Converts the DB into a tsv
+        # Converts the results DB into a tsv
         ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
@@ -186,7 +183,13 @@ class Krypton:
 
         t.clean(dest=out_dir_pred, transcripts=transcrits_clust,
                 from_long=out_dir_long)
-        # u.multi_to_single_line_fasta(glob.glob(f"{out_dir_pred}/*.transdecoder.pep")[0])
+        return True
+
+    def remove_spurious_prot(self, step=None, prot=None):
+        anti = antifam.Antifam(project=self.output, threads=self.max_threads,
+                               proteins=prot, bin_path=self.abs_path)
+        anti.run_antifam(step=step)
+        anti.parse_antifam()
         return True
 
     def run_KO_annot(self, proteins, step=None):
@@ -197,10 +200,12 @@ class Krypton:
         k.run_kofamscan(format='detail-tsv', step=step)
         # k.parse_results_for_MPE()
         k.parse_results_as_txt()
+        return True
 
     def run_MetaPathExplorer(self, step=None):
         mpe.MPE(project=self.output, bin=self.abs_path)
         mpe.run_MPE(step=step)
+        return True
 
     def run_krypton(self):
         print("\nKRYPTON is starting. All steps may take a lot of time. "
@@ -246,17 +251,24 @@ class Krypton:
         """ This step would require an extra check, in case of failure
         from TansDecoder-Predict"""
         cds_path = self.cds if self.cds else \
-            glob.glob(self.output + '/06_*/*.pep')[0]
+            glob.glob(self.output + '/06_*/*.pep.clean_defline.fa')[0]
 
         self.run_mmseqs_clust(seqs=cds_path, step="MMseqs cluster proteins",
                               prot=True)
 
+        # Clean bad proteins
+        prot_clusterised = glob.glob(f"{self.output}/" +
+                                     "07_mmseqs/*all_seqs.fasta")[0]
+        self.remove_spurious_prot(step="AntiFam - removal of spurious seqs",
+                                  prot=prot_clusterised)
+
         # Annotation
-        prot_clusterised = glob.glob(f'{self.output}/07_*/07_*_rep_seq.*')[0]
+        good_proteins = glob.glob(f"{self.output}/" +
+                                  "07_mmseqs_antifam/good_proteins.fa")[0]
         if self.mmseq_annot:
-            self.run_mmseqs_search(cds_file=prot_clusterised)
+            self.run_mmseqs_search(cds_file=good_proteins)
         if self.kegg_annot:
-            self.run_KO_annot(proteins=prot_clusterised,
+            self.run_KO_annot(proteins=good_proteins,
                               step="KOFamScan")
 
             """For the moment, MetaPAthExplorer is waiting a fix, about KEGG"""

@@ -37,6 +37,7 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
 - <s>[ ] Add the HMMER suite (TransDecoder?) + other step</s> **Not interesting**
 - [ ] **PRIORITY** Add [AntiFam](https://github.com/ebi-pf-team/antifam)
 to filter out spurious proteins after the second MMseqs clustering.
+    - Included in the installation step
 - [ ] Add [Phytool](https://caninuzzo.shinyapps.io/phytool_v1/) ??
 - [ ] Add [Tiara](10.1093/bioinformatics/btab672) for the identification of
 Eukaryotic data (_a.k.a_ it can remove prokaryotic sequences??) and moreover it
@@ -44,7 +45,7 @@ is supposed to distinguish nuclear and organellar sequences.
 
 - [ ] leave the possibility to the user to use the script `krypton/tasks/ko_annot.py`
     - Add arguments to it!
- 
+
 ## Dependencies
 
 <!-- - _All modes_
@@ -111,6 +112,18 @@ environment, so make sure it is available on your system.
 git clone https://github.com/meb-team/KRYPTON.git
 cd KRYPTON
 pip install -e .
+```
+
+### Other data
+
+For [Antifam](https://xfam.wordpress.com/2012/03/21/introducing-antifam/):
+
+```bash
+cd ressources/
+wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/AntiFam/current/Antifam.tar.gz
+tar -zxf Antifam.tar.gz
+rm relnotes version *.seed AntiFam_* Antifam.tar.gz
+hmmpress AntiFam.hmm
 ```
 
 #### KEGG data

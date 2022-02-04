@@ -63,7 +63,7 @@ class TransDecoder():
 
     def clean(self, dest, transcripts, from_long):
         """
-        Clean the mess Transdecoder is producing
+        Clean the mess that Transdecoder is producing
         Giving this issue
         (https://github.com/TransDecoder/TransDecoder/issues/108)
         I guess it would be better for me to move the result files myself, not
@@ -72,6 +72,8 @@ class TransDecoder():
 
         for file in glob.glob(f"{os.path.basename(transcripts)}*"):
             os.replace(file, f"{dest}/{file}")
+            if file.endswith(".pep"):
+                u.clean_deflines(infile=f"{dest}/{file}", seq_prefix="prot")
 
         for pipeliner in glob.glob("pipeliner.*.cmds"):
             u.remove_file(pipeliner)
