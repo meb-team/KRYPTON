@@ -1,9 +1,13 @@
+# Regular file
 krypton.egg-info/
 *__pycache__*
+MetaPathExplorer.log
+ressources/KEGG*
+ressources/AntiFam.hmm*
+pipeliner*
+
+# Used for Dev's tests
 damien
 foo
 hidden_notes.*
 run_test_*.sh
-MetaPathExplorer.log
-ressources/KEGG*
-ressources/AntiFam.hmm*
