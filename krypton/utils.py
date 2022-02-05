@@ -18,7 +18,7 @@ def create_dir(file_path):
         #                 f" overwright existing files and directories.")
         print("\n\nImpossible to create the directory %s\n"
               % os.path.abspath(file_path), "KRYPTON can't reach it or it is",
-              "already present.\nKRYPTON is terminating.\n", sep='')
+              " already present.\nKRYPTON is terminating.\n", sep='')
         sys.exit(1)
     return True
 

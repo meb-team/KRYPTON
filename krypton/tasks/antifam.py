@@ -17,7 +17,10 @@ class Antifam():
         self.hmmsearch_result = self.output + "/antifam_vs_proteins.tsv"
         command = f"hmmsearch --cpu {self.max_threads} --cut_ga " +\
                   f"--noali --tblout {self.hmmsearch_result} " +\
-                  f" {self.antifam} {self.input} >/dev/null"
+                  f"{self.antifam} {self.input}"
+
+        print(command)
+
         with open(f"{self.output}/07_mmseqs_antifam_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True
@@ -66,3 +69,12 @@ class Antifam():
                         else:
                             print(prot, seq, sep="\n", file=fo_good)
         return True
+
+
+if __name__ == '__main__':
+    test = "damien/test_33"
+    anti = Antifam(project=test, threads=8,
+                   proteins=test+"/07_mmseqs/07_mmseqs_rep_seq.fasta",
+                   bin_path="/home/dacourti/Documents/projects/MEB/KRYPTON")
+    anti.run_antifam(step="run antifam")
+    anti.parse_antifam()
