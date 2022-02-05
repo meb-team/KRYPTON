@@ -18,9 +18,6 @@ class Antifam():
         command = f"hmmsearch --cpu {self.max_threads} --cut_ga " +\
                   f"--noali --tblout {self.hmmsearch_result} " +\
                   f"{self.antifam} {self.input}"
-
-        print(command)
-
         with open(f"{self.output}/07_mmseqs_antifam_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True

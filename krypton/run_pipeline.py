@@ -258,7 +258,7 @@ class Krypton:
 
         # Clean bad proteins
         prot_clusterised = glob.glob(f"{self.output}/" +
-                                     "07_mmseqs/*all_seqs.fasta")[0]
+                                     "07_mmseqs/*_rep_seq.fasta")[0]
         self.remove_spurious_prot(step="AntiFam - removal of spurious seqs",
                                   prot=prot_clusterised)
 
