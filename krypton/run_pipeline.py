@@ -24,11 +24,16 @@ class Krypton:
         self.mode = A('mode')
         self.output = A('outdir').rstrip('/')
         # self.overwrite = A('overwrite')
+        # ##### Reads
         self.paired = A('paired')
         self.r1 = A('r1')
         self.r2 = A('r2')
-        self.trimmomatic = A('trimmomatic')
-        self.trimmo_mod = "PE" if self.paired else "SE"
+        # ##### Trimmomatic
+        if self.mode == 'reads':
+            self.trimmomatic = A('trimmomatic')
+            trimmomatic.check_version(self.trimmomatic)
+            self.trimmo_mod = "PE" if self.paired else "SE"
+        # #####
         self.transcripts = A('transcripts')
         self.cds = A('cds')
         self.min_prot_len = A('min_prot_len')
@@ -42,7 +47,7 @@ class Krypton:
             self.mmseq_sbj = mmseqs.check_mmseq_db_param(
                                         db=self.mmseq_db,
                                         db_path=self.mmseq_db_path)
-        # ## Other parameters
+        # ##### Other parameters
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
         """ Let's first make KRYPTON running on a regular computer. """
@@ -111,11 +116,11 @@ class Krypton:
 
     def run_trimmomatic(self, step=None):
         t = trimmomatic.Trimmomatic(project=self.output,
-                                    threads=self.max_threads)
-        command = t.format_command(bin=self.trimmomatic, mod=self.trimmo_mod,
-                                   r1=self.r1, r2=self.r2,
-                                   params="MINLEN:32 SLIDINGWINDOW:4:20 " +
-                                   "LEADING:5 TRAILING:5")
+                                    threads=self.max_threads,
+                                    exec=self.trimmomatic)
+        t_params = "MINLEN:32 SLIDINGWINDOW:4:20 LEADING:5 TRAILING:5"
+        command = t.format_command(mod=self.trimmo_mod, r1=self.r1, r2=self.r2,
+                                   params=t_params)
         with open(t.output + "/trimmomatic_logs.log", "w") as log:
             u.run_command(command, log=log, step=step)
         return True

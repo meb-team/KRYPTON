@@ -5,11 +5,11 @@
 ## Introduction
 
 This package, _euKaRYote ProtisT fOnctionnal aNnotation of transcriptome_,
-abbreviated as _KRYPTON_, is a Python package containing a pipeline for
+abbreviated as _KRYPTON_, written in Python, contains a pipeline for
 transcriptome assembly and annotation (functional and taxonomic).  
-KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer.
+KRYPTON combines Trinity, MMseqs2, KOFamScan and MetaPathExplorer.
 
-![Workflow KRYPTON](ressources/Workflow_KRYPTON.PNG)
+<img src="ressources/Workflow_KRYPTON.PNG" width=400 units="px"></img>
 
 ## To-do list:
 
@@ -27,15 +27,15 @@ KRYPTON combines Trinity, MMseqs2 _clust_, MMseqs2 _search_ and MetaPathExplorer
     - [ ] trimmomatic _MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5_
     - [X] trinity _--CPU_ and _--max_memory_
     - [ ] MMseqs2: cluster mode; sensitivity, min seq ID, ...
-    - [ ] TransDecoder --> min ORF size, Pfam annotation?
+    - [x] TransDecoder --> min ORF size, <s>Pfam annotation?</s>
 - [ ] Add a dict to store the subpath values
     - eg:
         - {"00" : "00_FastQC_raw",
         - "01" : "01_trimmomatic",
         - ... }
-- <s>[ ] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log`</s> **BAD IDEA**
-- <s>[ ] Add the HMMER suite (TransDecoder?) + other step</s> **Not interesting**
-- [ ] **PRIORITY** Add [AntiFam](https://github.com/ebi-pf-team/antifam)
+- <s>[x] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log`</s> **BAD IDEA**
+- <s>[x] Add the HMMER suite (TransDecoder?) + other step</s> **Not interesting**
+- [x] **PRIORITY** Add [AntiFam](https://github.com/ebi-pf-team/antifam)
 to filter out spurious proteins after the second MMseqs clustering.
     - Included in the installation step
 - [ ] Add [Phytool](https://caninuzzo.shinyapps.io/phytool_v1/) ??
@@ -44,18 +44,18 @@ Eukaryotic data (_a.k.a_ it can remove prokaryotic sequences??) and moreover it
 is supposed to distinguish nuclear and organellar sequences.
 
 - [ ] leave the possibility to the user to use the script `krypton/tasks/ko_annot.py`
-    - Add arguments to it!
+    - Add arguments parser for this script!
 
-## Dependencies
+<!-- ## Dependencies
 
-<!-- - _All modes_
-    - python >= 3.7
+- _All modes_
+    - python >= 3.8
     - numpy >= 1.22
-    - MMseqs2 v 10-6d92c -->
+    - MMseqs2 v 10-6d92c
 
 - _Mode reads_
-    <!-- - fastQC >= 0.11.4
-    - Trimmomatic >= 0.33 -->
+    - fastQC >= 0.11.4
+    - Trimmomatic >= 0.33
     - Trinity >= 2.9.1 and [Salmon](https://github.com/COMBINE-lab/salmon/releases/download/v1.0.0/Salmon-1.0.0_linux_x86_64.tar.gz) >= v1.0.0
         - I ran all my tests with **Trinity v2.9.1 which requires Salmon v1.0.0**
         - More recent version of Trinity may require Salmon > v1.0.0
@@ -66,7 +66,7 @@ is supposed to distinguish nuclear and organellar sequences.
 - _Mode assembly_
     - TransDecoder
 
-- _Annotation_
+- _Annotation_ -->
     <!-- - KOFamScan >= v1.3, available on [KEGG](https://www.genome.jp/tools/kofamkoala/)
     via _ftp_ or _html_, with the HMM profiles.
     - [MetaPathExplorer](https://github.com/meb-team/MetaPathExplorer), to display
