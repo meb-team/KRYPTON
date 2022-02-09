@@ -79,20 +79,22 @@ is supposed to distinguish nuclear and organellar sequences.
 
 ## Install
 
-### Setup the Conda environment
+### With Conda environment
 
 To fill the requirements linked to Python, a recipe for a **Conda environment**
 is present in the file `ressources/krypton_conda_env.yml`.
 
+1. Setup
+
 To install it, make sure you have a [Conda](https://docs.conda.io/) installed
-on your system and run:
+on your system first and then runs:
 
 ```bash
 conda env create -f ressources/krypton_conda_env.yml
 conda activate krypton_base # Activate the Conda environment
 ```
 
-Then, several tools are available if you cannot or do not want to update your system:
+2. Core tools
 
 ```bash
 conda install fastqc trimmomatic=0.39 mmseqs2=13.45111  transdecoder=5.5.0
@@ -100,23 +102,18 @@ conda install fastqc trimmomatic=0.39 mmseqs2=13.45111  transdecoder=5.5.0
 cpan install Config::IniFiles # For MetaPathExplorer
 ```
 
-### Trinity
+3. KRYPTON code
 
-Unfortunately, _Trinity_ versions > 2.8.5 can't be installed in the same Conda
-environment, so make sure it is available on your system.
+Move in the directory where you want to setup KRYPTON first.  
+Then:
 
-### KRYPTON
-
-```sh
-# Move to the path where you wish to setup KRYPTON; Then
+```bash
 git clone https://github.com/meb-team/KRYPTON.git
 cd KRYPTON
 pip install -e .
 ```
 
-### Other data
-
-For [Antifam](https://xfam.wordpress.com/2012/03/21/introducing-antifam/):
+4. Data for [Antifam](https://xfam.wordpress.com/2012/03/21/introducing-antifam/):
 
 ```bash
 cd ressources/
@@ -124,16 +121,23 @@ wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/AntiFam/current/Antifam.tar.gz
 tar -zxf Antifam.tar.gz
 rm relnotes version *.seed AntiFam_* Antifam.tar.gz
 hmmpress AntiFam.hmm
+cd ..
 ```
 
-#### KEGG data
-
-The last step of KRYPTON requires some informations about KEGG. To get them,
-runs:
+5. Data for KEGG annotation
 
 ```bash
 python bin/download_KEGG_data.py
 ```
+
+6. Trinity
+
+Unfortunately, _Trinity_ versions > 2.8.5 can't be installed in the same Conda
+environment, so make sure it is available on your system. Sorry.
+
+### On you system (not recommended)
+
+**- WIP -**
 
 ## Usage
 
