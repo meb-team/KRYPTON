@@ -1,6 +1,6 @@
 # KRYPTON
 
-[![Build Status](https://github.com/meb-team/CRYPTON.git)](https://github.com/meb-team/CRYPTON)
+[![Build Status](https://github.com/meb-team/KRYPTON.git)](https://github.com/meb-team/KRYPTON)
 
 ## Introduction
 
@@ -46,6 +46,7 @@ is supposed to distinguish nuclear and organellar sequences.
 - [ ] leave the possibility to the user to use the script `krypton/tasks/ko_annot.py`
     - Add arguments parser for this script!
 
+
 <!-- ## Dependencies
 
 - _All modes_
@@ -66,8 +67,8 @@ is supposed to distinguish nuclear and organellar sequences.
 - _Mode assembly_
     - TransDecoder
 
-- _Annotation_ -->
-    <!-- - KOFamScan >= v1.3, available on [KEGG](https://www.genome.jp/tools/kofamkoala/)
+- _Annotation_
+    - KOFamScan >= v1.3, available on [KEGG](https://www.genome.jp/tools/kofamkoala/)
     via _ftp_ or _html_, with the HMM profiles.
     - [MetaPathExplorer](https://github.com/meb-team/MetaPathExplorer), to display
     the KEGG annotation on KEGG metabolic pathways.
