@@ -77,10 +77,3 @@ with open(t_out, "w") as fo:
             print(ko, pathway, sep="\t", file=fo)
 
 print("All data were downloaded from KEGG.")
-
-# # ### Data to run KOfamScan
-#
-# url_base = 'https://www.genome.jp/ftp/db/kofam/'
-# for file in ['ko_list.gz', 'profiles.tar.gz']:
-#     urllib.request.urlretrieve(url_base + file, out + file)
-#     time.sleep(2)

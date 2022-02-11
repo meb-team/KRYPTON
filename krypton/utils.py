@@ -88,7 +88,7 @@ def time_used(timing, step=None):
     return True
 
 
-def run_command(command, log=None, step=None):
+def run_command(command, log=subprocess.DEVNULL, step=None):
     time_cmd = [time.time()]
     subprocess.run(command.split(), stdout=log, stderr=subprocess.STDOUT)
     time_cmd.append(time.time())
