@@ -43,14 +43,17 @@ class Antifam():
             current_seq = ""
             current_name = ""
             with open(self.input, 'r') as fi:  # parse fasta
-                if line[0] == ">":
-                    if len(current_seq) != 0:
-                        dict_p[current_name] = current_seq
-                    current_name = line[1:].strip()
-                    current_seq = ""
-                else:
-                    current_seq += line.rstrip()
-            dict_p[current_name] = current_seq  # do not forget the last sequence
+                lines = fi.readlines()
+                for line in lines:
+                    if line[0] == ">":
+                        if len(current_seq) != 0:
+                            dict_p[current_name] = current_seq
+                        current_name = line[1:].strip()
+                        current_seq = ""
+                    else:
+                        current_seq += line.rstrip()
+                # do not forget the last sequence
+                dict_p[current_name] = current_seq
 
             # remove bad proteins from good ones
             with open(self.good_prot, 'w') as fo_good:
@@ -62,14 +65,14 @@ class Antifam():
                                 bool_bad_prot = 1
                                 break
                         if bool_bad_prot:
-                            print(prot, seq, sep="\n", file=fo_bad)
+                            print(">" + prot, seq, sep="\n", file=fo_bad)
                         else:
-                            print(prot, seq, sep="\n", file=fo_good)
+                            print(">" + prot, seq, sep="\n", file=fo_good)
         return True
 
 
 if __name__ == '__main__':
-    test = "damien/test_33"
+    test = "damien/test_40"
     anti = Antifam(project=test, threads=8,
                    proteins=test+"/07_mmseqs/07_mmseqs_rep_seq.fasta",
                    bin_path="/home/dacourti/Documents/projects/MEB/KRYPTON")

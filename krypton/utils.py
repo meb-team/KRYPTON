@@ -146,7 +146,7 @@ def clean_deflines(infile, seq_prefix, name_size=9):
     count = 0
     with open(infile, "r") as fi:
         with open(infile + ".clean_defline.fa", "w") as fo:
-            with open(infile + ".corres_tab.tab", "w") as corres:
+            with open(infile + ".corres_tab.tsv", "w") as corres:
                 lines = fi.readlines()
                 for line in lines:
                     line = line.rstrip()

@@ -54,7 +54,7 @@ def clean(project):
     for file in glob.glob(f"{project}/01_trimmomatic/*.fq"):
         u.remove_file(file)
         print("Removing Trimmomatic clean reads...")
-        return True
+    return True
 
 
 class Trimmomatic():
@@ -73,9 +73,11 @@ class Trimmomatic():
     def trimmomatic(self, step):
         command = f"{self.exec} -threads {self.max_threads} "
         if self.mode == "PE":
-            command += f"{self.r1} {self.r2} {self.output}/r1.paired.fq " +\
-                       f"{self.output}/r1.unpaired.fq {self.output}" +\
-                       f"/r2.paired.fq {self.output}/r2.unpaired.fq " + \
+            command += f"{self.r1} {self.r2} " + \
+                       f"{self.output}/r1.paired.fq " + \
+                       f"{self.output}/r1.unpaired.fq " + \
+                       f"{self.output}/r2.paired.fq " + \
+                       f"{self.output}/r2.unpaired.fq " + \
                        f"{self.params}"
         else:
             command += f"{self.r1} {self.output}/r1.fq {self.params}"
