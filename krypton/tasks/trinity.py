@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 import os
 import glob
-
+import time
 import krypton.utils as u
 
 """
@@ -11,28 +11,34 @@ Add something to test the presence of Trinity in the PATH, and the version
 
 class Trinity():
 
-    def __init__(self, project=None, threads=None, mem=None):
+    def __init__(self, r1, r2=None, project=None, threads=None, mem=None):
         self.max_threads = threads
         self.max_mem = mem
-        self.output = project + "/03_trinity"
+        self.r1 = r1
+        self.r2 = r2
+        self.project = project
+        self.output = self.project + "/03_trinity"
 
-    def format_command(self, r1, r2=None):
+    def run_trinity(self, step=None):
         """
         The Trinity parameter `--full_cleanup` change the behaviour of the tool
         WITHOUT: the result is {self.output}/Trinity.fa
         WITH: Trinity remove all temp files generated and output the results in
-            {priject}/03_trinity.Trinity.fasta
+        {priject}/03_trinity.Trinity.fasta
         N.B., with this way, I have to trust Trinity for the dirrectory setup
         """
         command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq " + \
                   f"--full_cleanup --CPU {self.max_threads} " + \
-                  f"--max_memory {self.max_mem} " + \
-                  f"--output {self.output} "
-        if r2:
-            command += f"--left {r1} --right {r2}"
+                  f"--max_memory {self.max_mem} --output {self.output} "
+        if self.r2:
+            command += f"--left {self.r1} --right {self.r2}"
         else:
-            command += f"--single {r1}"
-        return command
+            command += f"--single {self.r1}"
+
+        with open(self.project + "/03_trinity_logs.log", "w") as log:
+            u.run_command(command, log=log, step=step)
+        # Leave Trinity the time to clean its stuff
+        time.sleep(20)
 
     def clean(self):
         """ Clean everything after the run of Trinity"""

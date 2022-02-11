@@ -126,14 +126,11 @@ class Krypton:
         t.trimmomatic(step=step)
         return True
 
-    def run_trinity(self, step=None, r1=None, r2=None):
+    def run_trinity(self, r1, r2=None, step=None):
         ty = trinity.Trinity(project=self.output, threads=self.max_threads,
-                             mem=self.max_mem)
-        command = ty.format_command(r1, r2)
-        # With --full_cleanup, I have to let Trinity deal with its output dir
-        with open(self.output + "/03_trinity_logs.log", "w") as log:
-            u.run_command(command, log=log, step=step)
-        time.sleep(10)  # leave Trinity the time to clean its stuff
+                             mem=self.max_mem, r1=r1, r2=r2)
+        ty.run_trinity(step=step)
+
         ty.clean()
         return True
 
@@ -219,29 +216,29 @@ class Krypton:
         time_global = [time.time()]
 
         if self.mode == "reads":
+            # FastQC on the raw reads
             self.run_fastqc(step="FastQC - Raw reads", raw=True, r1=self.r1,
                             r2=self.r2)
+            # Clean the reads
             self.run_trimmomatic(step="Trimmomatic")
 
-            """
-            Trimmomatic output the sentence
-            'TrimmomaticPE: Completed successfully' in the logfile. It may
-            be a good idea to implement a function that checks this and
-            terminate the process in case of failure?
-            """
-            clean_r1 = f"{self.output}/01_trimmomatic/r1.paired.fq"
-            clean_r2 = f"{self.output}/01_trimmomatic/r2.paired.fq"
-
+            # FastQC on the cleaned reads
+            clean_r1, clean_r2 = None, None
             if self.paired:
-                self.run_fastqc(step="FastQC - Trimmed reads",
-                                r1=clean_r1, r2=clean_r2)
-                self.run_trinity(step="Trinity Paired-End reads",
-                                 r1=clean_r1, r2=clean_r2)
+                clean_r1 = f"{self.output}/01_trimmomatic/r1.paired.fq"
+                clean_r2 = f"{self.output}/01_trimmomatic/r2.paired.fq"
             else:
-                self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1)
-                self.run_trinity(step="Trinity Single-End reads", r1=clean_r1)
+                clean_r1 = f"{self.output}/01_trimmomatic/r1.fq"
 
-            trimmomatic.clean(self.output)  # remove clean reads after assembly
+            self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1,
+                            r2=clean_r2)
+
+            # Transcript assembly
+            self.run_trinity(step=f"Trinity {'PE' if self.paired else 'SE'}"
+                             " reads", r1=clean_r1, r2=clean_r2)
+
+            # Save disk space: remove cleaned reads
+            trimmomatic.clean(self.output)
 
         if self.mode != "cds":  # a.k.a reads or assembly
             transcripts_path = self.transcripts if self.transcripts else \

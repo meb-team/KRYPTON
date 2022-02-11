@@ -27,7 +27,7 @@ class KO_annot():
         self.K0_to_pathway = bin_path + '/ressources/KEGG_data/' + \
                                         'KEGG_K0_to_pathway.tsv'
         self.pathway_name = bin_path + '/ressources/KEGG_data/' + \
-                                       'ressources/KEGG_pathways.tsv'
+                                       'KEGG_pathways.tsv'
         if new_dir:
             u.create_dir(self.output)
 
