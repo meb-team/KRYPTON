@@ -44,7 +44,7 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 """
 if __name__ == '__main__':
 
-    abs_path = os.path.abspath(__name__)
+    abs_path = os.path.dirname(os.path.abspath(__name__)).rstrip("/")
 
     parser = argparse.ArgumentParser(description=__description__,
                                      formatter_class=argparse.RawTextHelpFormatter
@@ -114,16 +114,16 @@ if __name__ == '__main__':
                         '\n**OR**\nPath to a directory to store the database '
                         'passed to `--mmseqs-db`',
                         dest='mmseq_db_path', metavar="")
-    groupG.add_argument('--kegg-ko', help='Turn ON KEGG annotation for the '
-                        'proteins, and visualise the results with '
-                        'MetaPathExplorer\nThis turns OFF the', default=False,
-                        action='store_true', dest="kegg_annot")
-    groupG.add_argument('--kegg-ko-ref', help='PATH to `ko_list` & `profiles`'
-                        ' (dezipped) -- MANDATORY to run KofamScan.\nDownload '
-                        'them BEFORE running KRYPTON, at\n'
-                        '\thttps://www.genome.jp/ftp/db/kofam/ko_list.gz\nand'
-                        '\thttps://www.genome.jp/ftp/db/kofam/profiles.tar.gz',
-                        dest="kegg_annot_file", metavar="")
+    groupG.add_argument('--ko-annot', help='Turn ON proteins annotation with '
+                        'KEGG data, and visualise the results with '
+                        'MetaPathExplorer (WIP)', default=False,
+                        action='store_true', dest="ko_annot")
+    groupG.add_argument('--ko-annot-file', help='PATH to a directory containing '
+                        '`ko_list` & `profiles` for K0famScan.\nKRYPTON '
+                        'provides a simple script to download them:\n\t- '
+                        'download_K0famScan_data.py\nDefault is '
+                        'ressources/KEGG_data/', dest="ko_annot_file",
+                        metavar="")
     groupH.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
     groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
@@ -140,7 +140,7 @@ if __name__ == '__main__':
         I will see later to implement the stuff related to
             --bucketin / -- bucketout / --run-on-hpc2
         """
-        test = k.Krypton(args, abs_path)
+        test = k.Krypton(args=args, abs_path=abs_path)
         test.run_krypton()
         # Here run the process, based on the arguments
 

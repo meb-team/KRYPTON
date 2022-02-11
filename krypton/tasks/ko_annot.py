@@ -4,18 +4,13 @@ import sys
 import krypton.utils as u
 
 
-def ko_check_user_files(file_path):
+def ko_check_files(file_path):
     """ check that user provided the correct path"""
-    try:
-        u.is_file_exists(file_path.rstrip('/') + '/ko_list')
-        u.check_dir_exists(file_path.rstrip('/') + '/profiles')
-    except Exception:
-        print(f'\nKRYPTON cannot find the file `{file_path}/ko_list` or the '
-              f'directory `{file_path}/profiles/`\nPlease make sur to '
-              'provide the right PATH through `--kegg-ko-ref`\n'
-              '~~~~~KRYPTON stops~~~~~ ')
-        sys.exit(1)
-    return True
+    if u.is_file_exists(file_path.rstrip('/') + '/ko_list') and \
+       u.check_dir_exists(file_path.rstrip('/') + '/profiles'):
+        return True
+    else:
+        raise Exception()
 
 
 class KO_annot():
@@ -28,10 +23,10 @@ class KO_annot():
         self.profiles = '' if not ko_files else ko_files + '/profiles'
         self.tmp = self.output + "/tmp"
         self.results = self.output + '/09_kofam_results.tsv'
-        self.K0_name = bin_path + 'ressources/KEGG_data/KEGG_K0.tsv'
-        self.K0_to_pathway = bin_path + 'ressources/KEGG_data/' + \
+        self.K0_name = bin_path + '/    ressources/KEGG_data/KEGG_K0.tsv'
+        self.K0_to_pathway = bin_path + '/ressources/KEGG_data/' + \
                                         'KEGG_K0_to_pathway.tsv'
-        self.pathway_name = bin_path + 'ressources/KEGG_data/' + \
+        self.pathway_name = bin_path + '/ressources/KEGG_data/' + \
                                        'ressources/KEGG_pathways.tsv'
         if new_dir:
             u.create_dir(self.output)

@@ -51,9 +51,9 @@ def _check_apt():
 
 
 def clean(project):
+    print("Removing Trimmomatic cleaned reads")
     for file in glob.glob(f"{project}/01_trimmomatic/*.fq"):
         u.remove_file(file)
-        print("Removing Trimmomatic clean reads...")
     return True
 
 

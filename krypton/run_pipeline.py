@@ -1,5 +1,5 @@
 # -*- coding: utf-8
-import os
+
 import time
 import glob
 
@@ -15,11 +15,11 @@ import krypton.tasks.metapathexplorer as mpe
 
 
 class Krypton:
-    def __init__(self, args=None, abs_path=None):
-        self.abs_path = os.path.dirname(abs_path) if abs_path else None
+    def __init__(self, args, abs_path):
 
         self.args = args
         A = lambda x: args.__dict__[x] if x in args.__dict__ else None
+        self.abs_path = abs_path
 
         self.mode = A('mode')
         self.output = A('outdir').rstrip('/')
@@ -56,15 +56,19 @@ class Krypton:
         # self.hpc2 = A('hpc2')
 
         # ## KEGG annotation setup
-        self.kegg_annot = A('kegg_annot')
-        self.kegg_annot_file = A('kegg_annot_file')
-        if self.kegg_annot:
-            if not A('kegg_annot_file'):
-                raise Exception("You asked for a KO annotation but you do "
-                                "not provide the database to run on!\nPlease "
-                                "pass something to `--kegg-ko-ref`.\n")
-            if ko.ko_check_user_files(self.kegg_annot_file):
-                self.kegg_annot_file = self.kegg_annot_file.rstrip('/')
+        self.ko_annot = A('ko_annot')
+        self.ko_annot_file = A('ko_annot_file')
+
+        if self.ko_annot:
+            if not self.ko_annot_file:
+                self.ko_annot_file = self.abs_path + "/ressources/KEGG_data"
+            try:
+                ko.ko_check_files(self.ko_annot_file)
+            except Exception:
+                print("The files for K0 annotation are not present.\n"
+                      "Please check the script\n\tdownload_K0famScan_data.py\n"
+                      "KRYPTON will skip this step.\n")
+                self.ko_annot = False
 
         # ## Check the mode
         if self.mode == 'reads':
@@ -197,7 +201,7 @@ class Krypton:
     def run_KO_annot(self, proteins, step=None):
         """ Protein annotation using KOFamScan and MetaPathExplorer"""
         k = ko.KO_annot(threads=self.max_threads, project=self.output,
-                        ko_files=self.kegg_annot_file,
+                        ko_files=self.ko_annot_file,
                         proteins=proteins, bin_path=self.abs_path)
         k.run_kofamscan(format='detail-tsv', step=step)
         # k.parse_results_for_MPE()
@@ -269,7 +273,7 @@ class Krypton:
                                   "07_mmseqs_antifam/good_proteins.fa")[0]
         if self.mmseq_annot:
             self.run_mmseqs_search(cds_file=good_proteins)
-        if self.kegg_annot:
+        if self.ko_annot:
             self.run_KO_annot(proteins=good_proteins,
                               step="KOFamScan")
 

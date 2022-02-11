@@ -24,7 +24,7 @@ def check_mmseq_db_param(db=None, db_path=None):
          u.is_file_exists(db_path+'.index') and \
          u.is_file_exists(db_path+'_h'):  # Valid user-provided database
             info["db_ready_to_go"] = db_path
-            print(f"KRYPTON will work with your database {db_path}.\n")
+            print(f"KRYPTON will work with your database {db_path}\n")
 
     elif db in mmseqs_db_to_dl:  # The name is valid
         info["db_user_input"] = db
