@@ -39,6 +39,7 @@ class Trinity():
             u.run_command(command, log=log, step=step)
         # Leave Trinity the time to clean its stuff
         time.sleep(20)
+        return True
 
     def clean(self):
         """ Clean everything after the run of Trinity"""
@@ -53,6 +54,7 @@ class Trinity():
         # clean the names
         u.clean_deflines(infile=self.output + "/03_trinity.Trinity.fasta",
                          seq_prefix="seq")
+        return True
 
 
 if __name__ == '__main__':

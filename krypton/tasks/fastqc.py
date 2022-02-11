@@ -9,7 +9,8 @@ Add something to test the presence of FastQC in the PATH
 
 class FastQC():
 
-    def __init__(self, raw=None, project=None, threads=None, mem=None):
+    def __init__(self, r1, r2=None, raw=None, project=None, threads=None,
+                 mem=None):
         """ Fastqc allocate 250MB per thread, so I have to check whether
         the number of threads required is in accordance with this rule
         """
@@ -20,9 +21,18 @@ class FastQC():
         self.raw = raw
         self.output = f"{project}/00_fastqc_raw" if self.raw else \
                       f"{project}/02_fastqc_trimmed"
+        self.r1 = r1
+        self.r2 = r2
+
         u.create_dir(self.output)
 
-    def format_command_fastqc(self, out, r1, r2=None):
+    def run_fastqc(self, step=None):
         command = f"fastqc --outdir {self.output} --threads {self.max_threads}"
-        command = f"{command} {r1}" if not r2 else f"{command} {r1} {r2}"
-        return command
+        if self.r2:
+            command += f" {self.r1} {self.r2}"
+        else:
+            command += f" {self.r1}"
+
+        with open(self.output + "/fastqc_logs.log", "w") as log:
+            u.run_command(command, log=log, step=step)
+        return True

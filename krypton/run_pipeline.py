@@ -108,14 +108,11 @@ class Krypton:
                 + "following parameters:\n\tMode: {}\n".format(self.mode) \
                 + "\tResult dir: {}/".format(self.output)
 
-    def run_fastqc(self, step=None, raw=False, r1=None, r2=None):
+    def run_fastqc(self, r1, step=None, raw=False, r2=None):
         """ It assumes that FastQC is in the Path """
-        f = fastqc.FastQC(raw=raw, project=self.output,
+        f = fastqc.FastQC(r1=r1, r2=r2, raw=raw, project=self.output,
                           threads=self.max_threads, mem=self.max_mem)
-
-        with open(f.output + "/fastqc_logs.log", "w") as log:
-            command = f.format_command_fastqc(f.output, r1, r2)
-            u.run_command(command, log=log, step=step)
+        f.run_fastqc(step=step)
         return True
 
     def run_trimmomatic(self, step=None):
@@ -217,7 +214,7 @@ class Krypton:
 
         if self.mode == "reads":
             # FastQC on the raw reads
-            self.run_fastqc(step="FastQC - Raw reads", raw=True, r1=self.r1,
+            self.run_fastqc(r1=self.r1, step="FastQC - Raw reads", raw=True,
                             r2=self.r2)
             # Clean the reads
             self.run_trimmomatic(step="Trimmomatic")
@@ -230,7 +227,7 @@ class Krypton:
             else:
                 clean_r1 = f"{self.output}/01_trimmomatic/r1.fq"
 
-            self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1,
+            self.run_fastqc(r1=clean_r1, step="FastQC - Trimmed reads",
                             r2=clean_r2)
 
             # Transcript assembly
