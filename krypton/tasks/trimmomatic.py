@@ -61,9 +61,11 @@ class Trimmomatic():
 
     def __init__(self, r1, params, raw=None, project=None, threads=None,
                  exec=None, r2=None):
+        self.r1 = r1
+        self.r2 = r2
         self.max_threads = threads
         self.output = project + "/01_trimmomatic"
-        self.mode = "PE" if r2 else "SE"
+        self.mode = "PE" if self.r2 else "SE"
         self.exec = check_version(path=exec, mode=self.mode)
         self.params = params
         u.create_dir(self.output)
@@ -79,4 +81,4 @@ class Trimmomatic():
             command += f"{self.r1} {self.output}/r1.fq {self.params}"
 
         with open(f"{self.output}/01_logs.log", "w") as log:
-            u.run_command(comcommand=command, log=log, step=step)
+            u.run_command(command=command, log=log, step=step)

@@ -50,6 +50,8 @@ dependencies:
   - krb5=1.19.2=hcc1bbae_3
   - ld_impl_linux-64=2.36.1=hea4e1c9_2
   - lerc=3.0=h9c3ff4c_0
+  - libblas=3.9.0=13_linux64_openblas
+  - libcblas=3.9.0=13_linux64_openblas
   - libcurl=7.81.0=h2574ce0_0
   - libdb=6.2.32=h9c3ff4c_0
   - libdeflate=1.8=h7f98852_0
@@ -59,12 +61,16 @@ dependencies:
   - libgcc=7.2.0=h69d50b8_2
   - libgcc-ng=11.2.0=h1d223b6_12
   - libgd=2.3.3=h3cfcdeb_1
+  - libgfortran-ng=11.2.0=h69a702a_12
+  - libgfortran5=11.2.0=h5c6108e_12
   - libglib=2.70.2=h174f98d_1
   - libgomp=11.2.0=h1d223b6_12
   - libiconv=1.16=h516909a_0
   - libidn2=2.3.2=h7f98852_0
+  - liblapack=3.9.0=13_linux64_openblas
   - libnghttp2=1.46.0=h812cca2_0
   - libnsl=2.0.0=h7f98852_0
+  - libopenblas=0.3.18=pthreads_h8fe5266_0
   - libpng=1.6.37=h21135ba_2
   - librsvg=2.52.5=h0a9e6e8_2
   - libssh2=1.10.0=ha56f1ee_2
@@ -84,6 +90,7 @@ dependencies:
   - mechanicalsoup=1.1.0=pyhd8ed1ab_0
   - mmseqs2=13.45111=h95f258a_1
   - ncurses=6.3=h9c3ff4c_0
+  - numpy=1.21.5=py37hf2998dd_0
   - openjdk=10.0.2=h14c3975_1015
   - openssl=1.1.1l=h7f98852_0
   - paml=4.9=h779adbc_6
