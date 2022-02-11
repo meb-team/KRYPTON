@@ -38,10 +38,11 @@ if __name__ == '__main__':
     for file in files:
         urllib.request.urlretrieve(url_base + '/' + file, out + '/' + file)
         print(f"\t{file}: OK")
+        if file.endswith(".tar.gz"):
+            u.run_command(command=f"tar -C {out} -zxf {out}/{file}",
+                          step=f"Decompressing {file}")
+            u.remove_file(out + "/" + file)
+        else:
+            u.run_command(command=f"gunzip {out}/{file}",
+                          step=f"Unzipping {file}")
         time.sleep(2)
-
-    u.run_command(command=f"gunzip {out}/{files[0]}",
-                  step=f"Unzipping {files[0]}")
-
-    u.run_command(command=f"tar -C {out} -zxf {out}/{file}",
-                  step="Decompressing HMM profiles")

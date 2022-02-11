@@ -77,9 +77,10 @@ if __name__ == '__main__':
                         ' (foo_R1.fq[.gz]).', metavar="")
     groupB.add_argument('--r2', help='The second read of the pair, in FASTQ'
                         ' (foo_R2.fq[.gz]).', metavar="")
-    groupB.add_argument('--trimmomatic', help="Conda environment user, forget "
-                        "this option.\nFor other installations:\n\t"
-                        "PATH/TO/trimmomatic-<version>.jar", metavar="")
+    groupB.add_argument('--trimmomatic', help="If APT or Conda Trimmomatic "
+                        "is installed, forget this option.\nFor other "
+                        "instal:\n\tPATH/TO/trimmomatic-<version>.jar",
+                        metavar="")
     groupC.add_argument('--transcripts', help='File with ASSEMBLED TRANSCRIPTS'
                         ', in FASTA (foo.fa[.gz])', metavar="")
     groupC.add_argument('--min-protein-len', help="Minimal protein length"

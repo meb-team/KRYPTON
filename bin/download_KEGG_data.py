@@ -4,8 +4,6 @@
 import os
 import requests
 import time
-import urllib.request
-
 import krypton.utils as u
 
 """

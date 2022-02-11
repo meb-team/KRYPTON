@@ -31,7 +31,7 @@ class Krypton:
         # ##### Trimmomatic
         if self.mode == 'reads':
             self.trimmomatic = A('trimmomatic')
-            trimmomatic.check_version(self.trimmomatic)
+            trimmomatic.check_version(self.trimmomatic)  # Exit if not found
             self.trimmo_mod = "PE" if self.paired else "SE"
         # #####
         self.transcripts = A('transcripts')
@@ -115,14 +115,11 @@ class Krypton:
         return True
 
     def run_trimmomatic(self, step=None):
-        t = trimmomatic.Trimmomatic(project=self.output,
-                                    threads=self.max_threads,
-                                    exec=self.trimmomatic)
         t_params = "MINLEN:32 SLIDINGWINDOW:4:20 LEADING:5 TRAILING:5"
-        command = t.format_command(mod=self.trimmo_mod, r1=self.r1, r2=self.r2,
-                                   params=t_params)
-        with open(t.output + "/trimmomatic_logs.log", "w") as log:
-            u.run_command(command, log=log, step=step)
+        t = trimmomatic.Trimmomatic(r1=self.r1, params=t_params, r2=self.r2,
+                                    project=self.output, exec=self.trimmomatic,
+                                    threads=self.max_threads)
+        t.trimmomatic(step=step)
         return True
 
     def run_trinity(self, step=None, r1=None, r2=None):
@@ -240,9 +237,9 @@ class Krypton:
                 self.run_fastqc(step="FastQC - Trimmed reads", r1=clean_r1)
                 self.run_trinity(step="Trinity Single-End reads", r1=clean_r1)
 
-            trimmomatic.clean(self.output)
+            trimmomatic.clean(self.output)  # remove clean reads after assembly
 
-        if self.mode != "cds":  # a.k.a _reads_ or _assembly_
+        if self.mode != "cds":  # a.k.a reads or assembly
             transcripts_path = self.transcripts if self.transcripts else \
                     glob.glob(f"{self.output}/03_trinity/*clean_defline.fa")[0]
 
