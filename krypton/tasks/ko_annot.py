@@ -28,8 +28,11 @@ class KO_annot():
         self.profiles = '' if not ko_files else ko_files + '/profiles'
         self.tmp = self.output + "/tmp"
         self.results = self.output + '/09_kofam_results.tsv'
-        self.K0_to_pathway = bin_path + '/ressources/KEGG_K0_to_pathway.tsv'
-        self.pathway_name = bin_path + '/ressources/KEGG_pathways.tsv'
+        self.K0_name = bin_path + 'ressources/KEGG_data/KEGG_K0.tsv'
+        self.K0_to_pathway = bin_path + 'ressources/KEGG_data/' + \
+                                        'KEGG_K0_to_pathway.tsv'
+        self.pathway_name = bin_path + 'ressources/KEGG_data/' + \
+                                       'ressources/KEGG_pathways.tsv'
         if new_dir:
             u.create_dir(self.output)
 
