@@ -130,7 +130,8 @@ if __name__ == '__main__':
                         'KRYPTON can use, eg 64 to ask for 64GB of RAM')
 
     if len(sys.argv) == 1:  # In the case where nothing is provided
-        parser.print_help(sys.stderr)
+        # parser.print_help(file=sys.stderr)
+        parser.print_usage(file=sys.stderr)
         sys.exit(1)
 
     args = parser.parse_args()
