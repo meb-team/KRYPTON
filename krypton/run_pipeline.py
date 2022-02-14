@@ -198,13 +198,14 @@ class Krypton:
                         ko_files=self.ko_annot_file,
                         proteins=proteins, bin_path=self.abs_path)
         k.run_kofamscan(format='detail-tsv', step=step)
-        # k.parse_results_for_MPE()
+        k.parse_results_for_MPE()
         k.parse_results_as_txt()
         return True
 
     def run_MetaPathExplorer(self, step=None):
-        mpe.MPE(project=self.output, bin=self.abs_path)
-        mpe.run_MPE(step=step)
+        m = mpe.MPE(project=
+        )
+        m.run_MPE(step=step)
         return True
 
     def run_krypton(self):

@@ -38,6 +38,6 @@ class MPE():
 
 
 if __name__ == '__main__':
-    mpe = MPE(project='damien/test_32',
+    mpe = MPE(project='damien/test_41',
               bin='/home/dacourti/Documents/projects/MEB/KRYPTON')
     mpe.run_MPE(step='Test MetaPathExplorer')
