@@ -2,13 +2,7 @@
 # -*- coding: utf-8
 
 import os
-# import re
 import sys
-# import time
-# import math
-# from pathlib import Path
-# import subprocess
-# from pathlib import Path
 import argparse
 
 import krypton.run_pipeline as k

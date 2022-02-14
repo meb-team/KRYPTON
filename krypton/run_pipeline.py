@@ -203,8 +203,7 @@ class Krypton:
         return True
 
     def run_MetaPathExplorer(self, step=None):
-        m = mpe.MPE(project=
-        )
+        m = mpe.MPE(project=self.output, bin=self.abs_path)
         m.run_MPE(step=step)
         return True
 
