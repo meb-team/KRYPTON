@@ -65,6 +65,7 @@ class Krypton:
             try:
                 ko.ko_check_files(self.ko_annot_file)
             except Exception:
+                print(f"Search in {self.ko_annot_file}")
                 print("The files for K0 annotation are not present.\n"
                       "Please check the script\n\tdownload_K0famScan_data.py\n"
                       "KRYPTON will skip this step.\n")
