@@ -31,8 +31,8 @@ class Krypton:
         # ##### Trimmomatic
         if self.mode == 'reads':
             self.trimmomatic = A('trimmomatic')
-            trimmomatic.check_version(self.trimmomatic)  # Exit if not found
             self.trimmo_mod = "PE" if self.paired else "SE"
+            trimmomatic.check_version(self.trimmomatic, mode=self.trimmo_mod)
         # #####
         self.transcripts = A('transcripts')
         self.cds = A('cds')
