@@ -9,17 +9,23 @@ import krypton.utils as u
 def check_version(path=None, mode=None):
     with_java = False
     if not path:
+        print("\t1")
         if _check_conda():
+            print("Conda ok")
             return f"trimmomatic {mode}"
         elif _check_apt():
+            print("APT ok")
             return f"Trimmomatic{mode}"
         else:
+            print("Need to check with java path")
             with_java = True
     elif with_java:
+        print("start with java")
         try:
             s.check_output(['java', '-jar', path, '-version'], encoding='utf-8')
         except s.CalledProcessError:
             try:  # Is java present?
+                print("is java present?")
                 s.check_output(['java', '-version'], encoding='utf-8')
             except s.CalledProcessError:
                 print("KRYPTON did not found Java on your machine. Please "
