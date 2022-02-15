@@ -14,8 +14,8 @@ except Exception:
 setup(
     name='krypton',
     version="0.2.0",
-    packages=find_packages(),
     scripts=[script for script in glob.glob('bin/*.py')],
+    packages=find_packages(),
     license="GPLv3+",
     url="https://github.com/meb-team/KRYPTON",
     python_requires=">=3.7",

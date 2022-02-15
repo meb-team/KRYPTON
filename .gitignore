@@ -5,6 +5,7 @@ MetaPathExplorer.log
 ressources/KEGG*
 ressources/AntiFam.hmm*
 pipeliner*
+build/
 
 # Used for Dev's tests
 damien
