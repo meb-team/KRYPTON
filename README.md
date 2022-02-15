@@ -98,8 +98,6 @@ conda activate krypton_base # Activate the Conda environment
 2. Core tools
 
 ```bash
-conda install fastqc trimmomatic=0.39 mmseqs2=13.45111  transdecoder=5.5.0
-
 cpan install Config::IniFiles # For MetaPathExplorer
 ```
 

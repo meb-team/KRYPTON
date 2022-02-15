@@ -155,34 +155,19 @@ class Krypton:
 
         # Converts the results DB into a tsv
         ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
+        return True
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
-        out_dir_long = self.output + "/05_transdecoder_longorfs"
-        u.create_dir(out_dir_long)
-
         """
         Note about the parameters from the wiki: "the rate of false positive
         ORF predictions increases drastically with shorter minimum length
         """
-        t = transdecoder.TransDecoder(min_prot_len=self.min_prot_len)
-        command = t.format_longorf(transcrits_clust=transcrits_clust,
-                                   outdir=out_dir_long)
-        with open(out_dir_long + "/td_longorfs_logs.log", "w") as log:
-            u.run_command(command, log=log, step=f"{step} - LongOrfs")
-
-        """
-        It is possible to run a PFAM annotation step for all the predicted CDS
-        here.
-        """
-        out_dir_pred = self.output + "/06_transdecoder_predict"
-        u.create_dir(out_dir_pred)
-        command_2 = t.format_predict(transcrits_clust=transcrits_clust,
-                                     pred_input=out_dir_long)
-        with open(out_dir_pred + "/td_predict_logs.log", "w") as log:
-            u.run_command(command_2, log=log, step=f"{step} - Predict")
-
-        t.clean(dest=out_dir_pred, transcripts=transcrits_clust,
-                from_long=out_dir_long)
+        t = transdecoder.TransDecoder(transcripts=transcrits_clust,
+                                      project=self.output,
+                                      min_prot_len=self.min_prot_len)
+        t.run_longorf(step=step)
+        t.run_predict(step=step)
+        t.clean()
         return True
 
     def remove_spurious_prot(self, step=None, prot=None):
@@ -272,8 +257,11 @@ class Krypton:
                               step="KOFamScan")
 
             """For the moment, MetaPAthExplorer is waiting a fix, about KEGG"""
-            # self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
-            #                           "KEGG pathways")
+            print("\nWarning: MPE is still buggy - ko/path/links must be",
+                  "updated - so do not expect to have proper results!..")
+            self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
+                                      "KEGG pathways")
 
         time_global.append(time.time())
         u.time_used(time_global, step="Krypton")
+        return True

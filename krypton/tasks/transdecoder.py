@@ -10,11 +10,18 @@ import krypton.utils as u
 
 class TransDecoder():
 
-    def __init__(self, min_prot_len=None):
+    def __init__(self, transcripts, project=None, min_prot_len=None):
         self.required_version = "5.5.0"
         self._check_avail()
         self._check_version()
         self.min_prot_len = min_prot_len
+        self.project = project
+        self.transcripts = transcripts
+        self.out_long = self.project + "/05_transdecoder_longorfs"
+        self.out_pred = self.project + "/06_transdecoder_predict"
+
+        u.create_dir(self.out_long)
+        u.create_dir(self.out_pred)
 
     def _check_avail(self):
         try:
@@ -42,26 +49,27 @@ class TransDecoder():
     def __repr__(self):
         return f"TransDecoder Object, tool version : {self.required_version}"
 
-    def format_longorf(self, transcrits_clust, outdir):
-        command = f"TransDecoder.LongOrfs --output_dir {outdir}"\
-                  + f" -t {transcrits_clust} -m {self.min_prot_len}"
-        return command
+    def run_longorf(self, step=None):
+        command = f"TransDecoder.LongOrfs --output_dir {self.out_long}"\
+                  + f" -t {self.transcripts} -m {self.min_prot_len}"
+        with open(self.out_long + "/td_longorfs_logs.log", "w") as log:
+            u.run_command(command, log=log, step=f"{step} - LongOrfs")
+        return True
 
-    def format_predict(self, transcrits_clust, pred_input, pfam=None,
-                       pfam_res=None):
-        command = f"TransDecoder.Predict --output_dir {pred_input}"\
-                  + f" -t {transcrits_clust}"
+    def run_predict(self, step=None, pfam=None, pfam_res=None):
+        command_p = f"TransDecoder.Predict --output_dir {self.out_long}"\
+                  + f" -t {self.transcripts}"
         if pfam:
             """
-            It can enter here ONLY in the case where the user aksed for the
-            Pfam annotation here.
-            It is possible to have a similar approach from BLAST
+            It is possible to add run PFam annot on the proteins first, but we
+            choosed to not doing it as we have several annotations steps after.
             """
-            command += f" --retain_pfam_hits {pfam_res}"
+            command_p += f" --retain_pfam_hits {pfam_res}"
+        with open(self.out_pred + "/td_predict_logs.log", "w") as log:
+            u.run_command(command_p, log=log, step=f"{step} - Predict")
+        return True
 
-        return command
-
-    def clean(self, dest, transcripts, from_long):
+    def clean(self):
         """
         Clean the mess that Transdecoder is producing
         Giving this issue
@@ -70,16 +78,18 @@ class TransDecoder():
         waiting for a TransDecoder update.
         """
 
-        for file in glob.glob(f"{os.path.basename(transcripts)}*"):
-            os.replace(file, f"{dest}/{file}")
+        for file in glob.glob(f"{os.path.basename(self.transcripts)}*"):
+            os.replace(file, f"{self.out_pred}/{file}")
             if file.endswith(".pep"):
-                u.clean_deflines(infile=f"{dest}/{file}", seq_prefix="prot")
+                u.clean_deflines(infile=f"{self.out_pred}/{file}",
+                                 seq_prefix="prot")
 
         for pipeliner in glob.glob("pipeliner.*.cmds"):
             u.remove_file(pipeliner)
 
-        for dir_to_rm in glob.glob(f"{from_long}.*"):
+        for dir_to_rm in glob.glob(f"{self.out_long}.*"):
             u.remove_dir(dir_to_rm, other=True)
+        return True
 
 
 if __name__ == '__main__':

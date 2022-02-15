@@ -84,3 +84,4 @@ class Trimmomatic():
 
         with open(f"{self.output}/01_logs.log", "w") as log:
             u.run_command(command=command, log=log, step=step)
+        return True
