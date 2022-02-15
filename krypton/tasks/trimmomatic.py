@@ -42,6 +42,7 @@ def check_version(path=None, mode=None):
 
 def _check_conda():
     try:
+        print("TRY conda")
         s.check_output(['trimmomatic', '-version'], encoding='utf-8')
     except s.CalledProcessError:
         return False
@@ -50,6 +51,7 @@ def _check_conda():
 
 def _check_apt():
     try:
+        print("TRY apt")
         s.check_output(['TrimmomaticPE', '-version'], encoding='utf-8')
     except s.CalledProcessError:
         return False
