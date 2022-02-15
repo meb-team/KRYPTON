@@ -17,27 +17,19 @@ KRYPTON combines Trinity, MMseqs2, KOFamScan and MetaPathExplorer.
         otherwise, re-run it with the parameter **`--no_refine_starts`**.
 - [ ] Clarify the 3 steps: use the right vocabulary, eg "_peptide sequence_"
     instead of "_cds_"
-- [ ] add a `requirements.txt`
+- [ ] add a `requirements.txt` ?
 - [ ] check if a step ended nicely?
     - [ ] trimmomatic output the information in STDOUT/STDERR
         (_TrimmomaticPE: Completed successfully_)
     - [ ] Trinity too ("_All commands completed successfully. :-)_")
 - [ ] Tweak tool parameters by passing them to the command line:
-    - [x] fastQC _--threads_
     - [ ] trimmomatic _MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5_
-    - [X] trinity _--CPU_ and _--max_memory_
     - [ ] MMseqs2: cluster mode; sensitivity, min seq ID, ...
-    - [x] TransDecoder --> min ORF size, <s>Pfam annotation?</s>
 - [ ] Add a dict to store the subpath values
     - eg:
         - {"00" : "00_FastQC_raw",
         - "01" : "01_trimmomatic",
         - ... }
-- <s>[x] Output the logs in `self.output/xxx_log.log`, **not** `self.output/xxx/xxx_log.log`</s> **BAD IDEA**
-- <s>[x] Add the HMMER suite (TransDecoder?) + other step</s> **Not interesting**
-- [x] **PRIORITY** Add [AntiFam](https://github.com/ebi-pf-team/antifam)
-to filter out spurious proteins after the second MMseqs clustering.
-    - Included in the installation step
 - [ ] Add [Phytool](https://caninuzzo.shinyapps.io/phytool_v1/) ??
 - [ ] Add [Tiara](10.1093/bioinformatics/btab672) for the identification of
 Eukaryotic data (_a.k.a_ it can remove prokaryotic sequences??) and moreover it
@@ -80,7 +72,7 @@ is supposed to distinguish nuclear and organellar sequences.
 
 ## Install
 
-### With Conda environment
+### With Conda environment - **Preferred way**
 
 To fill the requirements linked to Python, a recipe for a **Conda environment**
 is present in the file `ressources/krypton_conda_env.yml`.
