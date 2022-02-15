@@ -30,9 +30,11 @@ class Krypton:
         self.r2 = A('r2')
         # ##### Trimmomatic
         if self.mode == 'reads':
+            print("Entering Trimmomatic test")
             self.trimmomatic = A('trimmomatic')
             self.trimmo_mod = "PE" if self.paired else "SE"
             trimmomatic.check_version(self.trimmomatic, mode=self.trimmo_mod)
+            print("ending Trimmomatic verifications")
         # #####
         self.transcripts = A('transcripts')
         self.cds = A('cds')
