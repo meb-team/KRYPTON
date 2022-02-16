@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import os
 import time
 import glob
 
@@ -15,11 +16,13 @@ import krypton.tasks.metapathexplorer as mpe
 
 
 class Krypton:
-    def __init__(self, args, abs_path):
+    def __init__(self, args, abs_path=None):
 
         self.args = args
         A = lambda x: args.__dict__[x] if x in args.__dict__ else None
-        self.abs_path = abs_path
+        self.abs_path = os.path.dirname(os.path.realpath(__file__))
+
+        print("The path for run_script.py: %s" % self.abs_path)
 
         self.mode = A('mode')
         self.output = A('outdir').rstrip('/')
