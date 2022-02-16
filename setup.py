@@ -13,7 +13,7 @@ except Exception:
 
 setup(
     name='krypton',
-    version="0.2.0",
+    version="0.1.0",
     scripts=[script for script in glob.glob('bin/*.py')],
     packages=find_packages(),
     license="GPLv3+",
