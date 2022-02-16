@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import os
 import sys
 import glob
 import subprocess as s
@@ -43,11 +44,12 @@ def check_version(path=None, mode=None):
 def _check_conda():
     try:
         print("TRY conda")
+        # os.environ['CONDA_PREFIX']  # raise a KeyError if not found
         print(s.check_output(['trimmomatic', '-version'], encoding='utf-8',
                              stderr=s.STDOUT), shell=True)
         print("TRY conda - after")
 
-    except s.CalledProcessError:
+    except (s.CalledProcessError, KeyError):
         return False
     return True
 
