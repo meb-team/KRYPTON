@@ -9,7 +9,7 @@ abbreviated as _KRYPTON_, written in Python, contains a pipeline for
 transcriptome assembly and annotation (functional and taxonomic).  
 KRYPTON combines Trinity, MMseqs2, KOFamScan and MetaPathExplorer.
 
-<img src="ressources/Workflow_KRYPTON.PNG" width=400 units="px"></img>
+<img src="krypton/ressources/Workflow_KRYPTON.PNG" width=400 units="px"></img>
 
 ## To-do list:
 
@@ -75,7 +75,7 @@ is supposed to distinguish nuclear and organellar sequences.
 ### With Conda environment - **Preferred way**
 
 To fill the requirements linked to Python, a recipe for a **Conda environment**
-is present in the file `ressources/krypton_conda_env.yml`.
+is present in the file `krypton/ressources/krypton_conda_env.yml`.
 
 1. Setup
 
@@ -107,18 +107,18 @@ pip install -e .
 4. Data for [Antifam](https://xfam.wordpress.com/2012/03/21/introducing-antifam/):
 
 ```bash
-cd ressources/
+cd krypton/ressources/
 wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/AntiFam/current/Antifam.tar.gz
 tar -zxf Antifam.tar.gz
 rm relnotes version *.seed AntiFam_* Antifam.tar.gz
 hmmpress AntiFam.hmm
-cd ..
+cd ../..
 ```
 
 5. Data for KEGG annotation
 
 ```bash
-python bin/download_KEGG_data.py
+python KRYPTON_download_KEGG_data.py
 ```
 
 6. Trinity
