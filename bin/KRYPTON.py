@@ -38,8 +38,8 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 """
 if __name__ == '__main__':
 
-    file_path = os.path.dirname(os.path.realpath(__file__)).rstrip("/")
-    abs_path = os.path.normpath(os.path.join(file_path, os.pardir))
+    # file_path = os.path.dirname(os.path.realpath(__file__)).rstrip("/")
+    # abs_path = os.path.normpath(os.path.join(file_path, os.pardir))
 
     parser = argparse.ArgumentParser(description=__description__,
                                      formatter_class=argparse.RawTextHelpFormatter
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         I will see later to implement the stuff related to
             --bucketin / -- bucketout / --run-on-hpc2
         """
-        test = k.Krypton(args=args, abs_path=abs_path)
+        test = k.Krypton(args=args) #, abs_path=abs_path)
         test.run_krypton()
         # Here run the process, based on the arguments
 

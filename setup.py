@@ -13,9 +13,10 @@ except Exception:
 
 setup(
     name='krypton',
-    version="0.1.0",
+    version="0.2.0",
     scripts=[script for script in glob.glob('bin/*.py')],
     packages=find_packages(),
+    include_package_data=True,
     license="GPLv3+",
     url="https://github.com/meb-team/KRYPTON",
     python_requires=">=3.7",

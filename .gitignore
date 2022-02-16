@@ -1,11 +1,11 @@
 # Regular file
-krypton.egg-info/
-*__pycache__*
-MetaPathExplorer.log
-ressources/KEGG*
-ressources/AntiFam.hmm*
-pipeliner*
 build/
+pipeliner*
+*__pycache__*
+krypton.egg-info/
+MetaPathExplorer.log
+krypton/ressources/KEGG*
+krypton/ressources/AntiFam.hmm*
 
 # Used for Dev's tests
 damien
