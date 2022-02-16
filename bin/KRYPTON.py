@@ -39,7 +39,10 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 if __name__ == '__main__':
 
     file_path = os.path.dirname(os.path.realpath(__file__)).rstrip("/")
+    name_path = os.path.dirname(os.path.realpath(__name__)).rstrip("/")
     abs_path = os.path.normpath(os.path.join(file_path, os.pardir))
+
+    print(file_path, name_path, abs_path, sept="\n")
 
     parser = argparse.ArgumentParser(description=__description__,
                                      formatter_class=argparse.RawTextHelpFormatter
