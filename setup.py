@@ -16,12 +16,13 @@ setup(
     version="0.2.0",
     scripts=[script for script in glob.glob('bin/*.py')],
     packages=find_packages(),
-    package_data={"":
+    package_data={"krypton":
                   [
                    "ressources/AntiFam.hmm*",
                    "ressources/KEGG_data/*.tsv"
                    ]
                   },
+    include_package_data=True,
     license="GPLv3+",
     url="https://github.com/meb-team/KRYPTON",
     python_requires=">=3.7",
