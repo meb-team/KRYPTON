@@ -23,7 +23,8 @@ def check_version(path=None, mode=None):
     elif with_java:
         print("start with java")
         try:
-            s.check_output(['java', '-jar', path, '-version'], encoding='utf-8')
+            s.check_output(['java', '-jar', path, '-version'],
+                           encoding='utf-8')
         except s.CalledProcessError:
             try:  # Is java present?
                 print("is java present?")
@@ -45,11 +46,10 @@ def _check_conda():
     try:
         print("TRY conda")
         # os.environ['CONDA_PREFIX']  # raise a KeyError if not found
-        print(s.check_output(['trimmomatic', '-version'], encoding='utf-8',
-                             stderr=s.STDOUT), shell=True)
+        print(s.check_output(['trimmomatic', '-version'], encoding='utf-8'))
         print("TRY conda - after")
 
-    except (s.CalledProcessError, KeyError):
+    except (s.CalledProcessError, KeyError, FileNotFoundError):
         return False
     return True
 
@@ -58,7 +58,7 @@ def _check_apt():
     try:
         print("TRY apt")
         s.check_output(['TrimmomaticPE', '-version'], encoding='utf-8')
-    except s.CalledProcessError:
+    except (s.CalledProcessError, FileNotFoundError):
         return False
     return True
 
