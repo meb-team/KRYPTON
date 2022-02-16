@@ -4,7 +4,7 @@
 import os
 import requests
 import time
-import krypton.utils as u
+#import krypton.utils as u
 
 """
 The code present in this script is heavily inspired by a Nolwen's blog
@@ -27,10 +27,8 @@ pathways_to_K0 = "http://rest.kegg.jp/link/pathway/ko"
 out = os.path.dirname(os.path.abspath(__name__)) + '/ressources/KEGG_data/'
 
 print("File will be downloaded in %s " % out)
-try:
-    u.check_dir_exists(out)
-except Exception:
-    u.create_dir(out)
+if not os.path.isdir(out):
+    os.makedirs(out)
 
 # # Download the data
 # ## Pathways
