@@ -38,9 +38,6 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 """
 if __name__ == '__main__':
 
-    # file_path = os.path.dirname(os.path.realpath(__file__)).rstrip("/")
-    # abs_path = os.path.normpath(os.path.join(file_path, os.pardir))
-
     parser = argparse.ArgumentParser(description=__description__,
                                      formatter_class=argparse.RawTextHelpFormatter
                                      )
@@ -109,16 +106,11 @@ if __name__ == '__main__':
                         '\n**OR**\nPath to a directory to store the database '
                         'passed to `--mmseqs-db`',
                         dest='mmseq_db_path', metavar="")
-    groupG.add_argument('--ko-annot', help='Turn ON proteins annotation with '
-                        'KEGG data, and visualise the results with '
-                        'MetaPathExplorer (WIP)', default=False,
-                        action='store_true', dest="ko_annot")
-    groupG.add_argument('--ko-annot-file', help='PATH to a directory containing '
+    groupG.add_argument('--ko-annot', help='PATH to a directory containing '
                         '`ko_list` & `profiles` for K0famScan.\nKRYPTON '
                         'provides a simple script to download them:\n\t- '
-                        'download_K0famScan_data.py\nDefault is '
-                        'ressources/KEGG_data/', dest="ko_annot_file",
-                        metavar="")
+                        'KRYPTON_download_K0famScan_data.py\n',
+                        dest="ko_annot")
     groupH.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
     groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
@@ -136,7 +128,7 @@ if __name__ == '__main__':
         I will see later to implement the stuff related to
             --bucketin / -- bucketout / --run-on-hpc2
         """
-        test = k.Krypton(args=args) #, abs_path=abs_path)
+        test = k.Krypton(args=args)
         test.run_krypton()
         # Here run the process, based on the arguments
 

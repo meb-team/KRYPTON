@@ -16,13 +16,11 @@ import krypton.tasks.metapathexplorer as mpe
 
 
 class Krypton:
-    def __init__(self, args, abs_path=None):
+    def __init__(self, args):
 
         self.args = args
         A = lambda x: args.__dict__[x] if x in args.__dict__ else None
         self.abs_path = os.path.dirname(os.path.realpath(__file__))
-
-        print("The path for run_script.py: %s" % self.abs_path)
 
         self.mode = A('mode')
         self.output = A('outdir').rstrip('/')
@@ -60,20 +58,16 @@ class Krypton:
 
         # ## KEGG annotation setup
         self.ko_annot = A('ko_annot')
-        self.ko_annot_file = A('ko_annot_file')
-
-        if self.ko_annot:
-            print("K0famscan, search is %s" % self.abs_path)
-            if not self.ko_annot_file:
-                self.ko_annot_file = self.abs_path + "/ressources/KEGG_data"
-            try:
-                ko.ko_check_files(self.ko_annot_file)
-            except Exception:
-                print(f"Search in {self.ko_annot_file}")
-                print("The files for K0 annotation are not present.\n"
-                      "Please check the script\n\tdownload_K0famScan_data.py\n"
-                      "KRYPTON will skip this annotation step.\n")
-                self.ko_annot = False
+        try:
+            ko.ko_check_files(self.ko_annot)
+        except Exception:
+            print(f"Search in {self.ko_annot}")
+            print("The files for K0 annotation are not present.\n"
+                  "Please check the script\n\t"
+                  "KRYPTON_download_K0famScan_data.py\n"
+                  "KRYPTON will skip this annotation step. Kill the process\n"
+                  "if you want it.")
+            self.ko_annot = None
 
         # ## Check the mode
         if self.mode == 'reads':

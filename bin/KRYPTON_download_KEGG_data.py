@@ -4,7 +4,6 @@
 import os
 import requests
 import time
-#import krypton.utils as u
 
 """
 The code present in this script is heavily inspired by a Nolwen's blog
