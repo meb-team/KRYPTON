@@ -27,9 +27,14 @@ class Trinity():
         {priject}/03_trinity.Trinity.fasta
         N.B., with this way, I have to trust Trinity for the dirrectory setup
         """
-        command = f"{os.environ['TRINITY_HOME']}/Trinity --seqType fq " + \
-                  f"--full_cleanup --CPU {self.max_threads} " + \
-                  f"--max_memory {self.max_mem} --output {self.output} "
+        command = ""
+        if 'TRINITY_HOME' not in os.environ.keys():
+            command += "Trinity "
+        else:
+            command += f"{os.environ['TRINITY_HOME']}/Trinity "
+        command += "--seqType fq " + \
+                   f"--full_cleanup --CPU {self.max_threads} " + \
+                   f"--max_memory {self.max_mem} --output {self.output} "
         if self.r2:
             command += f"--left {self.r1} --right {self.r2}"
         else:
