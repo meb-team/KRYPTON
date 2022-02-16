@@ -24,7 +24,8 @@ K0 = "http://rest.kegg.jp/list/ko"
 pathways_to_K0 = "http://rest.kegg.jp/link/pathway/ko"
 
 # # Setup the output directory
-out = os.path.dirname(os.path.abspath(__name__)) + '/ressources/KEGG_data/'
+out = os.path.dirname(os.path.abspath(__name__)) + \
+      'krypton//ressources/KEGG_data/'
 
 print("File will be downloaded in %s " % out)
 if not os.path.isdir(out):
