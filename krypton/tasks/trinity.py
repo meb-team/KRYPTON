@@ -33,8 +33,8 @@ class Trinity():
         else:
             command += f"{os.environ['TRINITY_HOME']}/Trinity "
         command += "--seqType fq " + \
-                  f"--full_cleanup --CPU {self.max_threads} " + \
-                  f"--max_memory {self.max_mem} --output {self.output} "
+                   f"--full_cleanup --CPU {self.max_threads} " + \
+                   f"--max_memory {self.max_mem} --output {self.output} "
         if self.r2:
             command += f"--left {self.r1} --right {self.r2}"
         else:

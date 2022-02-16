@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import os
 import sys
 import glob
 import subprocess as s
@@ -17,11 +18,12 @@ def check_version(path=None, mode=None):
             with_java = True
     elif with_java:
         try:
-            s.check_output(['java', '-jar', path, '-version'], encoding='utf-8')
-        except s.CalledProcessError:
+            s.check_output(['java', '-jar', path, '-version'],
+                           encoding='utf-8')
+        except (s.CalledProcessError, FileNotFoundError):
             try:  # Is java present?
                 s.check_output(['java', '-version'], encoding='utf-8')
-            except s.CalledProcessError:
+            except (s.CalledProcessError, FileNotFoundError):
                 print("KRYPTON did not found Java on your machine. Please "
                       "install it for runnning Trimmomatic.\nKRYPTON ends")
                 sys.exit(1)
@@ -36,8 +38,10 @@ def check_version(path=None, mode=None):
 
 def _check_conda():
     try:
-        s.check_output(['trimmomatic', '-version'], encoding='utf-8')
-    except s.CalledProcessError:
+        os.environ['CONDA_PREFIX']  # raise a KeyError if not found
+        print(s.check_output(['trimmomatic', '-version'], encoding='utf-8'))
+        print("TRY conda - after")
+    except (s.CalledProcessError, KeyError, FileNotFoundError):
         return False
     return True
 
@@ -45,7 +49,7 @@ def _check_conda():
 def _check_apt():
     try:
         s.check_output(['TrimmomaticPE', '-version'], encoding='utf-8')
-    except s.CalledProcessError:
+    except (s.CalledProcessError, FileNotFoundError):
         return False
     return True
 
