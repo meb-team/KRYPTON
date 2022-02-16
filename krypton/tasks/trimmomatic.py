@@ -44,6 +44,8 @@ def _check_conda():
     try:
         print("TRY conda")
         s.check_output(['trimmomatic', '-version'], encoding='utf-8')
+        print("TRY conda - after")
+
     except s.CalledProcessError:
         return False
     return True
