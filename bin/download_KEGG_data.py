@@ -24,7 +24,7 @@ K0 = "http://rest.kegg.jp/list/ko"
 pathways_to_K0 = "http://rest.kegg.jp/link/pathway/ko"
 
 # # Setup the output directory
-out = os.path.dirname(os.path.abspath(__name__)) + '/ressources/KEGG_data/'
+out = os.path.dirname(os.path.realpath(__name__)) + '/ressources/KEGG_data/'
 try:
     u.check_dir_exists(out)
 except Exception:
