@@ -30,11 +30,9 @@ class Krypton:
         self.r2 = A('r2')
         # ##### Trimmomatic
         if self.mode == 'reads':
-            print("Entering Trimmomatic test")
             self.trimmomatic = A('trimmomatic')
             self.trimmo_mod = "PE" if self.paired else "SE"
             trimmomatic.check_version(self.trimmomatic, mode=self.trimmo_mod)
-            print("ending Trimmomatic verifications")
         # #####
         self.transcripts = A('transcripts')
         self.cds = A('cds')
@@ -70,7 +68,7 @@ class Krypton:
                 print(f"Search in {self.ko_annot_file}")
                 print("The files for K0 annotation are not present.\n"
                       "Please check the script\n\tdownload_K0famScan_data.py\n"
-                      "KRYPTON will skip this step.\n")
+                      "KRYPTON will skip this annotation step.\n")
                 self.ko_annot = False
 
         # ## Check the mode
