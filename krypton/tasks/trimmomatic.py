@@ -43,7 +43,8 @@ def check_version(path=None, mode=None):
 def _check_conda():
     try:
         print("TRY conda")
-        s.check_output(['trimmomatic', '-version'], encoding='utf-8')
+        print(s.check_output(['trimmomatic', '-version'], encoding='utf-8',
+                             stderr=s.STDOUT))
         print("TRY conda - after")
 
     except s.CalledProcessError:
