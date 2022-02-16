@@ -60,6 +60,7 @@ class Krypton:
         self.ko_annot = A('ko_annot')
         try:
             ko.ko_check_files(self.ko_annot)
+            print("Files for the annotation via K0FamScan are correct!")
         except Exception:
             print(f"Search in {self.ko_annot}")
             print("The files for K0 annotation are not present.\n"
