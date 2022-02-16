@@ -1,1 +1,2 @@
 recursive-include krypton *
+recursive-include krypton/ressources *
