@@ -25,6 +25,8 @@ pathways_to_K0 = "http://rest.kegg.jp/link/pathway/ko"
 
 # # Setup the output directory
 out = os.path.dirname(os.path.abspath(__name__)) + '/ressources/KEGG_data/'
+
+print("File will be downloaded in %s " % out)
 try:
     u.check_dir_exists(out)
 except Exception:

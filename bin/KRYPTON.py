@@ -40,7 +40,6 @@ if __name__ == '__main__':
 
     file_path = os.path.dirname(os.path.realpath(__file__)).rstrip("/")
     abs_path = os.path.normpath(os.path.join(file_path, os.pardir))
-    print(abs_path)
 
     parser = argparse.ArgumentParser(description=__description__,
                                      formatter_class=argparse.RawTextHelpFormatter
