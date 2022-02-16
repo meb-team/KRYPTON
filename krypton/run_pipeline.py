@@ -60,6 +60,7 @@ class Krypton:
         self.ko_annot_file = A('ko_annot_file')
 
         if self.ko_annot:
+            print("K0famscan, search is %s" % self.abs_path)
             if not self.ko_annot_file:
                 self.ko_annot_file = self.abs_path + "/ressources/KEGG_data"
             try:
