@@ -14,20 +14,27 @@ def ko_check_files(file_path):
 
 
 class KO_annot():
-    def __init__(self, threads=1, project=None, ko_files=None,
-                 proteins=None, new_dir=True, bin_path=None):
+    def __init__(self, threads=1, project=None, ko_annot=None,
+                 proteins=None, new_dir=True, data_path=None):
         self.max_threads = threads
         self.output = project + "/" + '09_ko_annot'
         self.input = proteins
-        self.ko_list = '' if not ko_files else ko_files + '/ko_list'
-        self.profiles = '' if not ko_files else ko_files + '/profiles'
+
+        # For K0FamScan
+        self.ko_list = ko_annot + '/ko_list'
+        self.profiles = ko_annot + '/profiles'
         self.tmp = self.output + "/tmp"
         self.results = self.output + '/09_kofam_results.tsv'
-        self.K0_name = bin_path + '/ressources/KEGG_data/KEGG_K0.tsv'
-        self.K0_to_pathway = bin_path + '/ressources/KEGG_data/' + \
-                                        'KEGG_K0_to_pathway.tsv'
-        self.pathway_name = bin_path + '/ressources/KEGG_data/' + \
-                                       'KEGG_pathways.tsv'
+
+        # To output the results in txt files
+        self.K0_name = data_path + '/ressources/KEGG_data/KEGG_K0.tsv'
+        self.K0_to_pathway = data_path + '/ressources/KEGG_data/' + \
+                                         'KEGG_K0_to_pathway.tsv'
+        self.pathway_name = data_path + '/ressources/KEGG_data/' + \
+                                        'KEGG_pathways.tsv'
+
+        print(data_path)
+
         if new_dir:
             u.create_dir(self.output)
 
@@ -38,6 +45,7 @@ class KO_annot():
                   f'{self.profiles} --cpu {self.max_threads} ' +\
                   f'--tmp-dir {self.tmp} {self.input}'
         with open(f"{self.output}/09_kofam_logs.log", "w") as log:
+            print(f"{command}\n", file=log)
             u.run_command(command, log=log, step=step)
         return True
 
