@@ -58,17 +58,17 @@ class Krypton:
 
         # ## KEGG annotation setup
         self.ko_annot = A('ko_annot')
-        try:
-            ko.ko_check_files(self.ko_annot)
-            print("Files for the annotation via K0FamScan are correct!")
-        except Exception:
-            print(f"Search in {self.ko_annot}")
-            print("The files for K0 annotation are not present.\n"
-                  "Please check the script\n\t"
-                  "KRYPTON_download_K0famScan_data.py\n"
-                  "KRYPTON will skip this annotation step. Kill the process\n"
-                  "if you want it.")
-            self.ko_annot = None
+        if self.ko_annot:
+            try:
+                ko.ko_check_files(self.ko_annot)
+                print("Files for the annotation via K0FamScan are correct!")
+            except Exception:
+                print(f"Search in {self.ko_annot}")
+                print("The files for K0 annotation are not present or not "
+                      "valid.\nPlease check the script\n\t"
+                      "KRYPTON_download_K0famScan_data.py\n"
+                      "KRYPTON will skip this annotation step.\n"
+                      "==> Kill the process if you want it.")
 
         # ## Check the mode
         if self.mode == 'reads':

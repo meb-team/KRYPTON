@@ -33,8 +33,6 @@ class KO_annot():
         self.pathway_name = data_path + '/ressources/KEGG_data/' + \
                                         'KEGG_pathways.tsv'
 
-        print(data_path)
-
         if new_dir:
             u.create_dir(self.output)
 
