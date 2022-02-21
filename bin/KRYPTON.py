@@ -93,14 +93,14 @@ if __name__ == '__main__':
                         'MMseqs2 and a database.', action="store_true",
                         default=False, dest='mmseq_annot')
     groupF.add_argument('--mmseqs-db', help='The name of a database provided '
-                        'by MMseqs2 (a list is present at '
+                        'by MMseqs2 (the list is present at '
                         'https://github.com/soedinglab/MMseqs2/wiki#downloading-databases) '
                         '\n**OR**\nPath to a fa,fasta,fq,fastq,pep[.gz] '
                         'file.\n#####\nDefault:\n\t- the database is setup '
                         'within the output directory. To store the database '
                         'elsewhere on the disk, provide a path with '
                         '`--mmseqs-db-path`\n\t- If nothing is provided, '
-                        'KRYPTON uses UniProtKB/Swiss-Prot',
+                        'KRYPTON uses the UniProtKB/Swiss-Prot database.',
                         dest="mmseq_db", metavar="",)
     groupF.add_argument('--mmseqs-db-path', help='Path to an existing database'
                         '\n**OR**\nPath to a directory to store the database '
@@ -110,7 +110,7 @@ if __name__ == '__main__':
                         '`ko_list` & `profiles` for K0famScan.\nKRYPTON '
                         'provides a simple script to download them:\n\t- '
                         'KRYPTON_download_K0famScan_data.py\n',
-                        dest="ko_annot")
+                        dest="ko_annot", metavar="")
     groupH.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
     groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
