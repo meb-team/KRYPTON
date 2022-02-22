@@ -96,7 +96,7 @@ class MMseqs2():
             u.run_command(command, log=log, step=step)
         return True
 
-    def qry_db(self, seqs)c:
+    def qry_db(self, seqs):
         """
         Setup the database for the proteins from KRYPTON, into 'self.output/db'
         """
