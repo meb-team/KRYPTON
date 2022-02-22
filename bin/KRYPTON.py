@@ -80,15 +80,15 @@ if __name__ == '__main__':
                         dest="min_prot_len", metavar="", default=100)
     groupD.add_argument('--cds', help='File with TRANSLATED CDS, in FASTA '
                         '(foo.fa[.gz])', metavar="")
-    groupE.add_argument('--bucket-in', help='Name of the bucket used to read'
-                        ' data from. This option is required to run KRYPTON on'
-                        ' the HPC2 cluster', metavar="BUCKET_IN")
-    groupE.add_argument('--bucket-out', help='Name of the bucket used to store'
-                        ' data in. This option is required to run KRYPTON on'
-                        ' the HPC2 cluster', metavar="BUCKET_OUT")
-    groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
-                        ' is meant to be run on a HPC cluster -- WIP',
-                        action='store_true', default=False, dest='hpc2')
+    # groupE.add_argument('--bucket-in', help='Name of the bucket used to read'
+    #                     ' data from. This option is required to run KRYPTON on'
+    #                     ' the HPC2 cluster', metavar="BUCKET_IN")
+    # groupE.add_argument('--bucket-out', help='Name of the bucket used to store'
+    #                     ' data in. This option is required to run KRYPTON on'
+    #                     ' the HPC2 cluster', metavar="BUCKET_OUT")
+    # groupE.add_argument('--run-on-HPC', help='Turn on this option when KRYPTON'
+    #                     ' is meant to be run on a HPC cluster -- WIP',
+    #                     action='store_true', default=False, dest='hpc2')
     groupF.add_argument('--mmseqs-annot', help='Turn ON the annotation with '
                         'MMseqs2 and a database.', action="store_true",
                         default=False, dest='mmseq_annot')

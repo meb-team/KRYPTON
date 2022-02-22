@@ -41,7 +41,7 @@ class Krypton:
 
         # ## MMseqs2 annotation setup
         self.mmseq_annot = A('mmseq_annot')
-        self.mmseq_db, self.mmseq_db_path, self.mmseq_sbj = None, None, None
+        self.mmseq_db, self.mmseq_db_path, self.mmseq_sbj = None, None, dict()
         if self.mmseq_annot:
             self.mmseq_db = A('mmseq_db')
             self.mmseq_db_path = A('mmseq_db_path')

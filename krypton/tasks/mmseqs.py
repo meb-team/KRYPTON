@@ -18,7 +18,7 @@ def check_mmseq_db_param(db=None, db_path=None):
         print(f'KRYPTON will work with {info["db_user_input"]} '
               'in the project directory.\n')
 
-    if not db and db_path:  # DB ready
+    elif not db and db_path:  # DB ready
         if u.is_file_exists(db_path) and \
          u.is_file_exists(db_path+'.dbtype') and \
          u.is_file_exists(db_path+'.index') and \
@@ -96,7 +96,7 @@ class MMseqs2():
             u.run_command(command, log=log, step=step)
         return True
 
-    def qry_db(self, seqs):
+    def qry_db(self, seqs)c:
         """
         Setup the database for the proteins from KRYPTON, into 'self.output/db'
         """
