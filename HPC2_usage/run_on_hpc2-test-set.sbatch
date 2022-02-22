@@ -61,11 +61,12 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 # Run KRYPTON
 singularity exec $B_IMG/krypton.code.sif KRYPTON.py --r1 CIL_noribo_r1.fq \
     --r2 CIL_noribo_r2.fq --out $RESDIR --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
-    --mmseqs-db-path $B_IMG/database/mmseqs -t 16 --mem 30
+    --mmseqs-db-path $B_IMG/database/mmseqs -t $SLURM_CPUS_PER_TASK --mem 30
 
 # Run K0FamScan
 exec_annotation -p $B_IMG/database/ko/profiles -k $B_IMG/database/ko/ko_list \
-    --cpu $SLURM_CPUS_PER_TASK -f detail-tsv -o $RESDIR/09_ko_annot/09_kofam_results.tsv
+    --cpu $SLURM_CPUS_PER_TASK -f detail-tsv \
+    -o $RESDIR/09_ko_annot/09_kofam_results.tsv $RESDIR/07_mmseqs_antifam/good_proteins.fa
 
 # Run MetaPathExplorer
 ##later
