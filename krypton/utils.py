@@ -26,8 +26,8 @@ def create_dir(file_path):
 def is_file_exists(file_path):
     if not file_path:
         raise Exception("\nNo input file is declared...")
-    if not os.path.exists(os.path.abspath(file_path)):
-        raise Exception("\n\nKRYPTON cannot reach the file: "
+    if not os.path.exists(os.path.realpath(file_path)):
+        raise Exception("\n\nKRYPTON cannot reach the file "
                         f"{os.path.abspath(file_path)}\n")
     return True
 
