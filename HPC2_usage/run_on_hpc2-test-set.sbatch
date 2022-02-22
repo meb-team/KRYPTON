@@ -3,8 +3,8 @@
 #SBATCH --output=log/slurm-%j.out
 #SBATCH --error=log/slurm-%j.err
 #SBATCH --ntasks=1
-#SBATCH --partition=normal
-#SBATCH --time=0-12:00:00
+#SBATCH --partition=debug
+#SBATCH --time=0-00:55:00
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=32G
 
