@@ -64,7 +64,7 @@ class MMseqs2():
         self.output = project + "/" + self.subdir
         self.prefix = self.output + "/" + self.subdir
         self.bindpoint = bindpoint
-        self.tmp = project + "/tmp" if self.bindpoint else \
+        self.tmp = project + "/tmp" if not self.bindpoint else \
                                         bindpoint + "/" + project + "/tmp"
         u.create_dir(self.output)
 
