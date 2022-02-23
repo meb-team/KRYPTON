@@ -80,6 +80,7 @@ singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
 
 # Move the results back on the S3
 echo "END computing:" `date`
+>2 echo "start mv files" `date`
 mv $RESDIR $B_OUTPUT_PATH
 
 # Clean evrything

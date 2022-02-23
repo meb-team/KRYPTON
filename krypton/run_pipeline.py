@@ -135,25 +135,27 @@ class Krypton:
     def run_mmseqs_clust(self, step=None, seqs=None, prot=None):
         m = mmseqs.MMseqs2(project=self.output, prot=prot,
                            module='easy-cluster', threads=self.max_threads,
-                           mem=self.max_mem, bindpoint=self.bindpoint)
+                           mem=self.max_mem)
         if not prot:
             m.mmseqs_cluster(seqs=seqs, step=step)
         else:
             m.mmseqs_cluster(seqs=seqs, step=step, cov_mode=1, cluster_mode=2)
 
-        u.remove_dir(m.tmp)
+        if not self.bindpoint:
+            u.remove_dir(m.tmp)  # Do not remove if run from Singularity img
         return True
 
     def run_mmseqs_search(self, cds_file):
         ms = mmseqs.MMseqs2(project=self.output, module='createdb',
-                            threads=self.max_threads, mem=self.max_mem,
-                            bindpoint=self.bindpoint)
+                            threads=self.max_threads, mem=self.max_mem)
 
         # The CDS, from Krypton or the user
         ms.qry_db(seqs=cds_file)
         ms.ref_db(info_d=self.mmseq_sbj)
         ms.mmseqs_search(step="MMseqs - search")
-        u.remove_dir(ms.tmp)
+
+        if not self.bindpoint:
+            u.remove_dir(ms.tmp)  # Do not remove if run from Singularity img
 
         # Converts the results DB into a tsv
         ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
