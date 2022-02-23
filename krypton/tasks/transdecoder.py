@@ -100,7 +100,11 @@ class TransDecoder():
 
         # Delete the "pipeliner.xxxx.cmds"
         # I can't do this if using singularity container
-        if not self.bindpoint:
+        if self.bindpoint:
+            for file in glob.glob(f"{os.environ['HOME']}/pipeliner.*.cmds"):
+                shutil.move(file, f"{self.out_pred}/{file}")
+                u.remove_file(f"{self.out_pred}/{file}")
+        else:
             for pipeliner in glob.glob("pipeliner.*.cmds"):
                 u.remove_file(pipeliner)
 

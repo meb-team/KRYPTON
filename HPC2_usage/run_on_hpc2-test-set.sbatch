@@ -63,12 +63,9 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 MP=/data
 
 # Run KRYPTON
-# singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
-#     --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/$RESDIR \
-#     -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
 singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
-        --mode assembly --transcripts $MP/04_mmseqs_rep_seq.fasta \
-        --out $MP/$RESDIR -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
+    --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/$RESDIR \
+    -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
 
     # --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
 
@@ -84,7 +81,6 @@ singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
 
 # Move the results back on the S3
 echo "END computing:" `date`
->2 echo "start mv files" `date`
 mv $RESDIR $B_OUTPUT_PATH
 
 # Clean evrything
