@@ -135,7 +135,7 @@ class Krypton:
     def run_mmseqs_clust(self, step=None, seqs=None, prot=None):
         m = mmseqs.MMseqs2(project=self.output, prot=prot,
                            module='easy-cluster', threads=self.max_threads,
-                           mem=self.max_mem)
+                           mem=self.max_mem, bindpoint=self.bindpoint)
         if not prot:
             m.mmseqs_cluster(seqs=seqs, step=step)
         else:
@@ -146,7 +146,8 @@ class Krypton:
 
     def run_mmseqs_search(self, cds_file):
         ms = mmseqs.MMseqs2(project=self.output, module='createdb',
-                            threads=self.max_threads, mem=self.max_mem)
+                            threads=self.max_threads, mem=self.max_mem,
+                            bindpoint=self.bindpoint)
 
         # The CDS, from Krypton or the user
         ms.qry_db(seqs=cds_file)

@@ -55,7 +55,7 @@ class MMseqs2():
     """ Class that handle operations related to MMseqs2 """
 
     def __init__(self, project=None, prot=None, module=None, threads=None,
-                 mem=None):
+                 mem=None, bindpoint=None):
         self.module = module
         self.max_threads = threads
         self.max_mem = mem
@@ -63,7 +63,9 @@ class MMseqs2():
         self.subdir = self._get_subdir()
         self.output = project + "/" + self.subdir
         self.prefix = self.output + "/" + self.subdir
-        self.tmp = project + "/tmp"
+        self.bindpoint = bindpoint
+        self.tmp = project + "/tmp" if self.bindpoint else \
+                                        bindpoint + "/" + project + "/tmp"
         u.create_dir(self.output)
 
     def _get_subdir(self):

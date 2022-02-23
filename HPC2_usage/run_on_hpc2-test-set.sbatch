@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=debug
 #SBATCH --time=0-00:55:00
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 
 
@@ -17,11 +17,6 @@ module load python/3.7.1 goofys/0.24.0
 
 echo "START job:" `date`
 echo "HOSTNAME:" `hostname`
-
-echo "############## TEST ##############"
-echo "Mem:" $SLURM_MEM_PER_NODE
-echo "############## TEST ##############"
-
 
 # Setup the working directory
 SAMPLE="test_set"
@@ -43,10 +38,11 @@ cp $HOME/data/kry_test_set/CIL_noribo_r?.fq .
 B_OUTPUT=damien
 B_OUTPUT_PATH=$(mktemp -d -u -p $WORKDIR)
 B_IMG=singularity_img
+B_IMG_PATH=$(mktemp -d -u -p $WORKDIR)
 
 # mkdir -p $B_INPUT_PATH
 mkdir -p $B_OUTPUT_PATH
-mkdir -p $B_IMG
+mkdir -p $B_IMG_PATH
 
 # goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 #     --dir-mode=0777 --file-mode=0777 --cheap \
@@ -56,7 +52,7 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
     --endpoint https://s3.mesocentre.uca.fr $B_OUTPUT $B_OUTPUT_PATH
 goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
     --dir-mode=0777 --file-mode=0777 --cheap \
-    --endpoint https://s3.mesocentre.uca.fr $B_IMG $B_IMG
+    --endpoint https://s3.mesocentre.uca.fr $B_IMG $B_IMG_PATH
 
 ### Note: Since Singularity v3.6, is the current working directory is not present
 ### within the container, Singularity is not trying to solve it anymore. So we
@@ -66,16 +62,16 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 MP=/data
 
 # Run KRYPTON
-singularity exec -B $WORKDIR:$MP $B_IMG/krypton.code.sif KRYPTON.py \
+singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
     --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/$RESDIR \
-    --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
-    --mmseqs-db-path $MP/${B_IMG}/database/mmseqs \
-    -t $SLURM_CPUS_PER_TASK --mem 30
+    -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
+
+    # --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
 
 # Run K0FamScan
-exec_annotation -p $B_IMG/database/ko/profiles -k $B_IMG/database/ko/ko_list \
-    --cpu $SLURM_CPUS_PER_TASK -f detail-tsv \
-    -o $RESDIR/09_ko_annot/09_kofam_results.tsv $RESDIR/07_mmseqs_antifam/good_proteins.fa
+# exec_annotation -p $B_IMG/database/ko/profiles -k $B_IMG/database/ko/ko_list \
+#     --cpu $SLURM_CPUS_PER_TASK -f detail-tsv \
+#     -o $RESDIR/09_ko_annot/09_kofam_results.tsv $RESDIR/07_mmseqs_antifam/good_proteins.fa
 
 # Run MetaPathExplorer
 ##later
@@ -89,7 +85,7 @@ mv $RESDIR $B_OUTPUT_PATH
 # Clean evrything
 # fusermount -u $B_INPUT_PATH
 fusermount -u $B_OUTPUT_PATH
-fusermount -u $B_IMG
+fusermount -u $B_IMG_PATH
 
 rm -r $WORKDIR
 echo "END job:" `date`

@@ -177,3 +177,21 @@ For each step, the result are present under `<out_dir>` as follow:
 against a reference database
 - `<out_dir>/09_ko_annot/`: KOFamScan results
 - `<out_dir>/10_MetaPathExplorer/`: MetaPathExplorer results
+
+
+## Tips
+
+### Run on HPC via a Singularity container
+
+As TransDecoder.Predict outputs its results in the Current Working directory
+(CWD) like it is not possible to pass it such information... I had to find a way
+to move those files within the correct directory. So I adapted the KRYPTON's
+code to use it within a Singularity container. To this mean, I added a
+parameter, `--bindpoint` which informs KRYPTON about the path used
+to link the host to the container.
+
+
+For the moment, formatting a MMseqs DB with KRYPTON running in a Singularity
+container and saving it on CEPH server seems impossible... That is why
+I let KRYPTON doing the formatting within the result directory and I copy
+the database on CEPH after.
