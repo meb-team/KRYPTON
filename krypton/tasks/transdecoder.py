@@ -82,7 +82,7 @@ class TransDecoder():
         # Move the result files, as TD put them in CWD
         res_files = None
         if self.bindpoint:
-            res_files = f"{self.binding}/{os.path.basename(self.transcripts)}"
+            res_files = f"{self.bindpoint}/{os.path.basename(self.transcripts)}"
         else:
             res_files = f"{os.path.basename(self.transcripts)}"
         for file in glob.glob(f"{res_files}*"):
@@ -94,7 +94,7 @@ class TransDecoder():
         # Delete the "pipeliner.xxxx.cmds"
         to_rm = str()
         if self.bindpoint:
-            to_rm = f"{self.binding}/"
+            to_rm = f"{self.bindpoint}/"
         for pipeliner in glob.glob(f"{to_rm}pipeliner.*.cmds"):
             u.remove_file(pipeliner)
 
