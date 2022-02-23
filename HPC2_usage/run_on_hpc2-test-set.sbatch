@@ -30,7 +30,8 @@ mkdir -p $WORKDIR
 cd $WORKDIR
 
 # Copy test data
-cp $HOME/data/kry_test_set/CIL_noribo_r?.fq .
+#cp $HOME/data/kry_test_set/CIL_noribo_r?.fq .
+cp $HOME/data/kry_test_set/04_mmseqs_rep_seq.fasta .
 
 # Mount the buckets for data (input, output) and singularity container
 # B_INPUT=projet-cil
@@ -62,9 +63,12 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 MP=/data
 
 # Run KRYPTON
+# singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
+#     --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/$RESDIR \
+#     -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
 singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
-    --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/$RESDIR \
-    -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
+        --mode assembly --transcripts $MP/04_mmseqs_rep_seq.fasta \
+        --out $MP/$RESDIR -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
 
     # --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
 

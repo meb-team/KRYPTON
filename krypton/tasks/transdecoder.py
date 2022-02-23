@@ -88,7 +88,8 @@ class TransDecoder():
 
         for file in res_files:
             if self.bindpoint:
-                os.replace(f"{self.bindpoint}/{file}",
+                # let's hope this ugly fix works!!
+                os.replace(f"{os.environ['HOME']}/{file}",
                            f"{self.out_pred}/{file}")
             else:
                 os.replace(file, f"{self.out_pred}/{file}")

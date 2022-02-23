@@ -190,6 +190,10 @@ code to use it within a Singularity container. To this mean, I added a
 parameter, `--bindpoint` which informs KRYPTON about the path used
 to link the host to the container.
 
+In fact, TransDecoder.Predict write its results in `$HOME`, which is very weird
+but the main author will not fix that as he moved to another position... So
+I have to update the KRYPTON's code to handle this exception.
+
 
 For the moment, formatting a MMseqs DB with KRYPTON running in a Singularity
 container and saving it on CEPH server seems impossible... That is why
