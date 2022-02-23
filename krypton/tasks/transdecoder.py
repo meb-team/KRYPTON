@@ -80,23 +80,28 @@ class TransDecoder():
         waiting for a TransDecoder update.
         """
         # Move the result files, as TD put them in CWD
-        res_files = None
+        res_files = ["04_mmseqs_rep_seq.fasta.transdecoder.bed",
+                     "04_mmseqs_rep_seq.fasta.transdecoder.cds",
+                     "04_mmseqs_rep_seq.fasta.transdecoder.gff3",
+                     "04_mmseqs_rep_seq.fasta.transdecoder.pep"]
         if self.bindpoint:
-            res_files = f"{self.bindpoint}/{os.path.basename(self.transcripts)}"
-        else:
-            res_files = f"{os.path.basename(self.transcripts)}"
-        for file in glob.glob(f"{res_files}*"):
+            # f"{self.bindpoint}/{os.path.basename(self.transcripts)}"
+
+            # I have to hardcode them, it is the only fix I found to run
+            # KRYPTON within a Singularity container
+            res_files = [self.bindpoint + '/' + x for x in res_files]
+
+        for file in res_files:
             os.replace(file, f"{self.out_pred}/{file}")
             if file.endswith(".pep"):
                 u.clean_deflines(infile=f"{self.out_pred}/{file}",
                                  seq_prefix="prot")
 
         # Delete the "pipeliner.xxxx.cmds"
-        to_rm = str()
-        if self.bindpoint:
-            to_rm = f"{self.bindpoint}/"
-        for pipeliner in glob.glob(f"{to_rm}pipeliner.*.cmds"):
-            u.remove_file(pipeliner)
+        # I can't do this if using singularity container
+        if not self.bindpoint:
+            for pipeliner in glob.glob("pipeliner.*.cmds"):
+                u.remove_file(pipeliner)
 
         # Delete temp directories crated by TD "xx.__checkpoints*"
         for dir_to_rm in glob.glob(f"{self.out_long}.*"):
