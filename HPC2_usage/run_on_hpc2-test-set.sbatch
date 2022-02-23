@@ -27,7 +27,7 @@ echo "############## TEST ##############"
 SAMPLE="test_set"
 
 WORKDIR=/storage/scratch/$USER/${SLURM_JOB_ID}
-RESDIR=$WORKDIR/KRY-${SAMPLE}-${SLURM_JOB_ID}
+RESDIR=KRY-${SAMPLE}-${SLURM_JOB_ID}
 
 mkdir -p $WORKDIR
 
@@ -58,10 +58,19 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
     --dir-mode=0777 --file-mode=0777 --cheap \
     --endpoint https://s3.mesocentre.uca.fr $B_IMG $B_IMG
 
+### Note: Since Singularity v3.6, is the current working directory is not present
+### within the container, Singularity is not trying to solve it anymore. So we
+### have to use a mountpoint,throught the -B/--bind option
+### See here: https://github.com/apptainer/singularity/issues/5798
+
+MP=/data
+
 # Run KRYPTON
-singularity exec $B_IMG/krypton.code.sif KRYPTON.py --r1 CIL_noribo_r1.fq \
-    --r2 CIL_noribo_r2.fq --out $RESDIR --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
-    --mmseqs-db-path $B_IMG/database/mmseqs -t $SLURM_CPUS_PER_TASK --mem 30
+singularity exec -B $WORKDIR:$MP $B_IMG/krypton.code.sif KRYPTON.py \
+    --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/$RESDIR \
+    --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
+    --mmseqs-db-path $MP/${B_IMG}/database/mmseqs \
+    -t $SLURM_CPUS_PER_TASK --mem 30
 
 # Run K0FamScan
 exec_annotation -p $B_IMG/database/ko/profiles -k $B_IMG/database/ko/ko_list \

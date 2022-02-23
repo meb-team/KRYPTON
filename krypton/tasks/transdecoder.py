@@ -10,7 +10,8 @@ import krypton.utils as u
 
 class TransDecoder():
 
-    def __init__(self, transcripts, project=None, min_prot_len=None):
+    def __init__(self, transcripts, project=None, min_prot_len=None,
+                 bindpoint=None):
         self.required_version = "5.5.0"
         self._check_avail()
         self._check_version()
@@ -19,6 +20,7 @@ class TransDecoder():
         self.transcripts = transcripts
         self.out_long = self.project + "/05_transdecoder_longorfs"
         self.out_pred = self.project + "/06_transdecoder_predict"
+        self.bindpoint = bindpoint
 
         u.create_dir(self.out_long)
         u.create_dir(self.out_pred)
@@ -77,16 +79,26 @@ class TransDecoder():
         I guess it would be better for me to move the result files myself, not
         waiting for a TransDecoder update.
         """
-
-        for file in glob.glob(f"{os.path.basename(self.transcripts)}*"):
+        # Move the result files, as TD put them in CWD
+        res_files = None
+        if self.bindpoint:
+            res_files = f"{self.binding}/{os.path.basename(self.transcripts)}"
+        else:
+            res_files = f"{os.path.basename(self.transcripts)}"
+        for file in glob.glob(f"{res_files}*"):
             os.replace(file, f"{self.out_pred}/{file}")
             if file.endswith(".pep"):
                 u.clean_deflines(infile=f"{self.out_pred}/{file}",
                                  seq_prefix="prot")
 
-        for pipeliner in glob.glob("pipeliner.*.cmds"):
+        # Delete the "pipeliner.xxxx.cmds"
+        to_rm = str()
+        if self.bindpoint:
+            to_rm = f"{self.binding}/"
+        for pipeliner in glob.glob(f"{to_rm}pipeliner.*.cmds"):
             u.remove_file(pipeliner)
 
+        # Delete temp directories crated by TD "xx.__checkpoints*"
         for dir_to_rm in glob.glob(f"{self.out_long}.*"):
             u.remove_dir(dir_to_rm, other=True)
         return True

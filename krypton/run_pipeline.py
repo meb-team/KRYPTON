@@ -24,6 +24,7 @@ class Krypton:
 
         self.mode = A('mode')
         self.output = A('outdir').rstrip('/')
+        self.bindpoint = A('bindpoint').rstrip('/')
         # self.overwrite = A('overwrite')
         # ##### Reads
         self.paired = A('paired')
@@ -164,7 +165,8 @@ class Krypton:
         """
         t = transdecoder.TransDecoder(transcripts=transcrits_clust,
                                       project=self.output,
-                                      min_prot_len=self.min_prot_len)
+                                      min_prot_len=self.min_prot_len,
+                                      bindpoint=self.bindpoint)
         t.run_longorf(step=step)
         t.run_predict(step=step)
         t.clean()
