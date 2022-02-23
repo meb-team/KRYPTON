@@ -2,6 +2,7 @@
 
 import os
 import glob
+import shutil
 import subprocess
 from subprocess import CalledProcessError
 
@@ -89,8 +90,8 @@ class TransDecoder():
         for file in res_files:
             if self.bindpoint:
                 # let's hope this ugly fix works!!
-                os.replace(f"{os.environ['HOME']}/{file}",
-                           f"{self.out_pred}/{file}")
+                shutil.move(f"{os.environ['HOME']}/{file}",
+                            f"{self.out_pred}/{file}")
             else:
                 os.replace(file, f"{self.out_pred}/{file}")
             if file.endswith(".pep"):
