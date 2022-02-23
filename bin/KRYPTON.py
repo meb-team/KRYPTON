@@ -116,9 +116,9 @@ if __name__ == '__main__':
     groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
                         'KRYPTON can use, eg 64 to ask for 64GB of RAM')
     groupH.add_argument('--bindpoint', help='To use with a Singularity '
-                        'container!:\nThe binding point present within the '
+                        'container!!!\nThe binding point present within the '
                         'container, eg /data.\nThis is For Transdecoder as the'
-                        'tool outputs its results in CWD...', metavar="")
+                        ' tool outputs its results in CWD...', metavar="")
 
     if len(sys.argv) == 1:  # In the case where nothing is provided
         # parser.print_help(file=sys.stderr)

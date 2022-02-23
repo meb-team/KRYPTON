@@ -79,20 +79,19 @@ class TransDecoder():
         I guess it would be better for me to move the result files myself, not
         waiting for a TransDecoder update.
         """
-        # Move the result files, as TD put them in CWD
+        # I have to hardcode those names. It is the only fix I found to run
+        # KRYPTON within a Singularity container
         res_files = ["04_mmseqs_rep_seq.fasta.transdecoder.bed",
                      "04_mmseqs_rep_seq.fasta.transdecoder.cds",
                      "04_mmseqs_rep_seq.fasta.transdecoder.gff3",
                      "04_mmseqs_rep_seq.fasta.transdecoder.pep"]
-        if self.bindpoint:
-            # f"{self.bindpoint}/{os.path.basename(self.transcripts)}"
-
-            # I have to hardcode them, it is the only fix I found to run
-            # KRYPTON within a Singularity container
-            res_files = [self.bindpoint + '/' + x for x in res_files]
 
         for file in res_files:
-            os.replace(file, f"{self.out_pred}/{file}")
+            if self.bindpoint:
+                os.replace(f"{self.bindpoint}/{file}",
+                           f"{self.out_pred}/{file}")
+            else:
+                os.replace(file, f"{self.out_pred}/{file}")
             if file.endswith(".pep"):
                 u.clean_deflines(infile=f"{self.out_pred}/{file}",
                                  seq_prefix="prot")
