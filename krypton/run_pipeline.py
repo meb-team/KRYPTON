@@ -187,9 +187,14 @@ class Krypton:
         k = ko.KO_annot(threads=self.max_threads, project=self.output,
                         ko_annot=self.ko_annot, proteins=proteins,
                         data_path=self.abs_path)
-        k.run_kofamscan(format='detail-tsv', step=step)
-        k.parse_results_for_MPE()
-        k.parse_results_as_txt()
+
+        if not self.bindpoint:
+            k.run_kofamscan(format='detail-tsv', step=step)
+            k.parse_results_for_MPE()
+            k.parse_results_as_txt()
+
+        else:
+            k.get_command(output=True, format='detail-tsv')
         return True
 
     def run_MetaPathExplorer(self, step=None):

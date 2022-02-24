@@ -17,7 +17,8 @@ class KO_annot():
     def __init__(self, threads=1, project=None, ko_annot=None,
                  proteins=None, new_dir=True, data_path=None):
         self.max_threads = threads
-        self.output = project + "/" + '09_ko_annot'
+        self.project = project
+        self.output = self.project + "/" + '09_ko_annot'
         self.input = proteins
 
         # For K0FamScan
@@ -36,12 +37,21 @@ class KO_annot():
         if new_dir:
             u.create_dir(self.output)
 
-    def run_kofamscan(self, format=None, step=None):
-
+    def get_command(self, output=False, format=None):
         command = f'exec_annotation -o {self.results} ' +\
                   f'--format {format} --ko-list {self.ko_list} --profile ' +\
                   f'{self.profiles} --cpu {self.max_threads} ' +\
                   f'--tmp-dir {self.tmp} {self.input}'
+        if output:
+            with open(f"{self.project}/run_kofamscan_hpc.sh", "w") as fo:
+                print("#!/usr/bin/env bash\n", file=fo)
+                print(command, file=fo)
+            return True
+        else:
+            return command
+
+    def run_kofamscan(self, format=None, step=None):
+        command = self.get_command(format=format)
         with open(f"{self.output}/09_kofam_logs.log", "w") as log:
             print(f"{command}\n", file=log)
             u.run_command(command, log=log, step=step)
