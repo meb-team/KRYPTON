@@ -30,16 +30,19 @@ mkdir -p $WORKDIR
 cd $WORKDIR
 
 # Copy test data
-#cp $HOME/data/kry_test_set/CIL_noribo_r?.fq .
+# cp $HOME/data/kry_test_set/CIL_noribo_r?.fq .
 cp $HOME/data/kry_test_set/04_mmseqs_rep_seq.fasta .
 
 # Mount the buckets for data (input, output) and singularity container
 # B_INPUT=projet-cil
-# B_INPUT_PATH=$(mktemp -d -u -p $WORKDIR)
+# B_INPUT_DIR=$(mktemp -d -u -p '.' | sed 's/^\.\///')
+# B_INPUT_PATH=$WORKDIR/$B_INPUT_DIR
 B_OUTPUT=damien
-B_OUTPUT_PATH=$(mktemp -d -u -p $WORKDIR)
+B_OUTPUT_DIR=$(mktemp -d -u -p '.' | sed 's/^\.\///')
+B_OUTPUT_PATH=$WORKDIR/$B_OUTPUT_DIR
 B_IMG=singularity_img
-B_IMG_PATH=$(mktemp -d -u -p $WORKDIR)
+B_IMG_DIR=$(mktemp -d -u -p '.' | sed 's/^\.\///')
+B_IMG_PATH=$WORKDIR/$B_IMG_DIR
 
 # mkdir -p $B_INPUT_PATH
 mkdir -p $B_OUTPUT_PATH
@@ -63,11 +66,19 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 MP=/data
 
 # Run KRYPTON
-singularity exec -B $WORKDIR:$MP $B_IMG_PATH/krypton.code.sif KRYPTON.py \
-    --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/$RESDIR \
-    -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
+# singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif KRYPTON.py \
+#     --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/${RESDIR} \
+#     --mmseqs-annot --mmseqs-db-path $MP/${B_IMG_DIR}/database/mmseqs/SwissProt \
+#     --ko-annot $MP/${B_IMG_DIR}/database/mmseqs/ko \
+#     -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
 
-    # --mmseqs-annot --mmseqs-db UniProtKB/Swiss-Prot \
+export SINGULARITYENV_APPEND_PATH="/opt/apps/gcc-8.1.0/kofamscan-1.3.0/bin:/opt/core/parallel-20151222/bin:/opt/apps/hmmer-3.1b2/binaries:/opt/apps/gcc-8.1.0/ruby-2.4.2/bin"
+
+singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif KRYPTON.py \
+    --out $MP/${RESDIR} --mode assembly --transcripts $MP/04_mmseqs_rep_seq.fasta \
+    --mmseqs-annot --mmseqs-db-path $MP/${B_IMG_DIR}/database/mmseqs/SwissProt \
+    --ko-annot $MP/${B_IMG_DIR}/database/ko -t $SLURM_CPUS_PER_TASK \
+    --mem 30 --bindpoint /data
 
 # Run K0FamScan
 # exec_annotation -p $B_IMG/database/ko/profiles -k $B_IMG/database/ko/ko_list \

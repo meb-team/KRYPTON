@@ -1,51 +1,22 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8
 
 import sys
+import time
+import argparse
 import krypton.utils as u
 
 
-def ko_check_files(file_path):
-    """ check that user provided the correct path"""
-    if u.is_file_exists(file_path.rstrip('/') + '/ko_list') and \
-       u.check_dir_exists(file_path.rstrip('/') + '/profiles'):
-        return True
-    else:
-        raise Exception()
-
-
 class KO_annot():
-    def __init__(self, threads=1, project=None, ko_annot=None,
-                 proteins=None, new_dir=True, data_path=None):
-        self.max_threads = threads
+    def __init__(self, project=None, ko_list=None, data_path=None):
         self.output = project + "/" + '09_ko_annot'
-        self.input = proteins
-
-        # For K0FamScan
-        self.ko_list = ko_annot + '/ko_list'
-        self.profiles = ko_annot + '/profiles'
-        self.tmp = self.output + "/tmp"
+        self.ko_list = ko_list
         self.results = self.output + '/09_kofam_results.tsv'
 
         # To output the results in txt files
-        self.K0_name = data_path + '/ressources/KEGG_data/KEGG_K0.tsv'
-        self.K0_to_pathway = data_path + '/ressources/KEGG_data/' + \
-                                         'KEGG_K0_to_pathway.tsv'
-        self.pathway_name = data_path + '/ressources/KEGG_data/' + \
-                                        'KEGG_pathways.tsv'
-
-        if new_dir:
-            u.create_dir(self.output)
-
-    def run_kofamscan(self, format=None, step=None):
-
-        command = f'exec_annotation -o {self.results} ' +\
-                  f'--format {format} --ko-list {self.ko_list} --profile ' +\
-                  f'{self.profiles} --cpu {self.max_threads} ' +\
-                  f'--tmp-dir {self.tmp} {self.input}'
-        with open(f"{self.output}/09_kofam_logs.log", "w") as log:
-            print(f"{command}\n", file=log)
-            u.run_command(command, log=log, step=step)
-        return True
+        self.K0_name = data_path + '/KEGG_K0.tsv'
+        self.K0_to_pathway = data_path + '/KEGG_K0_to_pathway.tsv'
+        self.pathway_name = data_path + '/KEGG_pathways.tsv'
 
     def parse_results_for_MPE(self):
         """Extract the significative KOs from the result of  `run_kofamscan()`
@@ -173,10 +144,24 @@ class KO_annot():
 
 
 if __name__ == '__main__':
-    test = KO_annot(project='damien/test_32', new_dir=False,
-                    ko_annot='damien/ko_fam',
-                    data_path="/home/dacourti/Documents/projects/MEB/KRYPTON",
-                    threads=8)
-    test.run_kofamscan(format='detail-tsv', step="K0FamScan")
-    # test.parse_results_as_txt()
-    test.parse_results_for_MPE()
+    parser = argparse.ArgumentParser(description="Parse KoFamScan results",
+                                     formatter_class=argparse.RawTextHelpFormatter
+                                     )
+    parser.add_argument('--project', help='Name of the project that was passed'
+                        "to KRYPTON's main script.", metavar='', required=True)
+    parser.add_argument('--files', help='Path to the directory containing '
+                        'files "KEGG_K0_to_pathway.tsv", "KEGG_K0.tsv" and '
+                        '"KEGG_pathways.tsv"', metavar="", required=True)
+    parser.add_argument('--ko_list', help='Path to the file "ko_list"',
+                        metavar="", required=True)
+    args = parser.parse_args()
+
+    time_global = [time.time()]
+    analysis = KO_annot(project=args.project.rstrip('/'),
+                        data_path=args.files.rstrip('/'),
+                        ko_list=args.ko_list)
+    analysis.parse_results_as_txt()
+    analysis.parse_results_for_MPE()
+
+    time_global.append(time.time())
+    u.time_used(time_global, step="Parse K0FamScan results")
