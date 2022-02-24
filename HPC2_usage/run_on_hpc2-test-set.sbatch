@@ -79,12 +79,12 @@ singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif KRYPTON.py \
     --mem 30 --bindpoint /data
 
 ## Run KoFamScan from HPC2
-echo "Run koFamScan for the HPC2 module and the file"
-echo "with the script ${RESDIR}/run_kofamscan_hpc.sh"
+echo "Run koFamScan from the HPC2 module with the script ${RESDIR}/run_kofamscan_hpc.sh"
 bash ${RESDIR}/run_kofamscan_hpc.sh
 
 ## Parse KoFamScan results
-singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif python3 \
+echo "Parse KoFamScan results"
+singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif \
     KRYPTON_parse_K0FamScan.py --project $MP/${RESDIR} \
     --files /usr/local/lib/python3.8/dist-packages/krypton/ressources/KEGG_data \
     --ko_list $MP/${B_IMG_DIR}/database/ko/ko_list

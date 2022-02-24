@@ -195,7 +195,6 @@ class Krypton:
 
         else:
             k.get_command(output=True, format='detail-tsv')
-            print(step)
         return True
 
     def run_MetaPathExplorer(self, step=None):
