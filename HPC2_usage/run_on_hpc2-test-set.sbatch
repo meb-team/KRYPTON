@@ -72,22 +72,25 @@ MP=/data
 #     --ko-annot $MP/${B_IMG_DIR}/database/mmseqs/ko \
 #     -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
 
-export SINGULARITYENV_APPEND_PATH="/opt/apps/gcc-8.1.0/kofamscan-1.3.0/bin:/opt/core/parallel-20151222/bin:/opt/apps/hmmer-3.1b2/binaries:/opt/apps/gcc-8.1.0/ruby-2.4.2/bin"
-
 singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif KRYPTON.py \
     --out $MP/${RESDIR} --mode assembly --transcripts $MP/04_mmseqs_rep_seq.fasta \
     --mmseqs-annot --mmseqs-db-path $MP/${B_IMG_DIR}/database/mmseqs/SwissProt \
     --ko-annot $MP/${B_IMG_DIR}/database/ko -t $SLURM_CPUS_PER_TASK \
     --mem 30 --bindpoint /data
 
-# Run K0FamScan
-# exec_annotation -p $B_IMG/database/ko/profiles -k $B_IMG/database/ko/ko_list \
-#     --cpu $SLURM_CPUS_PER_TASK -f detail-tsv \
-#     -o $RESDIR/09_ko_annot/09_kofam_results.tsv $RESDIR/07_mmseqs_antifam/good_proteins.fa
+## Run KoFamScan from HPC2
+echo "Run koFamScan for the HPC2 module and the file"
+echo "with the script ${RESDIR}/run_kofamscan_hpc.sh"
+bash ${RESDIR}/run_kofamscan_hpc.sh
+
+## Parse KoFamScan results
+singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif python3 \
+    KRYPTON_parse_K0FamScan.py --project $MP/${RESDIR} \
+    --files /usr/local/lib/python3.8/dist-packages/krypton/ressources/KEGG_data \
+    --ko_list $MP/${B_IMG_DIR}/database/ko/ko_list
 
 # Run MetaPathExplorer
 ##later
-
 
 
 # Move the results back on the S3

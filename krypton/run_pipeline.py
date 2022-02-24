@@ -195,6 +195,7 @@ class Krypton:
 
         else:
             k.get_command(output=True, format='detail-tsv')
+            print(step)
         return True
 
     def run_MetaPathExplorer(self, step=None):
@@ -263,14 +264,17 @@ class Krypton:
         if self.mmseq_annot:
             self.run_mmseqs_search(cds_file=good_proteins)
         if self.ko_annot:
-            self.run_KO_annot(proteins=good_proteins,
-                              step="KOFamScan")
-
-            """For the moment, MetaPAthExplorer is waiting a fix, about KEGG"""
-            print("\nWarning: MPE is still buggy - ko/path/links must be",
-                  "updated - so do not expect to have proper results!..")
-            self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
-                                      "KEGG pathways")
+            if not self.bindpoint:
+                self.run_KO_annot(proteins=good_proteins,
+                                  step="KOFamScan")
+                """For the moment, MetaPathExplorer is waiting a fix, about KEGG"""
+                print("\nWarning: MPE is still buggy - ko/path/links must be",
+                      "updated - so do not expect to have proper results!..")
+                self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
+                                          "KEGG pathways")
+            else:
+                self.run_KO_annot(proteins=good_proteins,
+                                  step="Prepare script for KoFamScan")
 
         time_global.append(time.time())
         u.time_used(time_global, step="Krypton")

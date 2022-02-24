@@ -43,9 +43,14 @@ class KO_annot():
                   f'{self.profiles} --cpu {self.max_threads} ' +\
                   f'--tmp-dir {self.tmp} {self.input}'
         if output:
+
             with open(f"{self.project}/run_kofamscan_hpc.sh", "w") as fo:
                 print("#!/usr/bin/env bash\n", file=fo)
                 print(command, file=fo)
+
+            print("KRYPTON wrote a separate BASH file with the command to"
+                  " run kofamscan by yourself in\n\t%s" %
+                  f"{self.project}/run_kofamscan_hpc.sh")
             return True
         else:
             return command
