@@ -37,13 +37,13 @@ class KO_annot():
         if new_dir:
             u.create_dir(self.output)
 
-    def get_command(self, output=False, format=None):
+    def get_command(self, bindpoint=None, output=False, format=None):
         command = f'exec_annotation -o {self.results} ' +\
                   f'--format {format} --ko-list {self.ko_list} --profile ' +\
                   f'{self.profiles} --cpu {self.max_threads} ' +\
                   f'--tmp-dir {self.tmp} {self.input}'
         if output:
-
+            command = command.replace(f"{bindpoint}/", "")
             with open(f"{self.project}/run_kofamscan_hpc.sh", "w") as fo:
                 print("#!/usr/bin/env bash\n", file=fo)
                 print(command, file=fo)

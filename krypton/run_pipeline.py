@@ -194,7 +194,8 @@ class Krypton:
             k.parse_results_as_txt()
 
         else:
-            k.get_command(output=True, format='detail-tsv')
+            k.get_command(output=True, bindpoint=self.bindpoint,
+                          format='detail-tsv')
         return True
 
     def run_MetaPathExplorer(self, step=None):
