@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=debug
 #SBATCH --time=0-00:55:00
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=12
 #SBATCH --mem=32G
 
 
@@ -19,7 +19,7 @@ echo "START job:" `date`
 echo "HOSTNAME:" `hostname`
 
 # Setup the working directory
-SAMPLE="test_set"
+SAMPLE="test_set_full"
 
 WORKDIR=/storage/scratch/$USER/${SLURM_JOB_ID}
 RESDIR=KRY-${SAMPLE}-${SLURM_JOB_ID}
@@ -30,8 +30,8 @@ mkdir -p $WORKDIR
 cd $WORKDIR
 
 # Copy test data
-# cp $HOME/data/kry_test_set/CIL_noribo_r?.fq .
-cp $HOME/data/kry_test_set/04_mmseqs_rep_seq.fasta .
+cp $HOME/data/kry_test_set/CIL_noribo_r?.fq .
+# cp $HOME/data/kry_test_set/04_mmseqs_rep_seq.fasta .
 
 # Mount the buckets for data (input, output) and singularity container
 # B_INPUT=projet-cil
@@ -60,21 +60,14 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 
 ### Note: Since Singularity v3.6, is the current working directory is not present
 ### within the container, Singularity is not trying to solve it anymore. So we
-### have to use a mountpoint,throught the -B/--bind option
+### have to use a mountpoint, throught the -B/--bind parameter.
 ### See here: https://github.com/apptainer/singularity/issues/5798
 
 MP=/data
 
-# Run KRYPTON
-# singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif KRYPTON.py \
-#     --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/${RESDIR} \
-#     --mmseqs-annot --mmseqs-db-path $MP/${B_IMG_DIR}/database/mmseqs/SwissProt \
-#     --ko-annot $MP/${B_IMG_DIR}/database/mmseqs/ko \
-#     -t $SLURM_CPUS_PER_TASK --mem 30 --bindpoint /data
-
 singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif KRYPTON.py \
-    --out $MP/${RESDIR} --mode assembly --transcripts $MP/04_mmseqs_rep_seq.fasta \
-    --mmseqs-annot --mmseqs-db-path $MP/${B_IMG_DIR}/database/mmseqs/SwissProt \
+    --r1 $MP/CIL_noribo_r1.fq --r2 $MP/CIL_noribo_r2.fq --out $MP/${RESDIR} \
+    --mmseqs-annot --mmseqs-db-path $MP/${B_IMG_DIR}/database/mmseqs/uniref90DB \
     --ko-annot $MP/${B_IMG_DIR}/database/ko -t $SLURM_CPUS_PER_TASK \
     --mem 30 --bindpoint /data
 
@@ -83,15 +76,23 @@ echo "Run koFamScan from the HPC2 module with the script ${RESDIR}/run_kofamscan
 bash ${RESDIR}/run_kofamscan_hpc.sh
 
 ## Parse KoFamScan results
-echo "Parse KoFamScan results"
 singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif \
     KRYPTON_parse_K0FamScan.py --project $MP/${RESDIR} \
     --files /usr/local/lib/python3.8/dist-packages/krypton/ressources/KEGG_data \
     --ko_list $MP/${B_IMG_DIR}/database/ko/ko_list
 
 # Run MetaPathExplorer
-##later
+echo "Start of MetaPathExplorer"
 
+## Prepare the ini file and run
+cp $B_IMG_PATH/MetaPathExplorer.conf.ini .
+sed -i "s@^outdir=\$@outdir=$MP/$RESDIR/10_MetaPathExplorer@" MetaPathExplorer.conf.ini
+
+singularity exec -B $WORKDIR:$MP $B_IMG_DIR/MetaPathExplorer.sif \
+    MetaPathExplorer --ini /data/MetaPathExplorer.conf.ini \
+    --input matrix /data/$RESDIR/09_ko_annot/09_kofam_results.tsv.matrix_MPE.tsv
+
+mv $HOME/MetaPathExplorer.log $RESDIR/10_MetaPathExplorer/MetaPathExplorer.log
 
 # Move the results back on the S3
 echo "END computing:" `date`
@@ -103,4 +104,5 @@ fusermount -u $B_OUTPUT_PATH
 fusermount -u $B_IMG_PATH
 
 rm -r $WORKDIR
+
 echo "END job:" `date`
