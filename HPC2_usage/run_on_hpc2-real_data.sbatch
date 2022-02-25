@@ -40,7 +40,7 @@ B_IMG=singularity_img
 B_IMG_DIR=$(mktemp -d -u -p '.' | sed 's/^\.\///')
 B_IMG_PATH=$WORKDIR/$B_IMG_DIR
 
-# mkdir -p $B_INPUT_PATH
+mkdir -p $B_INPUT_PATH
 mkdir -p $B_OUTPUT_PATH
 mkdir -p $B_IMG_PATH
 
