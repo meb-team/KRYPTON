@@ -94,6 +94,9 @@ singularity exec -B $WORKDIR:$MP $B_IMG_DIR/MetaPathExplorer.sif \
 
 mv $HOME/MetaPathExplorer.log $RESDIR/10_MetaPathExplorer/MetaPathExplorer.log
 
+## Clean the tmp dir
+rm -r $RESDIR/tmp
+
 # Move the results back on the S3
 echo "END computing:" `date`
 mv $RESDIR $B_OUTPUT_PATH
