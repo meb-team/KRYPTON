@@ -1,13 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=CIL_A
-#SBATCH --output=log/slurm-%j.out
-#SBATCH --error=log/slurm-%j.err
+#SBATCH --job-name=CIL
+#SBATCH --output=log/slurm-%A_%a.out
+#SBATCH --error=log/slurm-%A_%a.err
 #SBATCH --ntasks=1
 #SBATCH --partition=long
 #SBATCH --time=7-00:00:00
+#SBATCH --mail-user=damien.courtine@uca.fr
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE,STAGE_OUT,TIME_LIMIT_50,TIME_LIMIT_90,ARRAY_TASKS
 #SBATCH --cpus-per-task=16
-#SBATCH --mem=48G
-#SBATCH --array=0-24%4
+#SBATCH --mem=48000M
+#SBATCH --array=0-93%8
 
 # Setup the environment
 module purge
@@ -19,13 +21,17 @@ echo "START job:" `date`
 echo "HOSTNAME:" `hostname`
 
 # Setup the DB and quantity of RAM
-DB=SwissProt
-MEM=46
+DB=uniref90DB
+MEM=44
+
+echo "Database for MMseqs2: $DB"
 
 # Setup the working directory and move in it
 WORKDIR=/storage/scratch/$USER/${SLURM_JOB_ID}-${SLURM_ARRAY_TASK_ID}
 mkdir -p $WORKDIR
 cd $WORKDIR
+
+echo "move in $WORKDIR"
 
 # Mount the buckets for data (input; output) and Singularity container
 B_INPUT=projet-cil
@@ -42,51 +48,61 @@ mkdir -p $B_INPUT_PATH
 mkdir -p $B_OUTPUT_PATH
 mkdir -p $B_IMG_PATH
 
+echo "Input: $B_INPUT ; $B_INPUT_DIR ; $B_INPUT_PATH"
+echo "Output: $B_OUTPUT ; $B_OUTPUT_DIR ; $B_OUTPUT_PATH"
+echo "Imgs: $B_IMG ; $B_IMG_DIR ; $B_IMG_PATH"
+
+## Files in buckets input and output can ONLY be READ
 goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
-    --dir-mode=0777 --file-mode=0777 --cheap \
+    --file-mode 0444 --cheap \
     --endpoint https://s3.mesocentre.uca.fr $B_INPUT $B_INPUT_PATH
 goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
-    --dir-mode=0777 --file-mode=0777 --cheap \
+    --file-mode 0444 --cheap \
     --endpoint https://s3.mesocentre.uca.fr $B_OUTPUT $B_OUTPUT_PATH
+## Files for Singularity and Databases can be READ and EXECUTED
 goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
-    --dir-mode=0777 --file-mode=0777 --cheap \
-    --endpoint https://s3.mesocentre.uca.fr $B_IMG $B_IMG_PATH
+    --file-mode 0544 \
+    --cheap --endpoint https://s3.mesocentre.uca.fr $B_IMG $B_IMG_PATH
 
 ## Where are the reads?
 DATA=$B_INPUT_DIR/hq_reads
+echo "Data in: $DATA"
+
 
 ## Arrays
-samples=$(find $DATA -type d -name "A?")
-FWD=()
-REV=()
-for i in ${samples[@]}
-do
-    FWD[${#FWD[@]}]=$(find ${DATA}/${i} -type f -name "*_?_1_*.fastq.gz")
-    REV[${#REV[@]}]=$(find ${DATA}/${i} -type f -name "*_?_2_*.fastq.gz")
-done
+#### Beware when declaring an array based on expression!!!
+#### DO NOT FORGET the surrounding PARENTHESIS!!!
+samples=($(find $DATA -type d -name "??"))
+# echo -e "samples:\n${samples[@]::SLURM_ARRAY_TASK_COUNT}"
 
-## Define the directory to write the output and the Reads
-RESDIR=KRY-${SLURM_JOB_ID}-${SLURM_ARRAY_TASK_ID}
-R1=$FWD[${SLURM_ARRAY_TASK_ID}]
-R2=$REV[${SLURM_ARRAY_TASK_ID}]
+CURRENT=$(basename ${samples[$SLURM_ARRAY_TASK_ID]})
+echo -e "Now get the R1 and R2 for the current sample $CURRENT\nfrom ${samples[$SLURM_ARRAY_TASK_ID]}"
+R1=$(find ${samples[$SLURM_ARRAY_TASK_ID]} -type f -name "*_?_1_*.fastq.gz")
+R2=$(find ${samples[$SLURM_ARRAY_TASK_ID]} -type f -name "*_?_2_*.fastq.gz")
 
-### Note: Since Singularity v3.6, is the current working directory is not present
-### within the container, Singularity is not trying to solve it anymore. So we
-### have to use a mountpoint, throught the -B/--bind parameter.
-### See here: https://github.com/apptainer/singularity/issues/5798
+ls -l $R1 $R2
 
+echo -e "R1 = $R1 \nR2 = $R2"
+
+## Define the directory to write the output
+RESDIR=CIL-${CURRENT}_${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 MP=/data
+
+echo "KRYPTON will use the directory $RESDIR for the parameter --out"
+
 singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif KRYPTON.py \
     --r1 $MP/$R1 --r2 $MP/$R2 --out $MP/${RESDIR} \
     --mmseqs-annot --mmseqs-db-path $MP/${B_IMG_DIR}/database/mmseqs/$DB \
     --ko-annot $MP/${B_IMG_DIR}/database/ko -t $SLURM_CPUS_PER_TASK \
-    --mem $MEM --bindpoint /data
+    --mem $MEM --bindpoint $MP
 
 ## Run KoFamScan from HPC2
-echo "Start KoFamScan from the HPC2 module and ${RESDIR}/run_kofamscan_hpc.sh" `date`
+echo "Start KoFamScan from the HPC2 module and ${RESDIR}/run_kofamscan_hpc.sh"
+echo `date`
 bash ${RESDIR}/run_kofamscan_hpc.sh
 
 ## Parse KoFamScan results
+echo "Parse KoFamScan data"
 singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif \
     KRYPTON_parse_K0FamScan.py --project $MP/${RESDIR} \
     --files /usr/local/lib/python3.8/dist-packages/krypton/ressources/KEGG_data \
@@ -103,22 +119,30 @@ singularity exec -B $WORKDIR:$MP $B_IMG_DIR/krypton.code.sif \
 #     MetaPathExplorer --ini /data/MetaPathExplorer.conf.ini \
 #     --input matrix /data/$RESDIR/09_ko_annot/09_kofam_results.tsv.matrix_MPE.tsv
 
-## A bit of cleanning
+echo "END computing:" `date`
 
+## A bit of cleanning
 # mv $HOME/MetaPathExplorer.log $RESDIR/10_MetaPathExplorer/MetaPathExplorer.log
-cat $RESDIR/03_trinity/03_trinity_logs.log | sed  "/skipping/d" | uniq >$RESDIR/03_trinity/03_trinity_logs-clean.log
-rm cat $RESDIR/03_trinity/03_trinity_logs.log
+echo "Cleaning Trinity logs from the unused reads..."
+
+cat $RESDIR/03_trinity/03_trinity_logs.log | sed  '/skipping/d' | uniq >$RESDIR/03_trinity/03_trinity_logs-clean.log
+rm $RESDIR/03_trinity/03_trinity_logs.log
 rm -r $RESDIR/tmp
 
 # Move the results back on the S3
-echo "END computing:" `date`
+echo "Move results in the bucket $B_OUTPUT"
 mv $RESDIR $B_OUTPUT_PATH
 
-# Clean evrything
+
+echo "Unmount the buckets"
 fusermount -u $B_INPUT_PATH
 fusermount -u $B_OUTPUT_PATH
 fusermount -u $B_IMG_PATH
 
+echo "wait 10 s..."
+sleep 10
+
+echo "remove $WORKDIR"
 rm -r $WORKDIR
 
 echo "END job:" `date`
