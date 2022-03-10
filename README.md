@@ -9,7 +9,7 @@ abbreviated as _KRYPTON_, written in Python, contains a pipeline for
 transcriptome assembly and annotation (functional and taxonomic).  
 KRYPTON combines Trinity, MMseqs2, KOFamScan and MetaPathExplorer.
 
-<img src="krypton/ressources/Workflow_KRYPTON.PNG" width=400 units="px"></img>
+<img src="krypton/ressources/workflow.png" width=400 units="px"></img>
 
 ## To-do list:
 
@@ -73,6 +73,9 @@ is supposed to distinguish nuclear and organellar sequences.
 ## Install
 
 ### With Conda environment - **Preferred way**
+
+:warning: :warning: The Conda env seems broken... I have to fix it
+:warning: :warning:
 
 To fill the requirements linked to Python, a recipe for a **Conda environment**
 is present in the file `krypton/ressources/krypton_conda_env.yml`.
