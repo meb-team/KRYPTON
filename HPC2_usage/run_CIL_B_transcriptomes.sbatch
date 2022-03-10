@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=CIL
+#SBATCH --job-name=CIL-B
 #SBATCH --output=log/slurm-%A_%a.out
 #SBATCH --error=log/slurm-%A_%a.err
 #SBATCH --ntasks=1
@@ -9,7 +9,7 @@
 #SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE,STAGE_OUT,TIME_LIMIT_50,TIME_LIMIT_90,ARRAY_TASKS
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=48000M
-#SBATCH --array=0-93%8
+#SBATCH --array=0-25%4
 
 # Setup the environment
 module purge
@@ -67,11 +67,10 @@ goofys --stat-cache-ttl 3600s --type-cache-ttl 3600s -uid $UID -gid $(id -g) \
 DATA=$B_INPUT_DIR/hq_reads
 echo "Data in: $DATA"
 
-
 ## Arrays
 #### Beware when declaring an array based on expression!!!
 #### DO NOT FORGET the surrounding PARENTHESIS!!!
-samples=($(find $DATA -type d -name "??"))
+samples=($(find $DATA -type d -name "B?"))
 # echo -e "samples:\n${samples[@]::SLURM_ARRAY_TASK_COUNT}"
 
 CURRENT=$(basename ${samples[$SLURM_ARRAY_TASK_ID]})
