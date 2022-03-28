@@ -80,6 +80,9 @@ if __name__ == '__main__':
                         dest="min_prot_len", metavar="", default=100)
     groupD.add_argument('--cds', help='File with TRANSLATED CDS, in FASTA '
                         '(foo.fa[.gz])', metavar="")
+    groupD.add_argument('--no-cds-cluster', help='Turn off the clustering step'
+                        ' for the CDS', action="store_true", default=False,
+                        dest="no_cds_cluster")
     # groupE.add_argument('--bucket-in', help='Name of the bucket used to read'
     #                     ' data from. This option is required to run KRYPTON on'
     #                     ' the HPC2 cluster', metavar="BUCKET_IN")

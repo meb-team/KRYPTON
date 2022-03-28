@@ -24,7 +24,7 @@ class Krypton:
 
         self.mode = A('mode')
         self.output = A('outdir').rstrip('/')
-        self.bindpoint = A('bindpoint').rstrip('/')
+        self.bindpoint = A('bindpoint').rstrip('/') if A('bindpoint') else None
         # self.overwrite = A('overwrite')
         # ##### Reads
         self.paired = A('paired')
@@ -38,6 +38,7 @@ class Krypton:
         # #####
         self.transcripts = A('transcripts')
         self.cds = A('cds')
+        self.no_cds_cluster = A("no_cds_cluster")
         self.min_prot_len = A('min_prot_len')
 
         # ## MMseqs2 annotation setup
@@ -249,18 +250,21 @@ class Krypton:
         cds_path = self.cds if self.cds else \
             glob.glob(self.output + '/06_*/*.pep.clean_defline.fa')[0]
 
-        self.run_mmseqs_clust(seqs=cds_path, step="MMseqs cluster proteins",
-                              prot=True)
+        # The clustering of proteins is wanted (default behaviour)
+        if not self.no_cds_cluster:
+            self.run_mmseqs_clust(seqs=cds_path,
+                                  step="MMseqs cluster proteins", prot=True)
+            prot_clusterised = glob.glob(f"{self.output}/" +
+                                         "07_mmseqs/*_rep_seq.fasta")[0]
+        else:
+            prot_clusterised = cds_path
 
         # Clean bad proteins
-        prot_clusterised = glob.glob(f"{self.output}/" +
-                                     "07_mmseqs/*_rep_seq.fasta")[0]
         self.remove_spurious_prot(step="AntiFam - removal of spurious seqs",
                                   prot=prot_clusterised)
 
         # Annotation
-        good_proteins = glob.glob(f"{self.output}/" +
-                                  "07_mmseqs_antifam/good_proteins.fa")[0]
+        good_proteins = f"{self.output}/07_mmseqs_antifam/good_proteins.fa"
         if self.mmseq_annot:
             self.run_mmseqs_search(cds_file=good_proteins)
         if self.ko_annot:
