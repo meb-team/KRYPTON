@@ -66,21 +66,21 @@ if __name__ == '__main__':
                         'option and provide the dataset through `--r1`',
                         action='store_false', dest='paired', default=True)
     groupB.add_argument('--r1', help='The first read of the pair, in FASTQ'
-                        ' (foo_R1.fq[.gz]).', metavar="")
+                        ' (foo_R1.fq[.gz]).', metavar="R1")
     groupB.add_argument('--r2', help='The second read of the pair, in FASTQ'
-                        ' (foo_R2.fq[.gz]).', metavar="")
+                        ' (foo_R2.fq[.gz]).', metavar="R2")
     groupB.add_argument('--trimmomatic', help="If APT or Conda Trimmomatic "
                         "is installed, forget this option.\nFor other "
                         "instal:\n\tPATH/TO/trimmomatic-<version>.jar",
-                        metavar="")
+                        metavar="PATH")
     groupC.add_argument('--transcripts', help='File with ASSEMBLED TRANSCRIPTS'
-                        ', in FASTA (foo.fa[.gz])', metavar="")
+                        ', in FASTA (foo.fa[.gz])', metavar="FILE")
     groupC.add_argument('--min-protein-len', help="Minimal protein length"
                         " for TransDecoder.LongOrfs. Default is 100 AA",
-                        dest="min_prot_len", metavar="", default=100)
+                        dest="min_prot_len", metavar="SIZE", default=100)
     groupD.add_argument('--cds', help='File with TRANSLATED CDS, in FASTA '
-                        '(foo.fa[.gz])', metavar="")
-    groupD.add_argument('--no-cds-cluster', help='Turn off the clustering step'
+                        '(foo.fa[.gz])', metavar="FILE")
+    groupD.add_argument('--no-cds-cluster', help='Turn OFF the clustering step'
                         ' for the CDS', action="store_true", default=False,
                         dest="no_cds_cluster")
     # groupE.add_argument('--bucket-in', help='Name of the bucket used to read'
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                         '`ko_list` & `profiles` for K0famScan.\nKRYPTON '
                         'provides a simple script to download them:\n\t- '
                         'KRYPTON_download_K0famScan_data.py\n',
-                        dest="ko_annot", metavar="")
+                        dest="ko_annot", metavar="PATH")
     groupH.add_argument('-t', help='Maximum number of threads that KRYPTON '
                         'can use.', dest='threads')
     groupH.add_argument('--mem', help='Maximum amount of RAM - in GB - that '
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     groupH.add_argument('--bindpoint', help='To use with a Singularity '
                         'container!!!\nThe binding point present within the '
                         'container, eg /data.\nThis is For Transdecoder as the'
-                        ' tool outputs its results in CWD...', metavar="")
+                        ' tool outputs its results in CWD...', metavar="PATH")
 
     if len(sys.argv) == 1:  # In the case where nothing is provided
         # parser.print_help(file=sys.stderr)
