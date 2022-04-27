@@ -53,6 +53,7 @@ class Krypton:
         # ##### Other parameters
         self.max_threads = 2 if not A('threads') else int(A('threads'))
         self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
+        self.assembly_only = A('assembly_only')
         """ Let's first make KRYPTON running on a regular computer. """
         # self.bucket_in = A('bucketin')
         # self.bucket_out = A('bucketout')
@@ -93,9 +94,19 @@ class Krypton:
 
         if self.mode == "assembly":
             u.is_file_exists(self.transcripts)
+            if self.assembly_only:
+                print("Why did you turned ON the '--assembly-only' ? let's "
+                      "guess it is a copy/paste error. Krypton continues "
+                      "anyway. Otherwise hit CTRL+C!")
+                self.assembly_only = False
 
         if self.mode == "cds":
             u.is_file_exists(self.cds)
+            if self.assembly_only:
+                print("Why did you turned ON the '--assembly-only' ? let's "
+                      "guess it is a copy/paste error. Krypton continues "
+                      "anyway. Otherwise hit CTRL+C!")
+                self.assembly_only = False
 
         u.create_dir(self.output)
 
@@ -238,9 +249,16 @@ class Krypton:
             transcripts_path = self.transcripts if self.transcripts else \
                     glob.glob(f"{self.output}/03_trinity/*clean_defline.fa")[0]
 
+            # Reduce transcript redundancy
             self.run_mmseqs_clust(step="MMseqs2 cluster transcripts",
                                   seqs=transcripts_path)
 
+            if self.assembly_only:
+                time_global.append(time.time())
+                u.time_used(time_global, step="Krypton")
+                return True
+
+            # Predict the proteins
             self.run_prot_prediction(step="TransDecoder",
                                      transcrits_clust=f"{self.output}/04_mmseqs/04_mmseqs_rep_seq.fasta")
 

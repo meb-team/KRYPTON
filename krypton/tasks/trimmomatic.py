@@ -39,8 +39,6 @@ def check_version(path=None, mode=None):
 def _check_conda():
     try:
         os.environ['CONDA_PREFIX']  # raise a KeyError if not found
-        print(s.check_output(['trimmomatic', '-version'], encoding='utf-8'))
-        print("TRY conda - after")
     except (s.CalledProcessError, KeyError, FileNotFoundError):
         return False
     return True

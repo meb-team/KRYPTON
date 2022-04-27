@@ -122,6 +122,9 @@ if __name__ == '__main__':
                         'container!!!\nThe binding point present within the '
                         'container, eg /data.\nThis is For Transdecoder as the'
                         ' tool outputs its results in CWD...', metavar="PATH")
+    groupH.add_argument('--assembly-only', help='Just assembles the '
+                        'transcripts and stops after.\t Dafault = False',
+                        action="store_true", default=False)
 
     if len(sys.argv) == 1:  # In the case where nothing is provided
         # parser.print_help(file=sys.stderr)
