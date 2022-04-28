@@ -254,6 +254,10 @@ class Krypton:
                                   seqs=transcripts_path)
 
             if self.assembly_only:
+                try:
+                    u.remove_dir(self.output + '/tmp')
+                except Exception:
+                    pass
                 time_global.append(time.time())
                 u.time_used(time_global, step="Krypton")
                 return True
