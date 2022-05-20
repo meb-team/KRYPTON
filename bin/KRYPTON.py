@@ -75,6 +75,10 @@ if __name__ == '__main__':
                         metavar="PATH")
     groupC.add_argument('--transcripts', help='File with ASSEMBLED TRANSCRIPTS'
                         ', in FASTA (foo.fa[.gz])', metavar="FILE")
+    groupD.add_argument('--no-transcripts-cluster', help='Turn OFF the '
+                        'clustering step for the transcripts',
+                        action="store_true", default=False,
+                        dest="no_transcript_cluster")
     groupC.add_argument('--min-protein-len', help="Minimal protein length"
                         " for TransDecoder.LongOrfs. Default is 100 AA",
                         dest="min_prot_len", metavar="SIZE", default=100)

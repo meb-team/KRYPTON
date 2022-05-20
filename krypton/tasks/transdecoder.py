@@ -80,12 +80,9 @@ class TransDecoder():
         I guess it would be better for me to move the result files myself, not
         waiting for a TransDecoder update.
         """
-        # I have to hardcode those names. It is the only fix I found to run
-        # KRYPTON within a Singularity container
-        res_files = ["04_mmseqs_rep_seq.fasta.transdecoder.bed",
-                     "04_mmseqs_rep_seq.fasta.transdecoder.cds",
-                     "04_mmseqs_rep_seq.fasta.transdecoder.gff3",
-                     "04_mmseqs_rep_seq.fasta.transdecoder.pep"]
+        # Smart fix found found! **wink wink!**
+        res_files = [os.path.basename(self.transcripts) + '.transdecoder.' + x
+                     for x in ['bed', 'cds', 'gff3', 'pep']]
 
         for file in res_files:
             if self.bindpoint:

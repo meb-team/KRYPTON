@@ -37,6 +37,7 @@ class Krypton:
             trimmomatic.check_version(self.trimmomatic, mode=self.trimmo_mod)
         # #####
         self.transcripts = A('transcripts')
+        self.no_transcript_cluster = A('no_transcript_cluster')
         self.cds = A('cds')
         self.no_cds_cluster = A("no_cds_cluster")
         self.min_prot_len = A('min_prot_len')
@@ -250,9 +251,16 @@ class Krypton:
                     glob.glob(f"{self.output}/03_trinity/*clean_defline.fa")[0]
 
             # Reduce transcript redundancy
-            self.run_mmseqs_clust(step="MMseqs2 cluster transcripts",
-                                  seqs=transcripts_path)
+            if not self.no_transcript_cluster:
+                self.run_mmseqs_clust(step="MMseqs2 cluster transcripts",
+                                      seqs=transcripts_path)
+                transcrits_clust = f"{self.output}/04_mmseqs/" \
+                                   "04_mmseqs_rep_seq.fasta"
+            else:
+                print("-- Skip clustering of Trinity transcripts --")
+                transcrits_clust = transcripts_path
 
+            # Stop here if the user wants only the assembly
             if self.assembly_only:
                 try:
                     u.remove_dir(self.output + '/tmp')
@@ -264,7 +272,7 @@ class Krypton:
 
             # Predict the proteins
             self.run_prot_prediction(step="TransDecoder",
-                                     transcrits_clust=f"{self.output}/04_mmseqs/04_mmseqs_rep_seq.fasta")
+                                     transcrits_clust=transcrits_clust)
 
         # Start from the cds provided by the user
         """ This step would require an extra check, in case of failure
