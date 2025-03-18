@@ -13,7 +13,7 @@ def check_mmseq_db_param(db=None, db_path=None):
     info = {"db_ready_to_go": None, "db_user_input": None,
             "db_storage_path": None}
 
-    if not db and not db_path:  # Nothing was provided, so SP within out
+    if not db and not db_path:  # Nothing was provided, so SP by default
         info["db_user_input"] = "UniProtKB/Swiss-Prot"
         print(f'KRYPTON will work with {info["db_user_input"]} '
               'in the project directory.\n')
@@ -151,7 +151,7 @@ class MMseqs2():
                                      " User seq")
         return True
 
-    def mmseqs_search(self, step, eval='1e-5', num_hit=100, sensitiv=7.5,
+    def mmseqs_search(self, step, evalue='1e-5', num_hit=100, sensitiv=7.5,
                       max_hit=1):
         """
         important parameters: -c --cov-mode --cluster-mode --min-seq-id REVIEW
@@ -161,7 +161,7 @@ class MMseqs2():
         command = f"mmseqs search {self.qry} {self.sbj} {self.aln} " + \
                   f"{self.tmp} --threads {self.max_threads} " + \
                   f"--split-memory-limit {self.max_mem} -s {sensitiv} " + \
-                  f"-e {eval} --max-seqs {num_hit} --max-accept {max_hit}"
+                  f"-e {evalue} --max-seqs {num_hit} --max-accept {max_hit}"
         with open(f"{self.output}/mmseqs_search_logs.log", 'w') as log:
             u.run_command(command, log=log, step=step)
         return True

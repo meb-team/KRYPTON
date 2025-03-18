@@ -1,7 +1,5 @@
 # KRYPTON
 
-[![Build Status](https://github.com/meb-team/KRYPTON.git)](https://github.com/meb-team/KRYPTON)
-
 ## Introduction
 
 This package, _euKaRYote ProtisT fOnctionnal aNnotation of transcriptome_,
@@ -10,34 +8,6 @@ transcriptome assembly and annotation (functional and taxonomic).
 KRYPTON combines Trinity, MMseqs2, KOFamScan and MetaPathExplorer.
 
 <img src="krypton/ressources/workflow.png" width=400 units="px"></img>
-
-## To-do list:
-
-- [ ] **TransDecoder-Predict** capture the log and check if it ends correctly
-        otherwise, re-run it with the parameter **`--no_refine_starts`**.
-- [ ] Clarify the 3 steps: use the right vocabulary, eg "_peptide sequence_"
-    instead of "_cds_"
-- [ ] add a `requirements.txt` ?
-- [ ] check if a step ended nicely?
-    - [ ] trimmomatic output the information in STDOUT/STDERR
-        (_TrimmomaticPE: Completed successfully_)
-    - [ ] Trinity too ("_All commands completed successfully. :-)_")
-- [ ] Tweak tool parameters by passing them to the command line:
-    - [ ] trimmomatic _MINLEN:32 SLIDINGWINDOW:10:20 LEADING:5 TRAILING:5_
-    - [ ] MMseqs2: cluster mode; sensitivity, min seq ID, ...
-- [ ] Add a dict to store the subpath values
-    - eg:
-        - {"00" : "00_FastQC_raw",
-        - "01" : "01_trimmomatic",
-        - ... }
-- [ ] Add [Phytool](https://caninuzzo.shinyapps.io/phytool_v1/) ??
-- [ ] Add [Tiara](10.1093/bioinformatics/btab672) for the identification of
-Eukaryotic data (_a.k.a_ it can remove prokaryotic sequences??) and moreover it
-is supposed to distinguish nuclear and organellar sequences.
-
-- [ ] leave the possibility to the user to use the script `krypton/tasks/ko_annot.py`
-    - Add arguments parser for this script!
-
 
 <!-- ## Dependencies
 
@@ -77,8 +47,14 @@ is supposed to distinguish nuclear and organellar sequences.
 :warning: :warning: The Conda env seems broken... I have to fix it
 :warning: :warning:
 
-To fill the requirements linked to Python, a recipe for a **Conda environment**
-is present in the file `krypton/ressources/krypton_conda_env.yml`.
+There is a recipe for a _Conda_ environment in here : `krypton/ressources/krypton_conda_env.yml`
+
+Otherwise, here is the command to build it:
+
+```bash
+conda create -n krypton
+conda install -c bioconda -c conda-forge -y python numpy fastqc trimmomatic kofamscan mmseqs2
+```
 
 1. Setup
 
@@ -90,16 +66,9 @@ conda env create -f ressources/krypton_conda_env.yml
 conda activate krypton_base # Activate the Conda environment
 ```
 
-2. Core tools
+2. KRYPTON code
 
-```bash
-cpan install Config::IniFiles # For MetaPathExplorer
-```
-
-3. KRYPTON code
-
-Move in the directory where you want to setup KRYPTON first.  
-Then:
+Move in the directory where you want to setup _KRYPTON_ first. Then:
 
 ```bash
 git clone https://github.com/meb-team/KRYPTON.git
@@ -107,7 +76,7 @@ cd KRYPTON
 pip install -e .
 ```
 
-4. Data for [Antifam](https://xfam.wordpress.com/2012/03/21/introducing-antifam/):
+3. Data for [Antifam](https://xfam.wordpress.com/2012/03/21/introducing-antifam/):
 
 ```bash
 cd krypton/ressources/
@@ -118,16 +87,11 @@ hmmpress AntiFam.hmm
 cd ../..
 ```
 
-5. Data for KEGG annotation
+4. Data for _KoFamScan_
 
 ```bash
-python KRYPTON_download_KEGG_data.py
+python KRYPTON_download_K0famScan_data.py
 ```
-
-6. Trinity
-
-Unfortunately, _Trinity_ versions > 2.8.5 can't be installed in the same Conda
-environment, so make sure it is available on your system. Sorry.
 
 ### On you system (not recommended)
 
@@ -165,22 +129,22 @@ python3 ./bin/KRYPTON.py --mode cds --cds path/to/predicted/cds/infile.fa
 ### Results
 
 For each step, the result are present under `<out_dir>` as follow:
-- **Start of `read` mode**
-    - `<out_dir>/00_fastqc_raw/`: results FastQC on the raw reads
-    - `<out_dir>/01_trimmomatic/`: results of Trimmomatic
-    - `<out_dir>/02_fastqc_trimmed/`: results of FastQC on the cleaned reads
-    - `<out_dir>/03_trinity/`: Assembly of the reads
-- **Start of `assembly` mode**
-    - `<out_dir>/04_mmseqs/`: Clustering of the transcripts
-    - `<out_dir>/05_transdecoder_longorfs/`: Predict the CDS from the transcripts
-    - `<out_dir>/06_transdecoder_predict/`: Extract CDS that are most likely to code for a protein
-- **Start of `cds` mode**
-- `<out_dir>/07_mmseqs/`: Clustering of the CDS
-- `<out_dir>/08_mmseq_search/`: Align the CDS (1 representative per cluster)
-against a reference database
-- `<out_dir>/09_ko_annot/`: KOFamScan results
-- `<out_dir>/10_MetaPathExplorer/`: MetaPathExplorer results
 
+- **Start of `read` mode**
+  - `<out_dir>/00_fastqc_raw/`: results FastQC on the raw reads
+  - `<out_dir>/01_trimmomatic/`: results of Trimmomatic
+  - `<out_dir>/02_fastqc_trimmed/`: results of FastQC on the cleaned reads
+  - `<out_dir>/03_trinity/`: Assembly of the reads
+- **Start of `assembly` mode**
+  - `<out_dir>/04_mmseqs/`: Clustering of the transcripts
+  - `<out_dir>/05_transdecoder_longorfs/`: Predict the CDS from the transcripts
+  - `<out_dir>/06_transdecoder_predict/`: Extract CDS that are most likely to code for a protein
+- **Start of `cds` mode**
+  - `<out_dir>/07_mmseqs/`: Clustering of the CDS
+  - `<out_dir>/08_mmseq_search/`: Align the CDS (1 representative per cluster)
+    against a reference database
+  - `<out_dir>/09_ko_annot/`: KOFamScan results
+  - `<out_dir>/10_MetaPathExplorer/`: MetaPathExplorer results
 
 ## Tips
 
@@ -197,8 +161,31 @@ In fact, TransDecoder.Predict write its results in `$HOME`, which is very weird
 but the main author will not fix that as he moved to another position... So
 I have to update the KRYPTON's code to handle this exception.
 
-
 For the moment, formatting a MMseqs DB with KRYPTON running in a Singularity
 container and saving it on CEPH server seems impossible... That is why
 I let KRYPTON doing the formatting within the result directory and I copy
 the database on CEPH after.
+
+# Temp
+
+```bash
+mamba create -n toto "trinity>=2.9.1"
+mamba install fastqc kofamscan mmseqs2
+mamba install "transdecoder==5.5.0"
+
+KRYPTON.py --out test01 \
+    --r1 ../test/data/files_test_reads/CIL_AAOSRB_1_1_H7VC5DSXX.IND1_noribo_clean_test10.fastq \
+    --r2 ../test/data/files_test_reads/CIL_AAOSRB_1_2_H7VC5DSXX.IND1_noribo_clean_test10.fastq \
+    -t 8
+
+## ran complete in less than 5mn, so we are good
+
+### THEN, MMSEQS annotation : Swissprot for the test
+### TRY kofamscan : what is produced, can I parse it?
+
+KRYPTON.py --out test02  --cds prot.fa --no-cds-cluster --mmseqs-annot \
+  --mmseqs-db-path $HOME/databases/mmseqs/Swiss-ProtDB -t8
+
+# I have the error "Mode - READS:", so let's investigate there first.
+
+```

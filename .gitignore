@@ -12,3 +12,6 @@ damien
 foo
 hidden_notes.*
 run_test_*.sh
+
+# Antifam
+krypton/ressources/AntiFam.*

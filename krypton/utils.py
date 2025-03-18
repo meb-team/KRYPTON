@@ -38,8 +38,8 @@ def remove_dir(dir_path, other=None):
     elif other:  # This is for future case, not only for tmp dir
         shutil.rmtree(dir_path)
     else:
-        raise Exception("The dir can't be deleted. This message is for KRYPTON"
-                        " devs only.")
+        raise NotImplementedError("The dir can't be deleted. This message is"
+                        " for KRYPTON devs only.")
     return True
 
 

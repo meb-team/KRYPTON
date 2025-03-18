@@ -4,15 +4,10 @@ import os
 import time
 import glob
 
-import krypton.utils as u
-import krypton.tasks.mmseqs as mmseqs
-import krypton.tasks.fastqc as fastqc
-import krypton.tasks.trinity as trinity
-import krypton.tasks.antifam as antifam
-import krypton.tasks.ko_annot as ko
-import krypton.tasks.trimmomatic as trimmomatic
-import krypton.tasks.transdecoder as transdecoder
-import krypton.tasks.metapathexplorer as mpe
+from krypton import utils as u
+from krypton.tasks import ko_annot as ko
+from krypton.tasks import mmseqs, fastqc, trinity, antifam, trimmomatic, transdecoder
+# import krypton.tasks.metapathexplorer as mpe  # Deprecated
 
 
 class Krypton:
@@ -53,7 +48,7 @@ class Krypton:
                                         db_path=self.mmseq_db_path)
         # ##### Other parameters
         self.max_threads = 2 if not A('threads') else int(A('threads'))
-        self.max_mem = '8G' if not A('mem') else A('mem') + 'G'
+        self.max_mem = '16G' if not A('mem') else A('mem') + 'G'
         self.assembly_only = A('assembly_only')
         """ Let's first make KRYPTON running on a regular computer. """
         # self.bucket_in = A('bucketin')
@@ -66,7 +61,7 @@ class Krypton:
             try:
                 ko.ko_check_files(self.ko_annot)
                 print("Files for the annotation via K0FamScan are correct!")
-            except Exception:
+            except NotImplementedError:
                 print(f"Search in {self.ko_annot}")
                 print("The files for K0 annotation are not present or not "
                       "valid.\nPlease check the script\n\t"
@@ -78,20 +73,21 @@ class Krypton:
         if self.mode == 'reads':
             if self.paired:
                 if self.r1 is None or self.r2 is None:
-                    raise Exception("Mode - READS:\n Please provides "
-                                    "the paired-end reads via `--r1` **and**"
-                                    " `--r2`, or use `--single-end`.")
+                    raise FileNotFoundError("Mode - READS:\n Please provides "
+                                            "the paired-end reads via `--r1` "
+                                            "**and** `--r2`, or use "
+                                            "`--single-end`.")
                 for file in [self.r1, self.r2]:
                     if not u.full_check_file(file):
-                        raise Exception(f"The file {file} does not exist or"
-                                        " has an unknown extention.")
+                        raise FileExistsError(f"The file {file} does not exist"
+                                              " or has an unknown extention.")
             else:
                 if self.r1 is None:
-                    raise Exception("Mode - READS:\n Please provides at least "
-                                    "one file for the reads.")
+                    raise FileNotFoundError("Mode - READS:\n Please provides at"
+                                            " least one file for the reads.")
                 if not u.full_check_file(self.r1):
-                    raise Exception(f"The file {self.r1} does not exist or"
-                                    " has an unknown extention.")
+                    raise FileExistsError(f"The file {self.r1} does not exist "
+                                          "or has an unknown extention.")
 
         if self.mode == "assembly":
             u.is_file_exists(self.transcripts)
@@ -111,16 +107,14 @@ class Krypton:
 
         u.create_dir(self.output)
 
-        """
-        Just a reminder that I will have to
-        add a step to check whether KRYPTON run on a regular
-        server or on a HPC cluster.
-        """
+        # Just a reminder that I will have to
+        # add a step to check whether KRYPTON run on a regular
+        # server or on a HPC cluster.
 
     def __repr__(self):
         return "Class instance Krypton\nCurrently KRYPTON runs with the " \
-                + "following parameters:\n\tMode: {}\n".format(self.mode) \
-                + "\tResult dir: {}/".format(self.output)
+                + f"following parameters:\n\tMode: {self.mode}\n" \
+                + f"\tResult dir: {self.output}/"
 
     def run_fastqc(self, r1, step=None, raw=False, r2=None):
         """ It assumes that FastQC is in the Path """
@@ -130,6 +124,10 @@ class Krypton:
         return True
 
     def run_trimmomatic(self, step=None):
+        """Run the tool Trimmomatic, parameters are set in the function
+        Possible improvments: replace by "fastp"; leave the user the possibility
+        to choose the parameters
+        """
         t_params = "MINLEN:32 SLIDINGWINDOW:4:20 LEADING:5 TRAILING:5"
         t = trimmomatic.Trimmomatic(r1=self.r1, params=t_params, r2=self.r2,
                                     project=self.output, exec=self.trimmomatic,
@@ -138,6 +136,7 @@ class Krypton:
         return True
 
     def run_trinity(self, r1, r2=None, step=None):
+        """Run the RNAseq transcripts assembly"""
         ty = trinity.Trinity(project=self.output, threads=self.max_threads,
                              mem=self.max_mem, r1=r1, r2=r2)
         ty.run_trinity(step=step)
@@ -146,6 +145,7 @@ class Krypton:
         return True
 
     def run_mmseqs_clust(self, step=None, seqs=None, prot=None):
+        """Clustering with MMseqs easy-cluster"""
         m = mmseqs.MMseqs2(project=self.output, prot=prot,
                            module='easy-cluster', threads=self.max_threads,
                            mem=self.max_mem)
@@ -159,6 +159,8 @@ class Krypton:
         return True
 
     def run_mmseqs_search(self, cds_file):
+        """Search predicted proteins against a database to find relevant hits
+        With MMseqs """
         ms = mmseqs.MMseqs2(project=self.output, module='createdb',
                             threads=self.max_threads, mem=self.max_mem)
 
@@ -189,34 +191,37 @@ class Krypton:
         return True
 
     def remove_spurious_prot(self, step=None, prot=None):
+        """Search Antifam profiles against the proteins to identify
+        spurious prediction"""
         anti = antifam.Antifam(project=self.output, threads=self.max_threads,
                                proteins=prot, bin_path=self.abs_path)
         anti.run_antifam(step=step)
         anti.parse_antifam()
         return True
 
-    def run_KO_annot(self, proteins, step=None):
-        """ Protein annotation using KOFamScan and MetaPathExplorer"""
+    def run_ko_annot(self, proteins, step=None):
+        """ Protein annotation using KOFamScan"""
         k = ko.KO_annot(threads=self.max_threads, project=self.output,
                         ko_annot=self.ko_annot, proteins=proteins,
                         data_path=self.abs_path)
 
         if not self.bindpoint:
             k.run_kofamscan(format='detail-tsv', step=step)
-            k.parse_results_for_MPE()
-            k.parse_results_as_txt()
+            # k.parse_results_for_MPE()
+            # k.parse_results_as_txt()
 
         else:
             k.get_command(output=True, bindpoint=self.bindpoint,
                           format='detail-tsv')
         return True
 
-    def run_MetaPathExplorer(self, step=None):
-        m = mpe.MPE(project=self.output, bin=self.abs_path)
-        m.run_MPE(step=step)
-        return True
+    # def run_MetaPathExplorer(self, step=None):  # DEPRECATED
+    #     m = mpe.MPE(project=self.output, bin=self.abs_path)
+    #     m.run_MPE(step=step)
+    #     return True
 
     def run_krypton(self):
+        """Fucntion that controls the pipeline"""
         print("\nKRYPTON is starting. All steps may take a lot of time. "
               "Please be patient...")
         time_global = [time.time()]
@@ -264,7 +269,7 @@ class Krypton:
             if self.assembly_only:
                 try:
                     u.remove_dir(self.output + '/tmp')
-                except Exception:
+                except NotImplementedError:
                     pass
                 time_global.append(time.time())
                 u.time_used(time_global, step="Krypton")
@@ -275,8 +280,8 @@ class Krypton:
                                      transcrits_clust=transcrits_clust)
 
         # Start from the cds provided by the user
-        """ This step would require an extra check, in case of failure
-        from TansDecoder-Predict"""
+        # ## This step would require an extra check, in case of failure
+        # ## from TansDecoder-Predict"""
         cds_path = self.cds if self.cds else \
             glob.glob(self.output + '/06_*/*.pep.clean_defline.fa')[0]
 
@@ -299,15 +304,16 @@ class Krypton:
             self.run_mmseqs_search(cds_file=good_proteins)
         if self.ko_annot:
             if not self.bindpoint:
-                self.run_KO_annot(proteins=good_proteins,
+                self.run_ko_annot(proteins=good_proteins,
                                   step="KOFamScan")
-                """For the moment, MetaPathExplorer is waiting a fix, about KEGG"""
-                print("\nWarning: MPE is still buggy - ko/path/links must be",
-                      "updated - so do not expect to have proper results!..")
-                self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
-                                          "KEGG pathways")
+
+                # ## Deprecated code bellow
+                # print("\nWarning: MPE is still buggy - ko/path/links must be",
+                #       "updated - so do not expect to have proper results!..")
+                # self.run_MetaPathExplorer(step="MetaPathExplorer: visualise" +
+                #                           "KEGG pathways")
             else:
-                self.run_KO_annot(proteins=good_proteins,
+                self.run_ko_annot(proteins=good_proteins,
                                   step="Prepare script for KoFamScan")
 
         time_global.append(time.time())
