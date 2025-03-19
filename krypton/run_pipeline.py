@@ -11,6 +11,7 @@ from krypton.tasks import mmseqs, fastqc, trinity, antifam, trimmomatic, transde
 
 
 class Krypton:
+    """Main class that controls the pipeline"""
     def __init__(self, args):
 
         self.args = args
@@ -39,7 +40,7 @@ class Krypton:
 
         # ## MMseqs2 annotation setup
         self.mmseq_annot = A('mmseq_annot')
-        self.mmseq_db, self.mmseq_db_path, self.mmseq_sbj = None, None, dict()
+        self.mmseq_db, self.mmseq_db_path, self.mmseq_sbj = None, None, {}
         if self.mmseq_annot:
             self.mmseq_db = A('mmseq_db')
             self.mmseq_db_path = A('mmseq_db_path')
@@ -221,7 +222,7 @@ class Krypton:
     #     return True
 
     def run_krypton(self):
-        """Fucntion that controls the pipeline"""
+        """Function that controls the pipeline"""
         print("\nKRYPTON is starting. All steps may take a lot of time. "
               "Please be patient...")
         time_global = [time.time()]

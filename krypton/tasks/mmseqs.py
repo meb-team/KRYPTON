@@ -10,8 +10,15 @@ mmseqs_db_to_dl = ["UniRef100", "UniRef90", "UniRef50", "UniProtKB",
 
 
 def check_mmseq_db_param(db=None, db_path=None):
+    """Verify that the informations provided by the user are good to go,
+    otherwise kill the current run
+    Returns a dict with updated value
+        - "db_user_input" --> a name, provided by MMsesqs or file from user
+        - "db_storage_path" --> a path to store the db or None
+        - "db_ready_to_go" --> user provided db, or None
+     """
     info = {"db_ready_to_go": None, "db_user_input": None,
-            "db_storage_path": None}
+            "db_storage_path": None}  # the dict that is returned
 
     if not db and not db_path:  # Nothing was provided, so SP by default
         info["db_user_input"] = "UniProtKB/Swiss-Prot"
@@ -37,7 +44,8 @@ def check_mmseq_db_param(db=None, db_path=None):
             print(f"KRYPTON will download the database {db} and format it "
                   "in the project directory.\n")
 
-    elif u.check_seq_file_extension(db) and u.is_file_exists(db):  # Valid Fa
+    elif u.check_seq_file_extension(db) and u.is_file_exists(db):
+        # Valid user sequence file
         info["db_user_input"] = db
         if db_path:
             u.check_dir_exists(db_path, '--mmseq-db-path')
@@ -46,8 +54,9 @@ def check_mmseq_db_param(db=None, db_path=None):
         else:
             print("The database will be formated in the project directory.\n")
     else:
-        raise Exception('KRYPTON cannot handle the value passed to the param'
-                        'meter "--mmseqs-db". Is there a typo in the name?')
+        raise FileNotFoundError('KRYPTON cannot handle the value passed to the'
+                                ' parameter "--mmseqs-db". Is there a typo in'
+                                ' the name?')
     return info
 
 
@@ -64,23 +73,27 @@ class MMseqs2():
         self.output = project + "/" + self.subdir
         self.prefix = self.output + "/" + self.subdir
         self.tmp = project + "/tmp"
+
+        # Attribute defined later
+        self.qry, self.sbj, self.aln, self.result = None, None, None, None
+
         u.create_dir(self.output)
 
     def _get_subdir(self):
         if not self.prot and (self.module == 'easy-cluster'):
             return "04_mmseqs"
-        elif not self.prot and (self.module == 'createdb'):
+        if not self.prot and (self.module == 'createdb'):
             return "08_mmseq_search"
-        elif self.prot:
-            return "07_mmseqs"
+        return "07_mmseqs"
 
     def mmseqs_cluster(self, seqs, step, cluster_mode=0, cov_mode=0):
-
+        """Clustering by MMseqs 'easy-cluster' """
         command = f"mmseqs {self.module} {seqs} {self.prefix} {self.tmp}" + \
                   f" --threads {self.max_threads} " + \
                   f"--split-memory-limit {self.max_mem} " +\
                   f"--cluster-mode {cluster_mode} --cov-mode {cov_mode}"
-        with open(f"{self.output}/mmseqs_cluster_logs.log", "w") as log:
+        with open(f"{self.output}/mmseqs_cluster_logs.log", "w",
+                  encoding="utf-8") as log:
             u.run_command(command, log=log, step=step)
         return True
 
@@ -92,7 +105,7 @@ class MMseqs2():
             - database name? (need a download...)
         """
         command = f"mmseqs {self.module} {seqs} {db_prefix}"
-        with open(logfile, 'w') as log:
+        with open(logfile, 'w', encoding="utf-8") as log:
             u.run_command(command, log=log, step=step)
         return True
 
@@ -108,19 +121,22 @@ class MMseqs2():
         return True
 
     def mmseqs_dl_db(self, name, db_prefix, tmp, logfile, step):
+        """Download a database for MMseqs"""
         command = f"mmseqs databases {name} {db_prefix} {tmp}"
-        with open(logfile, 'w') as log:
+        with open(logfile, 'w', encoding="utf-8") as log:
             u.run_command(command, log=log, step=step)
         return True
 
     def ref_db(self, info_d):
+        """The reference (or subject) database
+        - Download if needed
+        - Format the sequence provided by the user"""
         logfile = self.output + "/mmseqs_sbjDB_logs.log"
-        self.sbj = ""
         if info_d["db_ready_to_go"]:  # Database ready to go
             self.sbj = info_d["db_ready_to_go"]
             return True
 
-        elif info_d["db_user_input"] in mmseqs_db_to_dl:  # DL and format DB
+        if info_d["db_user_input"] in mmseqs_db_to_dl:  # DL and format DB
             if not info_d["db_storage_path"]:
                 self.sbj = f"{self.output}/db/sbjDB"
                 self.mmseqs_dl_db(name=info_d["db_user_input"],
@@ -135,7 +151,7 @@ class MMseqs2():
                                   step="MMseqs - createdb - sbjct - download",
                                   tmp=self.tmp, logfile=logfile)
 
-        else:  # User provides a sequence file
+        else:  # User provides a sequence file, so format it
             if not info_d["db_storage_path"]:
                 self.sbj = f"{self.output}/db/sbjDB"
                 self.mmseqs_createdb(seqs=info_d["db_user_input"],
@@ -162,16 +178,19 @@ class MMseqs2():
                   f"{self.tmp} --threads {self.max_threads} " + \
                   f"--split-memory-limit {self.max_mem} -s {sensitiv} " + \
                   f"-e {evalue} --max-seqs {num_hit} --max-accept {max_hit}"
-        with open(f"{self.output}/mmseqs_search_logs.log", 'w') as log:
+        with open(f"{self.output}/mmseqs_search_logs.log", 'w',
+                  encoding='utf-8') as log:
             u.run_command(command, log=log, step=step)
         return True
 
     def mmseqsDB_to_tsv(self, step):
+        """Convert MMseqs results to a regular TSV file"""
         self.result = f"{self.output}/result.tsv"
         command = f"mmseqs convertalis {self.qry} {self.sbj} {self.aln} " + \
                   f"{self.result} --threads {self.max_threads} " + \
                   "--format-mode 2 -v 3"
-        with open(f"{self.output}/mmseqs_convert_logs.log", 'w') as log:
+        with open(f"{self.output}/mmseqs_convert_logs.log", 'w',
+                  encoding='utf-8') as log:
             u.run_command(command, log=log, step=step)
         return True
 
