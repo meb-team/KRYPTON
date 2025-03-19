@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8
 
-import os
+"""KRYPTON, an euKaRYote ProtisT fOnctionnal aNnotation of transcriptome"""
+
 import sys
 import argparse
 
@@ -28,14 +29,6 @@ __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
 - print a log message at the start of the pipeline, with the mode, etc.
 """
 
-"""
-# On active un environnement conda avec python3.5 installe prealablement
-#os.system("PATHCONDA=$(conda info | grep -i 'base environment' \
-            | awk -F" " '{print $4}')")
-#os.system("source $PATHCONDA'/etc/profile.d/conda.sh'")
-#os.system("conda activate snakes")
-#os.system("source activate snakes")
-"""
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description=__description__,
@@ -54,7 +47,7 @@ if __name__ == '__main__':
     groupG = parser.add_argument_group('KO annotation')
     groupH = parser.add_argument_group('General options')
     groupA.add_argument('--mode', help='Pipeline mode, a.k.a the step from '
-                        'which the pipeline starts', default="reads", type=str,
+                        'which the pipeline starts', type=str, required=True,
                         choices=['reads', 'assembly', 'cds'])
     groupA.add_argument('--out', help='Prefix for the output directory',
                         dest='outdir', metavar="OUT_DIR", required=True)
@@ -137,33 +130,30 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     try:
-        """
-        For the moment, let's try to make KRYPTON run on a regular computer.
-        I will see later to implement the stuff related to
-            --bucketin / -- bucketout / --run-on-hpc2
-        """
+        # For the moment, let's try to make KRYPTON run on a regular computer.
+        # I will see later to implement the stuff related to
+        #     --bucketin / -- bucketout / --run-on-hpc2
+
+        # Here run the process, based on the arguments
         test = k.Krypton(args=args)
         test.run_krypton()
-        # Here run the process, based on the arguments
 
     except Exception as e:
         print(e)
         sys.exit(1)
 
-"""
-from initialize.py import nom_base_donnees_reference
-from initialize.py import base_donnees_reference
+# from initialize.py import nom_base_donnees_reference
+# from initialize.py import base_donnees_reference
 
-annotation_Pfam = sys.argv[5]
+# annotation_Pfam = sys.argv[5]
 
-if annotation_Pfam == "Pfam" :
-        from initialize.py import base_reference_Pfam
+# if annotation_Pfam == "Pfam" :
+#         from initialize.py import base_reference_Pfam
 
-if len(sys.argv) == 6 :
-        nom_base_donnees_reference = sys.argv[5]
-        base_donnees_reference = sys.argv[6]
+# if len(sys.argv) == 6 :
+#         nom_base_donnees_reference = sys.argv[5]
+#         base_donnees_reference = sys.argv[6]
 
-if len(sys.argv) == 7 :
-        nom_base_donnees_reference = sys.argv[6]
-        base_donnees_reference = sys.argv[7]
-"""
+# if len(sys.argv) == 7 :
+#         nom_base_donnees_reference = sys.argv[6]
+#         base_donnees_reference = sys.argv[7]
