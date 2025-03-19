@@ -26,12 +26,16 @@ class Krypton:
         self.paired = A('paired')
         self.r1 = A('r1')
         self.r2 = A('r2')
-        # ##### Trimmomatic
-        if self.mode == 'reads':
-            self.trimmomatic = A('trimmomatic')
-            self.trimmo_mod = "PE" if self.paired else "SE"
-            trimmomatic.check_version(self.trimmomatic, mode=self.trimmo_mod)
-        # #####
+
+        # # ##### Trimmomatic
+        # kept for consistency, DEPRECATED , only use the binary called
+        # "trimmomatic"
+        # if self.mode == 'reads':
+        #     self.trimmomatic = A('trimmomatic')
+        #     self.trimmo_mod = "PE" if self.paired else "SE"
+        #     trimmomatic.check_version(self.trimmomatic, mode=self.trimmo_mod)
+        # # #####
+
         self.transcripts = A('transcripts')
         self.no_transcript_cluster = A('no_transcript_cluster')
         self.cds = A('cds')
@@ -131,7 +135,7 @@ class Krypton:
         """
         t_params = "MINLEN:32 SLIDINGWINDOW:4:20 LEADING:5 TRAILING:5"
         t = trimmomatic.Trimmomatic(r1=self.r1, params=t_params, r2=self.r2,
-                                    project=self.output, exec=self.trimmomatic,
+                                    project=self.output,
                                     threads=self.max_threads)
         t.trimmomatic(step=step)
         return True

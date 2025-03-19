@@ -62,10 +62,11 @@ if __name__ == '__main__':
                         ' (foo_R1.fq[.gz]).', metavar="R1")
     groupB.add_argument('--r2', help='The second read of the pair, in FASTQ'
                         ' (foo_R2.fq[.gz]).', metavar="R2")
-    groupB.add_argument('--trimmomatic', help="If APT or Conda Trimmomatic "
-                        "is installed, forget this option.\nFor other "
-                        "instal:\n\tPATH/TO/trimmomatic-<version>.jar",
-                        metavar="PATH")
+    # Trimmomatic PATH kept in case it would be re-usable later
+    # groupB.add_argument('--trimmomatic', help="If APT or Conda Trimmomatic "
+    #                     "is installed, forget this option.\nFor other "
+    #                     "instal:\n\tPATH/TO/trimmomatic-<version>.jar",
+    #                     metavar="PATH")
     groupC.add_argument('--transcripts', help='File with ASSEMBLED TRANSCRIPTS'
                         ', in FASTA (foo.fa[.gz])', metavar="FILE")
     groupC.add_argument('--no-transcripts-cluster', help='Turn OFF the '
@@ -141,19 +142,3 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
         sys.exit(1)
-
-# from initialize.py import nom_base_donnees_reference
-# from initialize.py import base_donnees_reference
-
-# annotation_Pfam = sys.argv[5]
-
-# if annotation_Pfam == "Pfam" :
-#         from initialize.py import base_reference_Pfam
-
-# if len(sys.argv) == 6 :
-#         nom_base_donnees_reference = sys.argv[5]
-#         base_donnees_reference = sys.argv[6]
-
-# if len(sys.argv) == 7 :
-#         nom_base_donnees_reference = sys.argv[6]
-#         base_donnees_reference = sys.argv[7]

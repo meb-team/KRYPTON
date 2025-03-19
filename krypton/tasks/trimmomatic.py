@@ -8,11 +8,15 @@ import krypton.utils as u
 
 
 def check_version(path=None, mode=None):
+    """DEPRECATED
+    Function that checked the installed version for Trimomatic
+    But I am not sure it was working well..."""
     with_java = False
     if not path:
         if _check_conda():
             return f"trimmomatic {mode}"
         elif _check_apt():
+            # With APT, TrimmomaticSE or TrimmomaticPE
             return f"Trimmomatic{mode}"
         else:
             with_java = True
@@ -60,30 +64,31 @@ def clean(project):
 
 
 class Trimmomatic():
-
-    def __init__(self, r1, params, raw=None, project=None, threads=None,
-                 exec=None, r2=None):
+    """A Class to generate and execute trimmomatic for PE or SE data"""
+    def __init__(self, r1, params, project=None, threads=None, r2=None):
         self.r1 = r1
         self.r2 = r2
         self.max_threads = threads
         self.output = project + "/01_trimmomatic"
         self.mode = "PE" if self.r2 else "SE"
-        self.exec = check_version(path=exec, mode=self.mode)
         self.params = params
         u.create_dir(self.output)
 
     def trimmomatic(self, step):
-        command = f"{self.exec} -threads {self.max_threads} "
+        """Generate the command and run it"""
         if self.mode == "PE":
-            command += f"{self.r1} {self.r2} " + \
-                       f"{self.output}/r1.paired.fq " + \
-                       f"{self.output}/r1.unpaired.fq " + \
-                       f"{self.output}/r2.paired.fq " + \
-                       f"{self.output}/r2.unpaired.fq " + \
-                       f"{self.params}"
+            command = f"trimmomatic PE -threads {self.max_threads} " + \
+                      f"{self.r1} {self.r2} " + \
+                      f"{self.output}/r1.paired.fq " + \
+                      f"{self.output}/r1.unpaired.fq " + \
+                      f"{self.output}/r2.paired.fq " + \
+                      f"{self.output}/r2.unpaired.fq " + \
+                      f"{self.params}"
         else:
-            command += f"{self.r1} {self.output}/r1.fq {self.params}"
+            command = f"trimmomatic SE -threads {self.max_threads} " + \
+                      f"{self.r1} {self.output}/r1.fq {self.params}"
 
-        with open(f"{self.output}/01_logs.log", "w") as log:
+        with open(f"{self.output}/01_logs.log", "w",
+                  encoding="utf-8") as log:
             u.run_command(command=command, log=log, step=step)
         return True
