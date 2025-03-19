@@ -5,7 +5,7 @@
 This package, _euKaRYote ProtisT fOnctionnal aNnotation of transcriptome_,
 abbreviated as _KRYPTON_, written in Python, contains a pipeline for
 transcriptome assembly and annotation (functional and taxonomic).  
-KRYPTON combines Trinity, MMseqs2, KOFamScan and MetaPathExplorer.
+KRYPTON combines Trinity, MMseqs2, and KOFamScan.
 
 <img src="krypton/ressources/workflow.png" width=400 units="px"></img>
 
