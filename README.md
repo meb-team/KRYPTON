@@ -40,51 +40,68 @@ KRYPTON combines Trinity, MMseqs2, KOFamScan and MetaPathExplorer.
         Conda (See below to install). The module _Config::IniFiles_ must be
         installed via _CPAN_: `cpan install Config::IniFiles`. -->
 
-## Install
+## Putative enhancements
 
-### With Conda environment - **Preferred way**
+Ideas of future enhancements
 
-:warning: :warning: The Conda env seems broken... I have to fix it
-:warning: :warning:
+- [ ] Set _AntiFam_ non-necessary
+- [ ] Generate a correspondance table after all clusterings
 
-There is a recipe for a _Conda_ environment in here : `krypton/ressources/krypton_conda_env.yml`
+## Install, within a _Conda_ environment
 
-Otherwise, here is the command to build it:
+1. Setup the environment
+
+Here are the commands to build the environment. It was tested succefully on
+a Linux 64bits system. I prefer [Mamba](https://github.com/mamba-org/mamba)
+over the classic _Conda_, all commands below can be run with `conda` too.
 
 ```bash
-conda create -n krypton
-conda install -c bioconda -c conda-forge -y python numpy fastqc trimmomatic kofamscan mmseqs2
+mamba create -n krypton -c conda-forge -c bioconda "trinity>=2.9.1"
+mamba activate krypton
+mamba install -c conda-forge -c bioconda fastqc kofamscan mmseqs2 \
+  hmmer "transdecoder==5.5.0"
 ```
 
-1. Setup
+2. Download KRYPTON (no install)
 
-To install it, make sure you have a [Conda](https://docs.conda.io/) installed
-on your system first and then runs:
-
-```bash
-conda env create -f ressources/krypton_conda_env.yml
-conda activate krypton_base # Activate the Conda environment
-```
-
-2. KRYPTON code
-
-Move in the directory where you want to setup _KRYPTON_ first. Then:
+First go in a directory to download the code, from _GitHub_
 
 ```bash
+conda activate krypton
+
+# Move the directory you want
+cd ~/bioware  # This is an example!
+
+# Download the code
 git clone https://github.com/meb-team/KRYPTON.git
+
+# Move in the KRYPTON's directory
 cd KRYPTON
-pip install -e .
 ```
 
 3. Data for [Antifam](https://xfam.wordpress.com/2012/03/21/introducing-antifam/):
 
+These data are **mandatory** to run _KRYPTON_. If not present, the pipeline will
+crash at some point. This dataset need about 40 MB of disk-space.
+
 ```bash
+# Move in the directory to store AntiFam
 cd krypton/ressources/
 wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/AntiFam/current/Antifam.tar.gz
 tar -zxf Antifam.tar.gz
-rm relnotes version *.seed AntiFam_* Antifam.tar.gz
+rm relnotes version *.seed AntiFam_*.hmm Antifam.tar.gz
 hmmpress AntiFam.hmm
 cd ../..
+```
+
+4. Install KRYPTON
+
+KRYPTON is built as a _Python3_ package, we will install it in the _Conda_
+environment, with `pip`. , then
+
+```bash
+# Install it
+pip install -e .
 ```
 
 4. Data for _KoFamScan_
@@ -165,27 +182,3 @@ For the moment, formatting a MMseqs DB with KRYPTON running in a Singularity
 container and saving it on CEPH server seems impossible... That is why
 I let KRYPTON doing the formatting within the result directory and I copy
 the database on CEPH after.
-
-# Temp
-
-```bash
-mamba create -n toto "trinity>=2.9.1"
-mamba install fastqc kofamscan mmseqs2
-mamba install "transdecoder==5.5.0"
-
-KRYPTON.py --out test01 \
-    --r1 ../test/data/files_test_reads/CIL_AAOSRB_1_1_H7VC5DSXX.IND1_noribo_clean_test10.fastq \
-    --r2 ../test/data/files_test_reads/CIL_AAOSRB_1_2_H7VC5DSXX.IND1_noribo_clean_test10.fastq \
-    -t 8
-
-## ran complete in less than 5mn, so we are good
-
-### THEN, MMSEQS annotation : Swissprot for the test
-### TRY kofamscan : what is produced, can I parse it?
-
-KRYPTON.py --out test02  --cds prot.fa --no-cds-cluster --mmseqs-annot \
-  --mmseqs-db-path $HOME/databases/mmseqs/Swiss-ProtDB -t8
-
-# I have the error "Mode - READS:", so let's investigate there first.
-
-```

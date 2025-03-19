@@ -1,2 +1,1 @@
 recursive-include krypton/ressources AntiFam*
-recursive-include krypton/ressources/KEGG_data *.tsv

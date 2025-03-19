@@ -167,28 +167,38 @@ class MMseqs2():
                                      " User seq")
         return True
 
-    def mmseqs_search(self, step, evalue='1e-5', num_hit=100, sensitiv=7.5,
-                      max_hit=1):
+    def mmseqs_search(self, step, evalue='1e-5', sensitiv=7.5):
         """
-        important parameters: -c --cov-mode --cluster-mode --min-seq-id REVIEW
+        Max number of sequences set to default, so up to 300 hits can be
+        found, and 300 results per query in the output file
+
+        Important parameters: -c --cov-mode --cluster-mode --min-seq-id REVIEW
         ==>Use --cluster-mode 2 or 3 + --cov-mode 1
         """
         self.aln = f"{self.output}/db/resultDB"
         command = f"mmseqs search {self.qry} {self.sbj} {self.aln} " + \
                   f"{self.tmp} --threads {self.max_threads} " + \
                   f"--split-memory-limit {self.max_mem} -s {sensitiv} " + \
-                  f"-e {evalue} --max-seqs {num_hit} --max-accept {max_hit}"
+                  f"-e {evalue}"
         with open(f"{self.output}/mmseqs_search_logs.log", 'w',
                   encoding='utf-8') as log:
             u.run_command(command, log=log, step=step)
         return True
 
-    def mmseqsDB_to_tsv(self, step):
-        """Convert MMseqs results to a regular TSV file"""
+    def mmseqs_db_to_tsv(self, step):
+        """Convert MMseqs results to a 'BLAST-like' format
+        The file contains headers
+        Note : MMseqs will output 1 line per result, sorted by decreasing bit
+        score / increasing e-value.
+        """
+        # Define the format of the file that stores the results
+        outfmt = "query,target,pident,alnlen,mismatch,gapopen,qstart,qend," \
+                 "tstart,tend,evalue,bits,theader,qlen,tlen"
+
         self.result = f"{self.output}/result.tsv"
         command = f"mmseqs convertalis {self.qry} {self.sbj} {self.aln} " + \
                   f"{self.result} --threads {self.max_threads} " + \
-                  "--format-mode 2 -v 3"
+                  f"--format-mode 4 --format-output {outfmt}"
         with open(f"{self.output}/mmseqs_convert_logs.log", 'w',
                   encoding='utf-8') as log:
             u.run_command(command, log=log, step=step)

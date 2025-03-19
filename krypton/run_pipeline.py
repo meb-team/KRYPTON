@@ -174,7 +174,7 @@ class Krypton:
             u.remove_dir(ms.tmp)  # Do not remove if run from Singularity img
 
         # Converts the results DB into a tsv
-        ms.mmseqsDB_to_tsv(step="MMseqs - convert - results in tsv")
+        ms.mmseqs_db_to_tsv(step="MMseqs - convert - results in tsv")
         return True
 
     def run_prot_prediction(self, step=None, transcrits_clust=None):
