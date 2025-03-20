@@ -160,7 +160,11 @@ class Krypton:
             m.mmseqs_cluster(seqs=seqs, step=step, cov_mode=1, cluster_mode=2)
 
         if not self.bindpoint:
-            u.remove_dir(m.tmp)  # Do not remove if run from Singularity img
+            try:
+                u.remove_dir(m.tmp)  # Do not remove if run from Singularity img
+            except NotImplementedError:
+                # temp dir is not removed, but do not stop the job
+                pass
         return True
 
     def run_mmseqs_search(self, cds_file):
@@ -175,7 +179,11 @@ class Krypton:
         ms.mmseqs_search(step="MMseqs - search")
 
         if not self.bindpoint:
-            u.remove_dir(ms.tmp)  # Do not remove if run from Singularity img
+            try:
+                u.remove_dir(ms.tmp)  # Do not remove if run from Singularity img
+            except NotImplementedError:
+                # temp dir is not removed, but do not stop the job
+                pass
 
         # Converts the results DB into a tsv
         ms.mmseqs_db_to_tsv(step="MMseqs - convert - results in tsv")
