@@ -87,6 +87,24 @@ mkdir data
 KRYPTON_download_K0famScan_data.py --out data
 ```
 
+### Note about old systems
+
+**Important**, on computers with old CPUs that do not support the _AVX2_
+instruction, _MMseqs2_ will fail silently. To make sure your environment is
+compatible, run `lscpu | grep avx2`. Is you see somethong like this, you are fine :
+
+```
+Flags:                              fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic popcnt tsc_deadline_timer aes xsave avx2 lahf_lm pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid xsaveopt dtherm ida arat pln pts md_clear flush_l1d
+```
+
+However there is nothing, you have to **uninstall** _MMseqs2_ from your _Conda_
+environment (`conda remove -n krypton mmseqs2`) and install a specific version
+on your system. It is the archive
+[with "sse41"](https://github.com/soedinglab/MMseqs2/releases/tag/latest) in the
+list of pre-compiled binaries.  
+This fix is available for **Linux**, for the other operating systems, I cannot
+help you...
+
 ### On you system (not recommended)
 
 _KRYPTON_ requires the following tools to be in your `$PATH` :
