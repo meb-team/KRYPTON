@@ -1,6 +1,5 @@
 # -*- coding: utf-8
 
-import sys
 import krypton.utils as u
 
 
@@ -9,57 +8,65 @@ def ko_check_files(file_path):
     if u.is_file_exists(file_path.rstrip('/') + '/ko_list') and \
        u.check_dir_exists(file_path.rstrip('/') + '/profiles'):
         return True
-    else:
-        raise NotImplementedError()
+
+    raise NotImplementedError()
 
 
-class KO_annot():
-    def __init__(self, threads=1, project=None, ko_annot=None,
-                 proteins=None, new_dir=True, data_path=None):
+class KoAnnot():
+    """Class to run KoFamScan"""
+    def __init__(self, proteins, threads=1, project=None, ko_files=None):
         self.max_threads = threads
         self.project = project
         self.output = self.project + "/" + '09_ko_annot'
         self.input = proteins
 
         # For K0FamScan
-        self.ko_list = ko_annot + '/ko_list'
-        self.profiles = ko_annot + '/profiles'
+        self.ko_list = ko_files + '/ko_list'
+        self.profiles = ko_files + '/profiles'
         self.tmp = self.output + "/tmp"
         self.results = self.output + '/09_kofam_results.tsv'
 
-        # To output the results in txt files
-        self.K0_name = data_path + '/ressources/KEGG_data/KEGG_K0.tsv'
-        self.K0_to_pathway = data_path + '/ressources/KEGG_data/' + \
-                                         'KEGG_K0_to_pathway.tsv'
-        self.pathway_name = data_path + '/ressources/KEGG_data/' + \
-                                        'KEGG_pathways.tsv'
+        # # File for MetaPathExplorer
+        # self.K0_name = data_path + '/ressources/KEGG_data/KEGG_K0.tsv'
+        # self.K0_to_pathway = data_path + '/ressources/KEGG_data/' + \
+        #                                  'KEGG_K0_to_pathway.tsv'
+        # self.pathway_name = data_path + '/ressources/KEGG_data/' + \
+        #                                 'KEGG_pathways.tsv'
 
-        if new_dir:
-            u.create_dir(self.output)
+        # Create output directory
+        u.create_dir(self.output)
 
-    def get_command(self, bindpoint=None, output=False, format=None):
+    def get_command(self, outfmt, bindpoint=None, output=False):
+        """Format the KoFamScan command-line"""
         command = f'exec_annotation -o {self.results} ' +\
-                  f'--format {format} --ko-list {self.ko_list} --profile ' +\
+                  f'--format {outfmt} --ko-list {self.ko_list} --profile ' +\
                   f'{self.profiles} --cpu {self.max_threads} ' +\
                   f'--tmp-dir {self.tmp} {self.input}'
         if output:
             command = command.replace(f"{bindpoint}/", "")
-            with open(f"{self.project}/run_kofamscan_hpc.sh", "w") as fo:
+            with open(f"{self.project}/run_kofamscan_hpc.sh", "w",
+                      encoding="utf-8") as fo:
                 print("#!/usr/bin/env bash\n", file=fo)
                 print(command, file=fo)
 
+            # I am not sure whether this is still running or not...
             print("KRYPTON wrote a separate BASH file with the command to"
-                  " run kofamscan by yourself in\n\t%s" %
-                  f"{self.project}/run_kofamscan_hpc.sh")
+                  f" run kofamscan by yourself in\n\t{self.project}" 
+                  "/run_kofamscan_hpc.sh")
             return True
-        else:
-            return command
 
-    def run_kofamscan(self, format=None, step=None):
-        command = self.get_command(format=format)
-        with open(f"{self.output}/09_kofam_logs.log", "w") as log:
+        return command
+
+    def run_kofamscan(self, outfmt=None, step=None):
+        """Execute the command to run KoFamScan"""
+        command = self.get_command(outfmt=outfmt)
+        with open(f"{self.output}/09_kofam_logs.log", "w",
+                  encoding="utf-8") as log:
             print(f"{command}\n", file=log)
             u.run_command(command, log=log, step=step)
+
+        # Clean tmp dir
+        u.remove_dir(self.tmp)
         return True
 
     # def parse_results_for_MPE(self):
@@ -188,10 +195,8 @@ class KO_annot():
 
 
 if __name__ == '__main__':
-    test = KO_annot(project='damien/test_32', new_dir=False,
-                    ko_annot='damien/ko_fam',
-                    data_path="/home/dacourti/Documents/projects/MEB/KRYPTON",
-                    threads=8)
-    test.run_kofamscan(format='detail-tsv', step="K0FamScan")
+    test = KoAnnot(proteins = "test.fa", project='damien/test_32',
+                   ko_files='damien/ko_fam', threads=8)
+    test.run_kofamscan(outfmt='detail-tsv', step="K0FamScan")
     # test.parse_results_as_txt()
-    test.parse_results_for_MPE()
+    # test.parse_results_for_MPE()

@@ -65,9 +65,9 @@ class Krypton:
         if self.ko_annot:
             try:
                 ko.ko_check_files(self.ko_annot)
-                print("Files for the annotation via K0FamScan are correct!")
+                print("\nFiles for the annotation via K0FamScan are correct!")
             except NotImplementedError:
-                print(f"Search in {self.ko_annot}")
+                print(f"\nSearch in {self.ko_annot}")
                 print("The files for K0 annotation are not present or not "
                       "valid.\nPlease check the script\n\t"
                       "KRYPTON_download_K0famScan_data.py\n"
@@ -214,18 +214,17 @@ class Krypton:
 
     def run_ko_annot(self, proteins, step=None):
         """ Protein annotation using KOFamScan"""
-        k = ko.KO_annot(threads=self.max_threads, project=self.output,
-                        ko_annot=self.ko_annot, proteins=proteins,
-                        data_path=self.abs_path)
+        k = ko.KoAnnot(threads=self.max_threads, project=self.output,
+                        ko_files=self.ko_annot, proteins=proteins)
 
         if not self.bindpoint:
-            k.run_kofamscan(format='detail-tsv', step=step)
+            k.run_kofamscan(outfmt='detail-tsv', step=step)
             # k.parse_results_for_MPE()
             # k.parse_results_as_txt()
 
         else:
             k.get_command(output=True, bindpoint=self.bindpoint,
-                          format='detail-tsv')
+                          outfmt='detail-tsv')
         return True
 
     # def run_MetaPathExplorer(self, step=None):  # DEPRECATED

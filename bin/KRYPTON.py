@@ -10,24 +10,7 @@ import krypton.run_pipeline as k
 
 __description__ = 'Run the pipeline KRYPTON, for transcriptome'\
                 ' assembly and annotation'
-"""
-Damien
-
-for the package:
-    - https://python-packaging-tutorial.readthedocs.io/en/latest/setup_py.html
-
-Tasks to do:
-    - [X] Use the module argparse for the parameters
-
-    - [ ] use "with open(xxx, ?) as yyy" to read files.
-        It is much more efficient
 __authors__ = ['bmilisavljevic', 'AnthonyAUCLAIR', 'd-courtine']
-
-- outdir
-- input data --> depend on the mode
-
-- print a log message at the start of the pipeline, with the mode, etc.
-"""
 
 if __name__ == '__main__':
 
