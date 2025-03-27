@@ -13,10 +13,9 @@ KRYPTON combines Trinity, MMseqs2, and KOFamScan.
 
 Ideas of future enhancements
 
-- [ ] run _KOFamScan_ within the pipeline, not after
+- [ ] Generate a correspondance table after all clusterings
 - [ ] Taxonomic annotation
 - [ ] Set _AntiFam_ non-necessary
-- [ ] Generate a correspondance table after all clusterings
 
 ## Install, within a _Conda_ environment
 
